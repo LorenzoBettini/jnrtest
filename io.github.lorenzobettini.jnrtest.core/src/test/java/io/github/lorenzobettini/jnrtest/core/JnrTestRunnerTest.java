@@ -13,6 +13,7 @@ class JnrTestRunnerTest {
 
 	static interface Callable {
 		void firstMethod();
+
 		void secondMethod();
 	}
 
@@ -20,22 +21,17 @@ class JnrTestRunnerTest {
 	@DisplayName("should run all the tests")
 	void shouldRunAllTheTests() {
 		var callable = mock(Callable.class);
-		JnrTestRunner runner = new JnrTestRunner();
-		runner.withSpecifications(new JnrTestSpecification() {
+		JnrTestRunner runner = new JnrTestRunner() {
 			@Override
-			protected void specify() {
-				test("first test",
-					() -> {
-						callable.firstMethod();
-					}
-				);
-				test("second test",
-					() -> {
-						callable.secondMethod();
-					}
-				);
+			protected void withSpecifications() {
+				test("first test", () -> {
+					callable.firstMethod();
+				});
+				test("second test", () -> {
+					callable.secondMethod();
+				});
 			}
-		});
+		};
 		runner.execute();
 		var inOrder = inOrder(callable);
 		inOrder.verify(callable).firstMethod();
