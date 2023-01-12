@@ -1,5 +1,13 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+/**
+ * Runs the tests represented by {@link JnrTestSpecification}, specified by
+ * calling {@link #withSpecifications(JnrTestSpecification...)}; once
+ * initialized, the actual test execution is performed by {@link #execute()}.
+ * 
+ * @author Lorenzo Bettini
+ *
+ */
 public class JnrTestRunner {
 
 	private JnrTestSpecification[] jnrTestSpecifications = {};
