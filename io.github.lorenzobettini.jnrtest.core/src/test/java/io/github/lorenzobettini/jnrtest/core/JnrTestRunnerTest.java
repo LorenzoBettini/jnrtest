@@ -21,17 +21,17 @@ class JnrTestRunnerTest {
 
 		void beforeAllMethod2();
 
-		void beforeMethod1();
+		void beforeEachMethod1();
 
-		void beforeMethod2();
+		void beforeEachMethod2();
 
 		void afterAllMethod1();
 
 		void afterAllMethod2();
 
-		void afterMethod1();
+		void afterEachMethod1();
 
-		void afterMethod2();
+		void afterEachMethod2();
 	}
 
 	@Test
@@ -69,13 +69,13 @@ class JnrTestRunnerTest {
 			@Override
 			protected void withSpecifications() {
 				beforeEach(() -> {
-					callable.beforeMethod1();
+					callable.beforeEachMethod1();
 				});
 				beforeEach(() -> {
 					throw new RuntimeException("exception");
 				});
 				beforeEach(() -> {
-					callable.beforeMethod2();
+					callable.beforeEachMethod2();
 				});
 				beforeAll(() -> {
 					callable.beforeAllMethod1();
@@ -87,13 +87,13 @@ class JnrTestRunnerTest {
 					callable.beforeAllMethod2();
 				});
 				afterEach(() -> {
-					callable.afterMethod1();
+					callable.afterEachMethod1();
 				});
 				afterEach(() -> {
 					throw new RuntimeException("exception");
 				});
 				afterEach(() -> {
-					callable.afterMethod2();
+					callable.afterEachMethod2();
 				});
 				afterAll(() -> {
 					callable.afterAllMethod1();
@@ -114,18 +114,22 @@ class JnrTestRunnerTest {
 		};
 		runner.execute();
 		var inOrder = inOrder(callable);
+		// before all
 		inOrder.verify(callable).beforeAllMethod1();
 		inOrder.verify(callable).beforeAllMethod2();
-		inOrder.verify(callable).beforeMethod1();
-		inOrder.verify(callable).beforeMethod2();
+		// first test
+		inOrder.verify(callable).beforeEachMethod1();
+		inOrder.verify(callable).beforeEachMethod2();
 		inOrder.verify(callable).firstMethod();
-		inOrder.verify(callable).afterMethod1();
-		inOrder.verify(callable).afterMethod2();
-		inOrder.verify(callable).beforeMethod1();
-		inOrder.verify(callable).beforeMethod2();
+		inOrder.verify(callable).afterEachMethod1();
+		inOrder.verify(callable).afterEachMethod2();
+		// second test
+		inOrder.verify(callable).beforeEachMethod1();
+		inOrder.verify(callable).beforeEachMethod2();
 		inOrder.verify(callable).secondMethod();
-		inOrder.verify(callable).afterMethod1();
-		inOrder.verify(callable).afterMethod2();
+		inOrder.verify(callable).afterEachMethod1();
+		inOrder.verify(callable).afterEachMethod2();
+		// after all
 		inOrder.verify(callable).afterAllMethod1();
 		inOrder.verify(callable).afterAllMethod2();
 	}
