@@ -42,6 +42,8 @@ public abstract class JnrTestRunner {
 				runnableSpecification.testRunnable().runTest();
 			} catch (Exception e) {
 				// TODO report it
+			} catch (AssertionError error) {
+				// TODO report it
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
@@ -29,6 +30,9 @@ class JnrTestRunnerTest {
 				});
 				test("test throwing exception", () -> {
 					throw new RuntimeException("exception");
+				});
+				test("test failing assertion", () -> {
+					assertTrue(false);
 				});
 				test("second test", () -> {
 					callable.secondMethod();
