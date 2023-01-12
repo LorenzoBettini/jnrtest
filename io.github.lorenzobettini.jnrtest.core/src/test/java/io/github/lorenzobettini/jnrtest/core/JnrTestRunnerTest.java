@@ -27,6 +27,9 @@ class JnrTestRunnerTest {
 				test("first test", () -> {
 					callable.firstMethod();
 				});
+				test("test throwing exception", () -> {
+					throw new RuntimeException("exception");
+				});
 				test("second test", () -> {
 					callable.secondMethod();
 				});

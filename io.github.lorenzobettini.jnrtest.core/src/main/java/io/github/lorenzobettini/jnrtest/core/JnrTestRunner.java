@@ -41,8 +41,7 @@ public abstract class JnrTestRunner {
 			try {
 				runnableSpecification.testRunnable().runTest();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// TODO report it
 			}
 		}
 	}
