@@ -1,3 +1,4 @@
 - index descriptions to run a single test
 - reporter
 - extensions (decorators is not the best name)
+  - extension for Mockito and Guice as examples
