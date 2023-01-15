@@ -92,8 +92,7 @@ public abstract class JnrTestRunner {
 			for (var beforeEach : beforeEachRunnables) {
 				executeSafely(beforeEach);
 			}
-			var testRunnable = runnableSpecification.testRunnable();
-			executeSafely(testRunnable);
+			executeSafely(runnableSpecification.testRunnable());
 			for (var afterEach : afterEachRunnables) {
 				executeSafely(afterEach);
 			}
