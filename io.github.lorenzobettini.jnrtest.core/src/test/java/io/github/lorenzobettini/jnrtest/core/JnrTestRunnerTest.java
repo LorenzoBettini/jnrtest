@@ -162,55 +162,71 @@ class JnrTestRunnerTest {
 	}
 
 	@Test
-	@DisplayName("should decorate tests")
-	void shouldDecorateTests() {
+	@DisplayName("should run extensions")
+	void shouldRunExtensions() {
 		var callable = mock(Callable.class);
 		var runner = new JnrTestRunner() {
-			// this must be mocked by the first test decorator
+			// this must be mocked by the first test extension
 			@Mock
 			Object sut = null;
 
-			// this must be injected by the second test decorator
+			// this must be injected by the second test extension
 			@Inject
 			String stringSut;
 
 			@Override
 			protected void specify() {
 				test("first test", () -> {
-					// the assertion fails if the decorator
+					// the assertion fails if the extension
+					// does not inject it, see below
+					assertEquals("first string", stringSut);
+					// this will not be called if the assertion fails
+					callable.firstMethod();
+				});
+				test("second test", () -> {
+					// the assertion fails if the extension
 					// does not mock it, see below
 					assertNotNull(sut);
 					// this will not be called if the assertion fails
 					callable.firstMethod();
 				});
-				test("second test", () -> {
-					// the assertion fails if the decorator
-					// does not inject it, see below
-					assertEquals("A test string", stringSut);
+				test("third test", () -> {
+					// the assertion fails if the extension's
+					// afterTest has not been called
+					assertEquals("after first string", stringSut);
 					// this will not be called if the assertion fails
 					callable.firstMethod();
 				});
 			}
 		};
-		runner.decorate(new JnrTestDecorator() {
+		runner.decorate(new JnrTestExtension() {
 			@Override
-			public void decorateTest(JnrTestRunner r) {
+			public void beforeTest(JnrTestRunner r) {
 				MockitoAnnotations.openMocks(r);
 			}
 		});
-		runner.decorate(new JnrTestDecorator() {
+		runner.decorate(new JnrTestExtension() {
+			// this will be modified in afterTest
+			// so this value is used only by the first test
+			String stringToInject = "first string";
+
 			@Override
-			public void decorateTest(JnrTestRunner r) {
+			public void beforeTest(JnrTestRunner r) {
 				Guice.createInjector(
 					binder -> {
 						binder.bind(String.class)
-							.toInstance("A test string");
+							.toInstance(stringToInject);
 				}).injectMembers(r);
+			}
+
+			@Override
+			public void afterTest(JnrTestRunner runner) {
+				stringToInject = "after first string";
 			}
 		});
 		runner.execute();
 		// this fails if the assertions above fail
-		// that is, if the decorators have not been used
-		verify(callable, times(2)).firstMethod();
+		// that is, if the extensions have not been used
+		verify(callable, times(3)).firstMethod();
 	}
 }

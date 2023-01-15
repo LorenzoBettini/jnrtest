@@ -1,3 +1,3 @@
 - index descriptions to run a single test
 - reporter
-- extensions
+- extensions (decorators is not the best name)

@@ -22,7 +22,7 @@ public abstract class JnrTestRunner {
 
 	private boolean firstExecution = true;
 
-	private List<JnrTestDecorator> testDecorators = new ArrayList<>();
+	private List<JnrTestExtension> testExtensions = new ArrayList<>();
 
 	/**
 	 * Responsible of specifying the tests by calling the method
@@ -86,8 +86,8 @@ public abstract class JnrTestRunner {
 			executeSafely(beforeAll);
 		}
 		for (var runnableSpecification : runnableSpecifications) {
-			for (var testDecorator : testDecorators) {
-				testDecorator.decorateTest(this);
+			for (var extension : testExtensions) {
+				extension.beforeTest(this);
 			}
 			for (var beforeEach : beforeEachRunnables) {
 				executeSafely(beforeEach);
@@ -96,6 +96,9 @@ public abstract class JnrTestRunner {
 			executeSafely(testRunnable);
 			for (var afterEach : afterEachRunnables) {
 				executeSafely(afterEach);
+			}
+			for (var extension : testExtensions) {
+				extension.afterTest(this);
 			}
 		}
 		for (var afterAll : afterAllRunnables) {
@@ -113,8 +116,8 @@ public abstract class JnrTestRunner {
 		}
 	}
 
-	public void decorate(JnrTestDecorator testDecorator) {
-		testDecorators.add(testDecorator);
+	public void decorate(JnrTestExtension testDecorator) {
+		testExtensions.add(testDecorator);
 	}
 
 }
