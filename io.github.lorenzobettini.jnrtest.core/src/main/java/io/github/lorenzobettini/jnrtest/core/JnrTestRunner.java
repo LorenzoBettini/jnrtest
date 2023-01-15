@@ -115,7 +115,7 @@ public abstract class JnrTestRunner {
 		}
 	}
 
-	public void decorate(JnrTestExtension testDecorator) {
+	public void extendWith(JnrTestExtension testDecorator) {
 		testExtensions.add(testDecorator);
 	}
 

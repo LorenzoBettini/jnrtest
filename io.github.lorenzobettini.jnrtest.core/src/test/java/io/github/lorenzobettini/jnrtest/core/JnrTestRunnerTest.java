@@ -199,13 +199,13 @@ class JnrTestRunnerTest {
 				});
 			}
 		};
-		runner.decorate(new JnrTestExtension() {
+		runner.extendWith(new JnrTestExtension() {
 			@Override
 			public void beforeTest(JnrTestRunner r) {
 				MockitoAnnotations.openMocks(r);
 			}
 		});
-		runner.decorate(new JnrTestExtension() {
+		runner.extendWith(new JnrTestExtension() {
 			// this will be modified in afterTest
 			// so this value is used only by the first test
 			String stringToInject = "first string";
