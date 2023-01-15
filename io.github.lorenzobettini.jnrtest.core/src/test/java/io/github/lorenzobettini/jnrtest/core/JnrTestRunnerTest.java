@@ -1,5 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -8,6 +9,8 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * Unit test for simple App.
@@ -154,4 +157,35 @@ class JnrTestRunnerTest {
 		inOrder.verify(callable).afterAllMethod2();
 	}
 
+	@Test
+	@DisplayName("should decorate tests")
+	void shouldDecorateTests() {
+		var callable = mock(Callable.class);
+		var runner = new JnrTestRunner() {
+			@Mock
+			Object sut = null;
+
+			@Override
+			protected void specify() {
+				test("first test", () -> {
+					// the assertion fails if the decorator
+					// does not mock it, see below
+					assertNotNull(sut);
+					// this will not be called if the assertion
+					// fails
+					callable.firstMethod();
+				});
+			}
+		};
+		runner.decorate(new JnrTestDecorator() {
+			@Override
+			public void decorateTest(JnrTestRunner r) {
+				MockitoAnnotations.openMocks(r);
+			}
+		});
+		runner.execute();
+		// this fails if the assertNotNull above fails
+		// that is, if the decorator has not been used
+		verify(callable).firstMethod();
+	}
 }
