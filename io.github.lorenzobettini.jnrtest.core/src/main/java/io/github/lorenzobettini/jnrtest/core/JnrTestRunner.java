@@ -22,6 +22,8 @@ public abstract class JnrTestRunner {
 
 	private boolean firstExecution = true;
 
+	private List<JnrTestExtension> testExtensions = new ArrayList<>();
+
 	/**
 	 * Responsible of specifying the tests by calling the method
 	 * {@link #test(String, JnrTestRunnable)}.
@@ -84,13 +86,18 @@ public abstract class JnrTestRunner {
 			executeSafely(beforeAll);
 		}
 		for (var runnableSpecification : runnableSpecifications) {
+			for (var extension : testExtensions) {
+				extension.beforeTest(this);
+			}
 			for (var beforeEach : beforeEachRunnables) {
 				executeSafely(beforeEach);
 			}
-			var testRunnable = runnableSpecification.testRunnable();
-			executeSafely(testRunnable);
+			executeSafely(runnableSpecification.testRunnable());
 			for (var afterEach : afterEachRunnables) {
 				executeSafely(afterEach);
+			}
+			for (var extension : testExtensions) {
+				extension.afterTest(this);
 			}
 		}
 		for (var afterAll : afterAllRunnables) {
@@ -106,6 +113,10 @@ public abstract class JnrTestRunner {
 		} catch (AssertionError error) {
 			// TODO report it
 		}
+	}
+
+	public void extendWith(JnrTestExtension testDecorator) {
+		testExtensions.add(testDecorator);
 	}
 
 }

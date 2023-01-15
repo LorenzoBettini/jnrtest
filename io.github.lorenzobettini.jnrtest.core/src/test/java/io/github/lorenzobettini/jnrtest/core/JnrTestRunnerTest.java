@@ -1,5 +1,7 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -8,6 +10,11 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import com.google.inject.Guice;
+import com.google.inject.Inject;
 
 /**
  * Unit test for simple App.
@@ -154,4 +161,72 @@ class JnrTestRunnerTest {
 		inOrder.verify(callable).afterAllMethod2();
 	}
 
+	@Test
+	@DisplayName("should run extensions")
+	void shouldRunExtensions() {
+		var callable = mock(Callable.class);
+		var runner = new JnrTestRunner() {
+			// this must be mocked by the first test extension
+			@Mock
+			Object sut = null;
+
+			// this must be injected by the second test extension
+			@Inject
+			String stringSut;
+
+			@Override
+			protected void specify() {
+				test("first test", () -> {
+					// the assertion fails if the extension
+					// does not inject it, see below
+					assertEquals("first string", stringSut);
+					// this will not be called if the assertion fails
+					callable.firstMethod();
+				});
+				test("second test", () -> {
+					// the assertion fails if the extension
+					// does not mock it, see below
+					assertNotNull(sut);
+					// this will not be called if the assertion fails
+					callable.firstMethod();
+				});
+				test("third test", () -> {
+					// the assertion fails if the extension's
+					// afterTest has not been called
+					assertEquals("after first string", stringSut);
+					// this will not be called if the assertion fails
+					callable.firstMethod();
+				});
+			}
+		};
+		runner.extendWith(new JnrTestExtension() {
+			@Override
+			public void beforeTest(JnrTestRunner r) {
+				MockitoAnnotations.openMocks(r);
+			}
+		});
+		runner.extendWith(new JnrTestExtension() {
+			// this will be modified in afterTest
+			// so this value is used only by the first test
+			String stringToInject = "first string";
+
+			@Override
+			public void beforeTest(JnrTestRunner r) {
+				Guice.createInjector(
+					binder -> {
+						binder.bind(String.class)
+							.toInstance(stringToInject);
+				}).injectMembers(r);
+			}
+
+			@Override
+			public void afterTest(JnrTestRunner runner) {
+				stringToInject = "after first string";
+			}
+		});
+		runner.execute();
+		// this fails if the assertions above fail
+		// that is, if the extensions have not been used
+		verify(callable, times(3)).firstMethod();
+	}
 }

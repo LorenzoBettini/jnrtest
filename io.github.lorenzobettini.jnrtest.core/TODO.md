@@ -1,3 +1,4 @@
 - index descriptions to run a single test
 - reporter
-- extensions
+
+- extension for Mockito and Guice as examples
