@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Runs the tests represented by {@link JnrTestSpecification}, specified by
- * overriding {@link #withSpecifications()}; the actual test execution is
+ * overriding {@link #specify()}; the actual test execution is
  * performed by {@link #execute()}.
  * 
  * @author Lorenzo Bettini
@@ -20,15 +20,13 @@ public abstract class JnrTestRunner {
 	private List<JnrTestRunnable> afterAllRunnables = new ArrayList<>();
 	private List<JnrTestRunnable> afterEachRunnables = new ArrayList<>();
 
-	protected JnrTestRunner() {
-		withSpecifications();
-	}
+	private boolean firstExecution = true;
 
 	/**
 	 * Responsible of specifying the tests by calling the method
 	 * {@link #test(String, JnrTestRunnable)}.
 	 */
-	protected abstract void withSpecifications();
+	protected abstract void specify();
 
 	/**
 	 * Specify a test to run (in the shape of a {@link JnrTestRunnable}, with the
@@ -78,6 +76,10 @@ public abstract class JnrTestRunner {
 	}
 
 	public void execute() {
+		if (firstExecution) {
+			specify();
+			firstExecution = false;
+		}
 		for (var beforeAll : beforeAllRunnables) {
 			executeSafely(beforeAll);
 		}

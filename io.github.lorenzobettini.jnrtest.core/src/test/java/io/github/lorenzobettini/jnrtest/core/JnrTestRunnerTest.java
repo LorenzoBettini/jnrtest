@@ -3,6 +3,8 @@ package io.github.lorenzobettini.jnrtest.core;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +42,7 @@ class JnrTestRunnerTest {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner() {
 			@Override
-			protected void withSpecifications() {
+			protected void specify() {
 				test("first test", () -> {
 					callable.firstMethod();
 				});
@@ -62,12 +64,30 @@ class JnrTestRunnerTest {
 	}
 
 	@Test
+	@DisplayName("should specify the tests only once")
+	void shouldSpecifyTestsOnlyOnce() {
+		var callable = mock(Callable.class);
+		JnrTestRunner runner = new JnrTestRunner() {
+			@Override
+			protected void specify() {
+				test("first test", () -> {
+					callable.firstMethod();
+				});
+			}
+		};
+		runner.execute();
+		// second execution should not specify tests again
+		runner.execute();
+		verify(callable, times(2)).firstMethod();
+	}
+
+	@Test
 	@DisplayName("should execute lifecycle")
 	void shouldExecuteLifecycle() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner() {
 			@Override
-			protected void withSpecifications() {
+			protected void specify() {
 				beforeEach(() -> {
 					callable.beforeEachMethod1();
 				});
