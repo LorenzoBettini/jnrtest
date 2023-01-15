@@ -44,6 +44,13 @@
 			<version>${assertj.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Used only in tests for decorators -->
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>5.0.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<pluginManagement>

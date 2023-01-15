@@ -1,5 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.inOrder;
@@ -11,6 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import com.google.inject.Guice;
+import com.google.inject.Inject;
 
 /**
  * Unit test for simple App.
@@ -162,8 +166,13 @@ class JnrTestRunnerTest {
 	void shouldDecorateTests() {
 		var callable = mock(Callable.class);
 		var runner = new JnrTestRunner() {
+			// this must be mocked by the first test decorator
 			@Mock
 			Object sut = null;
+
+			// this must be injected by the second test decorator
+			@Inject
+			String stringSut;
 
 			@Override
 			protected void specify() {
@@ -171,8 +180,14 @@ class JnrTestRunnerTest {
 					// the assertion fails if the decorator
 					// does not mock it, see below
 					assertNotNull(sut);
-					// this will not be called if the assertion
-					// fails
+					// this will not be called if the assertion fails
+					callable.firstMethod();
+				});
+				test("second test", () -> {
+					// the assertion fails if the decorator
+					// does not inject it, see below
+					assertEquals("A test string", stringSut);
+					// this will not be called if the assertion fails
 					callable.firstMethod();
 				});
 			}
@@ -183,9 +198,19 @@ class JnrTestRunnerTest {
 				MockitoAnnotations.openMocks(r);
 			}
 		});
+		runner.decorate(new JnrTestDecorator() {
+			@Override
+			public void decorateTest(JnrTestRunner r) {
+				Guice.createInjector(
+					binder -> {
+						binder.bind(String.class)
+							.toInstance("A test string");
+				}).injectMembers(r);
+			}
+		});
 		runner.execute();
-		// this fails if the assertNotNull above fails
-		// that is, if the decorator has not been used
-		verify(callable).firstMethod();
+		// this fails if the assertions above fail
+		// that is, if the decorators have not been used
+		verify(callable, times(2)).firstMethod();
 	}
 }
