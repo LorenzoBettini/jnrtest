@@ -1,106 +1,60 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Runs the tests represented by {@link JnrTestSpecification}, specified by
- * overriding {@link #specify()}; the actual test execution is
+ * Runs the tests of {@link JnrTestCase}; the actual test execution is
  * performed by {@link #execute()}.
  * 
  * @author Lorenzo Bettini
  *
  */
-public abstract class JnrTestRunner {
+public class JnrTestRunner {
 
-	private List<JnrTestRunnableSpecification> runnableSpecifications = new ArrayList<>();
+	private List<JnrTestCase> testCases = new ArrayList<>();
 
-	private List<JnrTestRunnable> beforeAllRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> beforeEachRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> afterAllRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> afterEachRunnables = new ArrayList<>();
-
-	private boolean firstExecution = true;
+	private Set<JnrTestCase> alreadySpecified = new HashSet<>();
 
 	private List<JnrTestExtension> testExtensions = new ArrayList<>();
 
-	/**
-	 * Responsible of specifying the tests by calling the method
-	 * {@link #test(String, JnrTestRunnable)}.
-	 */
-	protected abstract void specify();
-
-	/**
-	 * Specify a test to run (in the shape of a {@link JnrTestRunnable}, with the
-	 * given description.
-	 * 
-	 * @param description
-	 * @param testRunnable
-	 */
-	protected void test(String description, JnrTestRunnable testRunnable) {
-		runnableSpecifications.add(new JnrTestRunnableSpecification(description, testRunnable));
-	}
-
-	/**
-	 * Specifies a code to run before all tests.
-	 * 
-	 * @param beforeAllRunnable
-	 */
-	protected void beforeAll(JnrTestRunnable beforeAllRunnable) {
-		beforeAllRunnables.add(beforeAllRunnable);
-	}
-
-	/**
-	 * Specifies a code to run before each test.
-	 * 
-	 * @param beforeEachRunnable
-	 */
-	protected void beforeEach(JnrTestRunnable beforeEachRunnable) {
-		beforeEachRunnables.add(beforeEachRunnable);
-	}
-
-	/**
-	 * Specifies a code to run after all tests.
-	 * 
-	 * @param afterAllRunnable
-	 */
-	protected void afterAll(JnrTestRunnable afterAllRunnable) {
-		afterAllRunnables.add(afterAllRunnable);
-	}
-
-	/**
-	 * Specifies a code to run after each test.
-	 * 
-	 * @param afterEachRunnable
-	 */
-	protected void afterEach(JnrTestRunnable afterEachRunnable) {
-		afterEachRunnables.add(afterEachRunnable);
+	public JnrTestRunner testCase(JnrTestCase testCase) {
+		testCases.add(testCase);
+		return this;
 	}
 
 	public void execute() {
-		if (firstExecution) {
-			specify();
-			firstExecution = false;
+		for (var testCase : testCases) {
+			if (!alreadySpecified.contains(testCase)) {
+				testCase.specify();
+				alreadySpecified.add(testCase);
+			}
+			execute(testCase);
 		}
-		for (var beforeAll : beforeAllRunnables) {
+	}
+
+	private void execute(JnrTestCase testCase) {
+		for (var beforeAll : testCase.getBeforeAllRunnables()) {
 			executeSafely(beforeAll);
 		}
-		for (var runnableSpecification : runnableSpecifications) {
+		for (var runnableSpecification : testCase.getRunnableSpecifications()) {
 			for (var extension : testExtensions) {
-				extension.beforeTest(this);
+				extension.beforeTest(testCase);
 			}
-			for (var beforeEach : beforeEachRunnables) {
+			for (var beforeEach : testCase.getBeforeEachRunnables()) {
 				executeSafely(beforeEach);
 			}
 			executeSafely(runnableSpecification.testRunnable());
-			for (var afterEach : afterEachRunnables) {
+			for (var afterEach : testCase.getAfterEachRunnables()) {
 				executeSafely(afterEach);
 			}
 			for (var extension : testExtensions) {
-				extension.afterTest(this);
+				extension.afterTest(testCase);
 			}
 		}
-		for (var afterAll : afterAllRunnables) {
+		for (var afterAll : testCase.getAfterAllRunnables()) {
 			executeSafely(afterAll);
 		}
 	}
