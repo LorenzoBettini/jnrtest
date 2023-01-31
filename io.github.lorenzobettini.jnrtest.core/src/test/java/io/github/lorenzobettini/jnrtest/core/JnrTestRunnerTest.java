@@ -111,12 +111,11 @@ class JnrTestRunnerTest {
 		runner.testListener(listener);
 		runner.execute();
 		assertEquals("""
-			[SUCCESS] first test
-			[ERROR] test throwing exception
-			[FAILED] test failing assertion
-			[SUCCESS] second test
-			""",
-			listener.results.toString());
+				[SUCCESS] first test
+				[  ERROR] test throwing exception
+				[ FAILED] test failing assertion
+				[SUCCESS] second test
+				""", listener.results.toString());
 	}
 
 	@Test

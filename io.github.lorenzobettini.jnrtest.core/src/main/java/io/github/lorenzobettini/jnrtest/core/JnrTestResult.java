@@ -10,7 +10,7 @@ public record JnrTestResult(String description, JnrTestResultStatus status) {
 
 	@Override
 	public String toString() {
-		return String.format("[%s] %s", status, description);
+		return String.format("[%7s] %s", status, description);
 	}
 
 }
