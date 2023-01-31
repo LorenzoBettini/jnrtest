@@ -1,6 +1,6 @@
 - index descriptions to run a single test
 
-- listeners: store also the exception?
+V listeners: store also the exception?
 - how to distinguish before each, before all, etc. from standard
 tests?
 

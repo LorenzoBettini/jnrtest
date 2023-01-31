@@ -76,13 +76,13 @@ public class JnrTestRunner {
 		try {
 			testRunnable.runTest();
 			notifyListeners(
-				new JnrTestResult(description, JnrTestResultStatus.SUCCESS));
+				new JnrTestResult(description, JnrTestResultStatus.SUCCESS, null));
 		} catch (Exception e) {
 			notifyListeners(
-				new JnrTestResult(description, JnrTestResultStatus.ERROR));
+				new JnrTestResult(description, JnrTestResultStatus.ERROR, e));
 		} catch (AssertionError assertionError) {
 			notifyListeners(
-				new JnrTestResult(description, JnrTestResultStatus.FAILED));
+				new JnrTestResult(description, JnrTestResultStatus.FAILED, assertionError));
 		}
 	}
 

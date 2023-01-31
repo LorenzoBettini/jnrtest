@@ -6,7 +6,7 @@ package io.github.lorenzobettini.jnrtest.core;
  * @author Lorenzo Bettini
  *
  */
-public record JnrTestResult(String description, JnrTestResultStatus status) {
+public record JnrTestResult(String description, JnrTestResultStatus status, Throwable throwable) {
 
 	@Override
 	public String toString() {
