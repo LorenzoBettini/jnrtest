@@ -1,6 +1,8 @@
 - index descriptions to run a single test
 
 - listeners: store also the exception?
+- how to distinguish before each, before all, etc. from standard
+tests?
 
 - store so that the test case can be specified as a lambda
 (with a parameter it of type store?)
