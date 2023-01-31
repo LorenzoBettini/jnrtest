@@ -78,7 +78,7 @@ class JnrTestRunnerTest {
 	@Test
 	@DisplayName("should notify listeners")
 	void shouldNotifyListeners() {
-		var listener = new JnrTestResultListener() {
+		var listener = new JnrTestListener() {
 			private StringBuilder results = new StringBuilder();
 
 			@Override

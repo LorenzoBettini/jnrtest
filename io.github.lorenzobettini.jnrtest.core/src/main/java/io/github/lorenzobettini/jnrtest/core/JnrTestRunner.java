@@ -20,7 +20,7 @@ public class JnrTestRunner {
 
 	private List<JnrTestExtension> testExtensions = new ArrayList<>();
 
-	private List<JnrTestResultListener> listeners = new ArrayList<>();
+	private List<JnrTestListener> listeners = new ArrayList<>();
 
 	public JnrTestRunner testCase(JnrTestCase testCase) {
 		testCases.add(testCase);
@@ -32,7 +32,7 @@ public class JnrTestRunner {
 		return this;
 	}
 
-	public JnrTestRunner testListener(JnrTestResultListener listener) {
+	public JnrTestRunner testListener(JnrTestListener listener) {
 		listeners.add(listener);
 		return this;
 	}

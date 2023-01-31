@@ -1,12 +1,12 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 /**
- * Listener for test results.
+ * Listener for test executions.
  * 
  * @author Lorenzo Bettini
  *
  */
-public interface JnrTestResultListener {
+public interface JnrTestListener {
 
 	void testResult(JnrTestResult result);
 }
