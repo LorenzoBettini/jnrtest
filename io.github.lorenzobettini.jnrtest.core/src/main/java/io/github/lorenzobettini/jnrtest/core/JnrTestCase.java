@@ -12,12 +12,19 @@ import java.util.List;
  */
 public abstract class JnrTestCase {
 
+	private String description;
+
 	private List<JnrTestRunnableSpecification> runnableSpecifications = new ArrayList<>();
 
 	private List<JnrTestRunnable> beforeAllRunnables = new ArrayList<>();
 	private List<JnrTestRunnable> beforeEachRunnables = new ArrayList<>();
 	private List<JnrTestRunnable> afterAllRunnables = new ArrayList<>();
 	private List<JnrTestRunnable> afterEachRunnables = new ArrayList<>();
+
+
+	protected JnrTestCase(String description) {
+		this.description = description;
+	}
 
 	/**
 	 * Responsible of specifying the tests by calling the method
@@ -70,6 +77,10 @@ public abstract class JnrTestCase {
 	 */
 	protected void afterEach(JnrTestRunnable afterEachRunnable) {
 		afterEachRunnables.add(afterEachRunnable);
+	}
+
+	public String getDescription() {
+		return description;
 	}
 
 	public List<JnrTestRunnableSpecification> getRunnableSpecifications() {

@@ -20,8 +20,20 @@ public class JnrTestRunner {
 
 	private List<JnrTestExtension> testExtensions = new ArrayList<>();
 
+	private List<JnrTestResultListener> listeners = new ArrayList<>();
+
 	public JnrTestRunner testCase(JnrTestCase testCase) {
 		testCases.add(testCase);
+		return this;
+	}
+
+	public JnrTestRunner extendWith(JnrTestExtension testDecorator) {
+		testExtensions.add(testDecorator);
+		return this;
+	}
+
+	public JnrTestRunner testListener(JnrTestResultListener listener) {
+		listeners.add(listener);
 		return this;
 	}
 
@@ -36,41 +48,46 @@ public class JnrTestRunner {
 	}
 
 	private void execute(JnrTestCase testCase) {
+		var description = testCase.getDescription();
 		for (var beforeAll : testCase.getBeforeAllRunnables()) {
-			executeSafely(beforeAll);
+			executeSafely("before all " + description, beforeAll);
 		}
 		for (var runnableSpecification : testCase.getRunnableSpecifications()) {
 			for (var extension : testExtensions) {
 				extension.beforeTest(testCase);
 			}
 			for (var beforeEach : testCase.getBeforeEachRunnables()) {
-				executeSafely(beforeEach);
+				executeSafely("before each " + description, beforeEach);
 			}
-			executeSafely(runnableSpecification.testRunnable());
+			executeSafely(runnableSpecification.description(), runnableSpecification.testRunnable());
 			for (var afterEach : testCase.getAfterEachRunnables()) {
-				executeSafely(afterEach);
+				executeSafely("after each " + description, afterEach);
 			}
 			for (var extension : testExtensions) {
 				extension.afterTest(testCase);
 			}
 		}
 		for (var afterAll : testCase.getAfterAllRunnables()) {
-			executeSafely(afterAll);
+			executeSafely("after all " + description, afterAll);
 		}
 	}
 
-	private void executeSafely(JnrTestRunnable testRunnable) {
+	private void executeSafely(String description, JnrTestRunnable testRunnable) {
 		try {
 			testRunnable.runTest();
+			notifyListeners(
+				new JnrTestResult(description, JnrTestResultStatus.SUCCESS));
 		} catch (Exception e) {
-			// TODO report it
-		} catch (AssertionError error) {
-			// TODO report it
+			notifyListeners(
+				new JnrTestResult(description, JnrTestResultStatus.ERROR));
+		} catch (AssertionError assertionError) {
+			notifyListeners(
+				new JnrTestResult(description, JnrTestResultStatus.FAILED));
 		}
 	}
 
-	public void extendWith(JnrTestExtension testDecorator) {
-		testExtensions.add(testDecorator);
+	private void notifyListeners(JnrTestResult result) {
+		listeners.forEach(l -> l.testResult(result));
 	}
 
 }

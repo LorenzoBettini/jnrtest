@@ -48,7 +48,7 @@ class JnrTestRunnerTest {
 	void shouldRunAllTheTests() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTestCase() {
+			.testCase(new JnrTestCase("a test case") {
 				@Override
 				protected void specify() {
 					test("first test", () -> {
@@ -58,7 +58,7 @@ class JnrTestRunnerTest {
 						throw new RuntimeException("exception");
 					});
 				}
-			}).testCase(new JnrTestCase() {
+			}).testCase(new JnrTestCase("anoter test case") {
 				@Override
 				protected void specify() {
 					test("test failing assertion", () -> {
@@ -76,11 +76,55 @@ class JnrTestRunnerTest {
 	}
 
 	@Test
+	@DisplayName("should notify listeners")
+	void shouldNotifyListeners() {
+		var listener = new JnrTestResultListener() {
+			private StringBuilder results = new StringBuilder();
+
+			@Override
+			public void testResult(JnrTestResult result) {
+				this.results.append(result.toString() + "\n");
+			}
+		};
+		JnrTestRunner runner = new JnrTestRunner()
+			.testCase(new JnrTestCase("a test case") {
+				@Override
+				protected void specify() {
+					test("first test", () -> {
+						// success
+					});
+					test("test throwing exception", () -> {
+						throw new RuntimeException("exception");
+					});
+				}
+			}).testCase(new JnrTestCase("anoter test case") {
+				@Override
+				protected void specify() {
+					test("test failing assertion", () -> {
+						assertTrue(false);
+					});
+					test("second test", () -> {
+						// success
+					});
+				}
+			});
+		runner.testListener(listener);
+		runner.execute();
+		assertEquals("""
+			[SUCCESS] first test
+			[ERROR] test throwing exception
+			[FAILED] test failing assertion
+			[SUCCESS] second test
+			""",
+			listener.results.toString());
+	}
+
+	@Test
 	@DisplayName("should specify the tests only once")
 	void shouldSpecifyTestsOnlyOnce() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-				.testCase(new JnrTestCase() {
+				.testCase(new JnrTestCase("a test case") {
 			@Override
 			protected void specify() {
 				test("first test", () -> {
@@ -99,7 +143,7 @@ class JnrTestRunnerTest {
 	void shouldExecuteLifecycle() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-				.testCase(new JnrTestCase() {
+				.testCase(new JnrTestCase("a test case") {
 			@Override
 			protected void specify() {
 				beforeEach(() -> {
@@ -173,7 +217,7 @@ class JnrTestRunnerTest {
 	void shouldRunExtensions() {
 		var callable = mock(Callable.class);
 		var runner = new JnrTestRunner()
-				.testCase(new JnrTestCase() {
+				.testCase(new JnrTestCase("a test case") {
 			// this must be mocked by the first test extension
 			@Mock
 			Object sut = null;
