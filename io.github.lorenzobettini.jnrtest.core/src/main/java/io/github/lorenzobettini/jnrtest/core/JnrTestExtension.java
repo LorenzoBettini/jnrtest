@@ -2,10 +2,10 @@ package io.github.lorenzobettini.jnrtest.core;
 
 /**
  * Represents code to be executed before and after each test of the
- * {@link JnrTestRunner} passed as parameters to the methods.
+ * {@link JnrTestCase} passed as parameters to the methods.
  * 
- * The method {@link #beforeTest(JnrTestRunner)} must be implemented, while
- * {@link #afterTest(JnrTestRunner)} defaults to an empty implementation.
+ * The method {@link #beforeTest(JnrTestCase)} must be implemented, while
+ * {@link #afterTest(JnrTestCase)} defaults to an empty implementation.
  * 
  * @author Lorenzo Bettini
  *
@@ -14,19 +14,19 @@ package io.github.lorenzobettini.jnrtest.core;
 public interface JnrTestExtension {
 
 	/**
-	 * Executed before running each single test of the passed runner.
+	 * Executed before running each single test of the passed {@link JnrTestCase}.
 	 * 
 	 * @param runner
 	 */
-	void beforeTest(JnrTestRunner runner);
+	void beforeTest(JnrTestCase testCase);
 
 	/**
-	 * Executed after each single test of the passed runner. By default, it does not
-	 * perform anything.
+	 * Executed after each single test of the passed {@link JnrTestCase}. By
+	 * default, it does not perform anything.
 	 * 
 	 * @param runner
 	 */
-	default void afterTest(JnrTestRunner runner) {
+	default void afterTest(JnrTestCase testCase) {
 
 	}
 }

@@ -47,7 +47,7 @@ class JnrTestRunnerTest {
 	@DisplayName("should run all the tests")
 	void shouldRunAllTheTests() {
 		var callable = mock(Callable.class);
-		JnrTestRunner runner = new JnrTestRunner() {
+		JnrTestRunner runner = new JnrTestRunner().testCase(new JnrTestCase() {
 			@Override
 			protected void specify() {
 				test("first test", () -> {
@@ -63,7 +63,7 @@ class JnrTestRunnerTest {
 					callable.secondMethod();
 				});
 			}
-		};
+		});
 		runner.execute();
 		var inOrder = inOrder(callable);
 		inOrder.verify(callable).firstMethod();
@@ -74,14 +74,14 @@ class JnrTestRunnerTest {
 	@DisplayName("should specify the tests only once")
 	void shouldSpecifyTestsOnlyOnce() {
 		var callable = mock(Callable.class);
-		JnrTestRunner runner = new JnrTestRunner() {
+		JnrTestRunner runner = new JnrTestRunner().testCase(new JnrTestCase() {
 			@Override
 			protected void specify() {
 				test("first test", () -> {
 					callable.firstMethod();
 				});
 			}
-		};
+		});
 		runner.execute();
 		// second execution should not specify tests again
 		runner.execute();
@@ -92,7 +92,7 @@ class JnrTestRunnerTest {
 	@DisplayName("should execute lifecycle")
 	void shouldExecuteLifecycle() {
 		var callable = mock(Callable.class);
-		JnrTestRunner runner = new JnrTestRunner() {
+		JnrTestRunner runner = new JnrTestRunner().testCase(new JnrTestCase() {
 			@Override
 			protected void specify() {
 				beforeEach(() -> {
@@ -138,7 +138,7 @@ class JnrTestRunnerTest {
 					callable.secondMethod();
 				});
 			}
-		};
+		});
 		runner.execute();
 		var inOrder = inOrder(callable);
 		// before all
@@ -165,7 +165,7 @@ class JnrTestRunnerTest {
 	@DisplayName("should run extensions")
 	void shouldRunExtensions() {
 		var callable = mock(Callable.class);
-		var runner = new JnrTestRunner() {
+		var runner = new JnrTestRunner().testCase(new JnrTestCase() {
 			// this must be mocked by the first test extension
 			@Mock
 			Object sut = null;
@@ -198,11 +198,11 @@ class JnrTestRunnerTest {
 					callable.firstMethod();
 				});
 			}
-		};
+		});
 		runner.extendWith(new JnrTestExtension() {
 			@Override
-			public void beforeTest(JnrTestRunner r) {
-				MockitoAnnotations.openMocks(r);
+			public void beforeTest(JnrTestCase t) {
+				MockitoAnnotations.openMocks(t);
 			}
 		});
 		runner.extendWith(new JnrTestExtension() {
@@ -211,16 +211,16 @@ class JnrTestRunnerTest {
 			String stringToInject = "first string";
 
 			@Override
-			public void beforeTest(JnrTestRunner r) {
+			public void beforeTest(JnrTestCase t) {
 				Guice.createInjector(
 					binder -> {
 						binder.bind(String.class)
 							.toInstance(stringToInject);
-				}).injectMembers(r);
+				}).injectMembers(t);
 			}
 
 			@Override
-			public void afterTest(JnrTestRunner runner) {
+			public void afterTest(JnrTestCase t) {
 				stringToInject = "after first string";
 			}
 		});
