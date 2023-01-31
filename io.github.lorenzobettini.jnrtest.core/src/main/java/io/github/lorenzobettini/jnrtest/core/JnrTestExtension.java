@@ -16,7 +16,7 @@ public interface JnrTestExtension {
 	/**
 	 * Executed before running each single test of the passed {@link JnrTestCase}.
 	 * 
-	 * @param runner
+	 * @param testCase
 	 */
 	void beforeTest(JnrTestCase testCase);
 
@@ -24,7 +24,7 @@ public interface JnrTestExtension {
 	 * Executed after each single test of the passed {@link JnrTestCase}. By
 	 * default, it does not perform anything.
 	 * 
-	 * @param runner
+	 * @param testCase
 	 */
 	default void afterTest(JnrTestCase testCase) {
 

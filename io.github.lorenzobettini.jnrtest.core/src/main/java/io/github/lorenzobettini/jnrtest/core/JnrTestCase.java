@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Specifies the tests represented by {@link JnrTestSpecification}, specified by
+ * Specifies the tests represented by {@link JnrTestSpecification}, by
  * overriding {@link #specify()}.
  * 
  * @author Lorenzo Bettini
