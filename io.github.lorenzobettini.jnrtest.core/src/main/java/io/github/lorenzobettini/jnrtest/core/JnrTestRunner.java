@@ -49,6 +49,7 @@ public class JnrTestRunner {
 
 	private void execute(JnrTestCase testCase) {
 		var description = testCase.getDescription();
+		notifyListenersTestCaseResult(new JnrTestCaseResult(description, JnrTestCaseStatus.START));
 		for (var beforeAll : testCase.getBeforeAllRunnables()) {
 			executeSafely("before all " + description, beforeAll);
 		}
@@ -70,24 +71,29 @@ public class JnrTestRunner {
 		for (var afterAll : testCase.getAfterAllRunnables()) {
 			executeSafely("after all " + description, afterAll);
 		}
+		notifyListenersTestCaseResult(new JnrTestCaseResult(description, JnrTestCaseStatus.END));
 	}
 
 	private void executeSafely(String description, JnrTestRunnable testRunnable) {
 		try {
 			testRunnable.runTest();
-			notifyListeners(
+			notifyListenersTestResult(
 				new JnrTestResult(description, JnrTestResultStatus.SUCCESS, null));
 		} catch (Exception e) {
-			notifyListeners(
+			notifyListenersTestResult(
 				new JnrTestResult(description, JnrTestResultStatus.ERROR, e));
 		} catch (AssertionError assertionError) {
-			notifyListeners(
+			notifyListenersTestResult(
 				new JnrTestResult(description, JnrTestResultStatus.FAILED, assertionError));
 		}
 	}
 
-	private void notifyListeners(JnrTestResult result) {
-		listeners.forEach(l -> l.testResult(result));
+	private void notifyListenersTestResult(JnrTestResult result) {
+		listeners.forEach(l -> l.notify(result));
+	}
+
+	private void notifyListenersTestCaseResult(JnrTestCaseResult result) {
+		listeners.forEach(l -> l.notify(result));
 	}
 
 }

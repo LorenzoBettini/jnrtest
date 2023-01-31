@@ -8,5 +8,7 @@ package io.github.lorenzobettini.jnrtest.core;
  */
 public interface JnrTestListener {
 
-	void testResult(JnrTestResult result);
+	void notify(JnrTestCaseResult result);
+
+	void notify(JnrTestResult result);
 }

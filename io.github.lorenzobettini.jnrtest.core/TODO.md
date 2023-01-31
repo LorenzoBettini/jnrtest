@@ -5,8 +5,8 @@ V listeners: store also the exception?
 tests?
 
 - better notification:
-	- starting a test case
-	- result of a test
+	- V starting and finishing a test case
+	- V result of a test
 
 - store so that the test case can be specified as a lambda
 (with a parameter it of type store?)

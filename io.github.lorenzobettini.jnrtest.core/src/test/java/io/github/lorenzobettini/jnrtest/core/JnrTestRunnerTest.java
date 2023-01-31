@@ -82,7 +82,12 @@ class JnrTestRunnerTest {
 			private StringBuilder results = new StringBuilder();
 
 			@Override
-			public void testResult(JnrTestResult result) {
+			public void notify(JnrTestResult result) {
+				this.results.append(result.toString() + "\n");
+			}
+
+			@Override
+			public void notify(JnrTestCaseResult result) {
 				this.results.append(result.toString() + "\n");
 			}
 		};
@@ -97,7 +102,7 @@ class JnrTestRunnerTest {
 						throw new RuntimeException("exception");
 					});
 				}
-			}).testCase(new JnrTestCase("anoter test case") {
+			}).testCase(new JnrTestCase("another test case") {
 				@Override
 				protected void specify() {
 					test("test failing assertion", () -> {
@@ -111,10 +116,14 @@ class JnrTestRunnerTest {
 		runner.testListener(listener);
 		runner.execute();
 		assertEquals("""
+				[  START] a test case
 				[SUCCESS] first test
 				[  ERROR] test throwing exception
+				[    END] a test case
+				[  START] another test case
 				[ FAILED] test failing assertion
 				[SUCCESS] second test
+				[    END] another test case
 				""", listener.results.toString());
 	}
 
