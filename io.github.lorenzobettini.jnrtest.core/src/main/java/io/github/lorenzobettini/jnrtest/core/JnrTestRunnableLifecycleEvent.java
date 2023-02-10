@@ -1,12 +1,12 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 /**
- * The result of a test case.
+ * The lifecycle event of a test runnable.
  * 
  * @author Lorenzo Bettini
  *
  */
-public record JnrTestCaseResult(String description, JnrTestCaseStatus status) {
+public record JnrTestRunnableLifecycleEvent(String description, JnrTestRunnableStatus status) {
 
 	@Override
 	public String toString() {

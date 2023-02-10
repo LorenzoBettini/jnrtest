@@ -87,14 +87,20 @@ class JnrTestRunnerTest {
 			}
 
 			@Override
-			public void notify(JnrTestCaseResult result) {
-				this.results.append(result.toString() + "\n");
+			public void notify(JnrTestCaseLifecycleEvent event) {
+				this.results.append(event.toString() + "\n");
+			}
+
+			@Override
+			public void notify(JnrTestRunnableLifecycleEvent event) {
+				this.results.append(event.toString() + "\n");
 			}
 		};
 		JnrTestRunner runner = new JnrTestRunner()
 			.testCase(new JnrTestCase("a test case") {
 				@Override
 				protected void specify() {
+					beforeAll("before all", () -> {});
 					test("first test", () -> {
 						// success
 					});
@@ -105,6 +111,7 @@ class JnrTestRunnerTest {
 			}).testCase(new JnrTestCase("another test case") {
 				@Override
 				protected void specify() {
+					beforeEach("before each", () -> {});
 					test("test failing assertion", () -> {
 						assertTrue(false);
 					});
@@ -117,12 +124,26 @@ class JnrTestRunnerTest {
 		runner.execute();
 		assertEquals("""
 				[  START] a test case
+				[  START] before all
+				[    END] before all
+				[  START] first test
 				[SUCCESS] first test
+				[    END] first test
+				[  START] test throwing exception
 				[  ERROR] test throwing exception
+				[    END] test throwing exception
 				[    END] a test case
 				[  START] another test case
+				[  START] before each
+				[    END] before each
+				[  START] test failing assertion
 				[ FAILED] test failing assertion
+				[    END] test failing assertion
+				[  START] before each
+				[    END] before each
+				[  START] second test
 				[SUCCESS] second test
+				[    END] second test
 				[    END] another test case
 				""", listener.results.toString());
 	}

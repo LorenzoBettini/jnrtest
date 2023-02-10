@@ -2,6 +2,7 @@ package io.github.lorenzobettini.jnrtest.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Runs the tests of {@link JnrTestCase}; the actual test execution is
@@ -42,44 +43,47 @@ public class JnrTestRunner {
 	private void execute(JnrTestCase testCase) {
 		var description = testCase.getDescription();
 		var store = testCase.getStore();
-		notifyTestCaseResult(new JnrTestCaseResult(description, JnrTestCaseStatus.START));
+		notifyTestCaseResult(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.START));
 		for (var beforeAll : store.getBeforeAllRunnables()) {
-			executeSafely(beforeAll);
+			executeSafely(beforeAll, null);
 		}
 		for (var runnableSpecification : store.getRunnableSpecifications()) {
 			for (var extension : testExtensions) {
 				extension.beforeTest(testCase);
 			}
 			for (var beforeEach : store.getBeforeEachRunnables()) {
-				executeSafely(beforeEach);
+				executeSafely(beforeEach, null);
 			}
-			executeSafely(runnableSpecification);
+			executeSafely(runnableSpecification,
+				d -> notifyTestResult(new JnrTestResult(d, JnrTestResultStatus.SUCCESS, null)));
 			for (var afterEach : store.getAfterEachRunnables()) {
-				executeSafely(afterEach);
+				executeSafely(afterEach, null);
 			}
 			for (var extension : testExtensions) {
 				extension.afterTest(testCase);
 			}
 		}
 		for (var afterAll : store.getAfterAllRunnables()) {
-			executeSafely(afterAll);
+			executeSafely(afterAll, null);
 		}
-		notifyTestCaseResult(new JnrTestCaseResult(description, JnrTestCaseStatus.END));
+		notifyTestCaseResult(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.END));
 	}
 
-	private void executeSafely(JnrTestRunnableSpecification testRunnableSpecification) {
+	private void executeSafely(JnrTestRunnableSpecification testRunnableSpecification,
+			Consumer<String> successConsumer) {
 		var description = testRunnableSpecification.description();
 		var testRunnable = testRunnableSpecification.testRunnable();
 		try {
+			notifyTestCaseResult(new JnrTestRunnableLifecycleEvent(description, JnrTestRunnableStatus.START));
 			testRunnable.runTest();
-			notifyTestResult(
-				new JnrTestResult(description, JnrTestResultStatus.SUCCESS, null));
+			if (successConsumer != null)
+				successConsumer.accept(description);
 		} catch (Exception e) {
-			notifyTestResult(
-				new JnrTestResult(description, JnrTestResultStatus.ERROR, e));
+			notifyTestResult(new JnrTestResult(description, JnrTestResultStatus.ERROR, e));
 		} catch (AssertionError assertionError) {
-			notifyTestResult(
-				new JnrTestResult(description, JnrTestResultStatus.FAILED, assertionError));
+			notifyTestResult(new JnrTestResult(description, JnrTestResultStatus.FAILED, assertionError));
+		} finally {
+			notifyTestCaseResult(new JnrTestRunnableLifecycleEvent(description, JnrTestRunnableStatus.END));
 		}
 	}
 
@@ -87,8 +91,12 @@ public class JnrTestRunner {
 		listeners.forEach(l -> l.notify(result));
 	}
 
-	private void notifyTestCaseResult(JnrTestCaseResult result) {
-		listeners.forEach(l -> l.notify(result));
+	private void notifyTestCaseResult(JnrTestCaseLifecycleEvent event) {
+		listeners.forEach(l -> l.notify(event));
+	}
+
+	private void notifyTestCaseResult(JnrTestRunnableLifecycleEvent event) {
+		listeners.forEach(l -> l.notify(event));
 	}
 
 }
