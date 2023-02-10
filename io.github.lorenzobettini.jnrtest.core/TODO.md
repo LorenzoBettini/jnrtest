@@ -11,7 +11,7 @@ tests?
 - adapter for the listener
 
 V test runnable lifecycle event
-- differentiate between actual test event and before/after events?
+V differentiate between actual test event and before/after events?
 
 V store
 

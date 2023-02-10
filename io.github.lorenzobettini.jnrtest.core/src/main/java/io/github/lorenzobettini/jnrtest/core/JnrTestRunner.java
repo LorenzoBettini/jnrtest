@@ -45,36 +45,38 @@ public class JnrTestRunner {
 		var store = testCase.getStore();
 		notifyTestCaseResult(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.START));
 		for (var beforeAll : store.getBeforeAllRunnables()) {
-			executeSafely(beforeAll, null);
+			executeSafely(beforeAll, JnrTestRunnableKind.BEFORE_ALL, null);
 		}
 		for (var runnableSpecification : store.getRunnableSpecifications()) {
 			for (var extension : testExtensions) {
 				extension.beforeTest(testCase);
 			}
 			for (var beforeEach : store.getBeforeEachRunnables()) {
-				executeSafely(beforeEach, null);
+				executeSafely(beforeEach, JnrTestRunnableKind.BEFORE_EACH, null);
 			}
 			executeSafely(runnableSpecification,
+				JnrTestRunnableKind.TEST,
 				d -> notifyTestResult(new JnrTestResult(d, JnrTestResultStatus.SUCCESS, null)));
 			for (var afterEach : store.getAfterEachRunnables()) {
-				executeSafely(afterEach, null);
+				executeSafely(afterEach, JnrTestRunnableKind.AFTER_EACH, null);
 			}
 			for (var extension : testExtensions) {
 				extension.afterTest(testCase);
 			}
 		}
 		for (var afterAll : store.getAfterAllRunnables()) {
-			executeSafely(afterAll, null);
+			executeSafely(afterAll, JnrTestRunnableKind.AFTER_ALL, null);
 		}
 		notifyTestCaseResult(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.END));
 	}
 
 	private void executeSafely(JnrTestRunnableSpecification testRunnableSpecification,
+			JnrTestRunnableKind kind,
 			Consumer<String> successConsumer) {
 		var description = testRunnableSpecification.description();
 		var testRunnable = testRunnableSpecification.testRunnable();
 		try {
-			notifyTestCaseResult(new JnrTestRunnableLifecycleEvent(description, JnrTestRunnableStatus.START));
+			notifyTestCaseResult(new JnrTestRunnableLifecycleEvent(description, kind, JnrTestRunnableStatus.START));
 			testRunnable.runTest();
 			if (successConsumer != null)
 				successConsumer.accept(description);
@@ -83,7 +85,7 @@ public class JnrTestRunner {
 		} catch (AssertionError assertionError) {
 			notifyTestResult(new JnrTestResult(description, JnrTestResultStatus.FAILED, assertionError));
 		} finally {
-			notifyTestCaseResult(new JnrTestRunnableLifecycleEvent(description, JnrTestRunnableStatus.END));
+			notifyTestCaseResult(new JnrTestRunnableLifecycleEvent(description, kind, JnrTestRunnableStatus.END));
 		}
 	}
 

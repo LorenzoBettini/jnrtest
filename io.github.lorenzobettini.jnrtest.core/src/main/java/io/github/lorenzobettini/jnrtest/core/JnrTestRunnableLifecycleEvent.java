@@ -6,11 +6,11 @@ package io.github.lorenzobettini.jnrtest.core;
  * @author Lorenzo Bettini
  *
  */
-public record JnrTestRunnableLifecycleEvent(String description, JnrTestRunnableStatus status) {
+public record JnrTestRunnableLifecycleEvent(String description, JnrTestRunnableKind kind, JnrTestRunnableStatus status) {
 
 	@Override
 	public String toString() {
-		return String.format("[%7s] %s", status, description);
+		return String.format("[%7s] %s %s", status, kind, description);
 	}
 
 }

@@ -101,6 +101,7 @@ class JnrTestRunnerTest {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
+					afterAll("after all", () -> {});
 					test("first test", () -> {
 						// success
 					});
@@ -112,6 +113,7 @@ class JnrTestRunnerTest {
 				@Override
 				protected void specify() {
 					beforeEach("before each", () -> {});
+					afterEach("after each", () -> {});
 					test("test failing assertion", () -> {
 						assertTrue(false);
 					});
@@ -124,26 +126,32 @@ class JnrTestRunnerTest {
 		runner.execute();
 		assertEquals("""
 				[  START] a test case
-				[  START] before all
-				[    END] before all
-				[  START] first test
+				[  START] BEFORE_ALL before all
+				[    END] BEFORE_ALL before all
+				[  START] TEST first test
 				[SUCCESS] first test
-				[    END] first test
-				[  START] test throwing exception
+				[    END] TEST first test
+				[  START] TEST test throwing exception
 				[  ERROR] test throwing exception
-				[    END] test throwing exception
+				[    END] TEST test throwing exception
+				[  START] AFTER_ALL after all
+				[    END] AFTER_ALL after all
 				[    END] a test case
 				[  START] another test case
-				[  START] before each
-				[    END] before each
-				[  START] test failing assertion
+				[  START] BEFORE_EACH before each
+				[    END] BEFORE_EACH before each
+				[  START] TEST test failing assertion
 				[ FAILED] test failing assertion
-				[    END] test failing assertion
-				[  START] before each
-				[    END] before each
-				[  START] second test
+				[    END] TEST test failing assertion
+				[  START] AFTER_EACH after each
+				[    END] AFTER_EACH after each
+				[  START] BEFORE_EACH before each
+				[    END] BEFORE_EACH before each
+				[  START] TEST second test
 				[SUCCESS] second test
-				[    END] second test
+				[    END] TEST second test
+				[  START] AFTER_EACH after each
+				[    END] AFTER_EACH after each
 				[    END] another test case
 				""", listener.results.toString());
 	}
