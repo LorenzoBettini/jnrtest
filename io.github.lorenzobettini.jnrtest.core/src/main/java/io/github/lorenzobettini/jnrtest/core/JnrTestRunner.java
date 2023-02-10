@@ -1,9 +1,7 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Runs the tests of {@link JnrTestCase}; the actual test execution is
@@ -15,8 +13,6 @@ import java.util.Set;
 public class JnrTestRunner {
 
 	private List<JnrTestCase> testCases = new ArrayList<>();
-
-	private Set<JnrTestCase> alreadySpecified = new HashSet<>();
 
 	private List<JnrTestExtension> testExtensions = new ArrayList<>();
 
@@ -39,36 +35,33 @@ public class JnrTestRunner {
 
 	public void execute() {
 		for (var testCase : testCases) {
-			if (!alreadySpecified.contains(testCase)) {
-				testCase.specify();
-				alreadySpecified.add(testCase);
-			}
 			execute(testCase);
 		}
 	}
 
 	private void execute(JnrTestCase testCase) {
 		var description = testCase.getDescription();
+		var store = testCase.getStore();
 		notifyListenersTestCaseResult(new JnrTestCaseResult(description, JnrTestCaseStatus.START));
-		for (var beforeAll : testCase.getBeforeAllRunnables()) {
+		for (var beforeAll : store.getBeforeAllRunnables()) {
 			executeSafely("before all " + description, beforeAll);
 		}
-		for (var runnableSpecification : testCase.getRunnableSpecifications()) {
+		for (var runnableSpecification : store.getRunnableSpecifications()) {
 			for (var extension : testExtensions) {
 				extension.beforeTest(testCase);
 			}
-			for (var beforeEach : testCase.getBeforeEachRunnables()) {
+			for (var beforeEach : store.getBeforeEachRunnables()) {
 				executeSafely("before each " + description, beforeEach);
 			}
 			executeSafely(runnableSpecification.description(), runnableSpecification.testRunnable());
-			for (var afterEach : testCase.getAfterEachRunnables()) {
+			for (var afterEach : store.getAfterEachRunnables()) {
 				executeSafely("after each " + description, afterEach);
 			}
 			for (var extension : testExtensions) {
 				extension.afterTest(testCase);
 			}
 		}
-		for (var afterAll : testCase.getAfterAllRunnables()) {
+		for (var afterAll : store.getAfterAllRunnables()) {
 			executeSafely("after all " + description, afterAll);
 		}
 		notifyListenersTestCaseResult(new JnrTestCaseResult(description, JnrTestCaseStatus.END));

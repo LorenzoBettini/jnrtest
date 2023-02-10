@@ -1,8 +1,5 @@
 package io.github.lorenzobettini.jnrtest.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Specifies the tests represented by {@link JnrTestSpecification}, by
  * overriding {@link #specify()}.
@@ -14,16 +11,24 @@ public abstract class JnrTestCase {
 
 	private String description;
 
-	private List<JnrTestRunnableSpecification> runnableSpecifications = new ArrayList<>();
-
-	private List<JnrTestRunnable> beforeAllRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> beforeEachRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> afterAllRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> afterEachRunnables = new ArrayList<>();
-
+	private JnrTestStore store = null;
 
 	protected JnrTestCase(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * Returns the {@link JnrTestStore}, created, the first time,
+	 * by callying {@link #specify()}.
+	 * 
+	 * @return
+	 */
+	public JnrTestStore getStore() {
+		if (store == null) {
+			store = new JnrTestStore();
+			specify();
+		}
+		return store;
 	}
 
 	/**
@@ -40,7 +45,7 @@ public abstract class JnrTestCase {
 	 * @param testRunnable
 	 */
 	protected void test(String description, JnrTestRunnable testRunnable) {
-		runnableSpecifications.add(new JnrTestRunnableSpecification(description, testRunnable));
+		store.test(description, testRunnable);
 	}
 
 	/**
@@ -49,7 +54,7 @@ public abstract class JnrTestCase {
 	 * @param beforeAllRunnable
 	 */
 	protected void beforeAll(JnrTestRunnable beforeAllRunnable) {
-		beforeAllRunnables.add(beforeAllRunnable);
+		store.beforeAll(beforeAllRunnable);
 	}
 
 	/**
@@ -58,7 +63,7 @@ public abstract class JnrTestCase {
 	 * @param beforeEachRunnable
 	 */
 	protected void beforeEach(JnrTestRunnable beforeEachRunnable) {
-		beforeEachRunnables.add(beforeEachRunnable);
+		store.beforeEach(beforeEachRunnable);
 	}
 
 	/**
@@ -67,7 +72,7 @@ public abstract class JnrTestCase {
 	 * @param afterAllRunnable
 	 */
 	protected void afterAll(JnrTestRunnable afterAllRunnable) {
-		afterAllRunnables.add(afterAllRunnable);
+		store.afterAll(afterAllRunnable);
 	}
 
 	/**
@@ -76,30 +81,11 @@ public abstract class JnrTestCase {
 	 * @param afterEachRunnable
 	 */
 	protected void afterEach(JnrTestRunnable afterEachRunnable) {
-		afterEachRunnables.add(afterEachRunnable);
+		store.afterEach(afterEachRunnable);
 	}
 
 	public String getDescription() {
 		return description;
 	}
 
-	public List<JnrTestRunnableSpecification> getRunnableSpecifications() {
-		return runnableSpecifications;
-	}
-
-	public List<JnrTestRunnable> getBeforeAllRunnables() {
-		return beforeAllRunnables;
-	}
-
-	public List<JnrTestRunnable> getBeforeEachRunnables() {
-		return beforeEachRunnables;
-	}
-
-	public List<JnrTestRunnable> getAfterAllRunnables() {
-		return afterAllRunnables;
-	}
-
-	public List<JnrTestRunnable> getAfterEachRunnables() {
-		return afterEachRunnables;
-	}
 }

@@ -8,7 +8,9 @@ tests?
 	- V starting and finishing a test case
 	- V result of a test
 
-- store so that the test case can be specified as a lambda
+V store
+
+- functional interface version of test case so that the test case can be specified as a lambda
 (with a parameter it of type store?)
 
 - parameterized test?
