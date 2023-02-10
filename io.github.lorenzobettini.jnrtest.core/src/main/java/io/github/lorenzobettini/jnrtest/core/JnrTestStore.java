@@ -13,10 +13,10 @@ public class JnrTestStore {
 
 	private List<JnrTestRunnableSpecification> runnableSpecifications = new ArrayList<>();
 
-	private List<JnrTestRunnable> beforeAllRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> beforeEachRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> afterAllRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> afterEachRunnables = new ArrayList<>();
+	private List<JnrTestRunnableSpecification> beforeAllRunnables = new ArrayList<>();
+	private List<JnrTestRunnableSpecification> beforeEachRunnables = new ArrayList<>();
+	private List<JnrTestRunnableSpecification> afterAllRunnables = new ArrayList<>();
+	private List<JnrTestRunnableSpecification> afterEachRunnables = new ArrayList<>();
 
 	/**
 	 * Specify a test to run (in the shape of a {@link JnrTestRunnable}, with the
@@ -32,56 +32,60 @@ public class JnrTestStore {
 	/**
 	 * Specifies a code to run before all tests.
 	 * 
+	 * @param description
 	 * @param beforeAllRunnable
 	 */
-	public void beforeAll(JnrTestRunnable beforeAllRunnable) {
-		beforeAllRunnables.add(beforeAllRunnable);
+	public void beforeAll(String description, JnrTestRunnable beforeAllRunnable) {
+		beforeAllRunnables.add(new JnrTestRunnableSpecification(description, beforeAllRunnable));
 	}
 
 	/**
 	 * Specifies a code to run before each test.
 	 * 
+	 * @param description
 	 * @param beforeEachRunnable
 	 */
-	public void beforeEach(JnrTestRunnable beforeEachRunnable) {
-		beforeEachRunnables.add(beforeEachRunnable);
+	public void beforeEach(String description, JnrTestRunnable beforeEachRunnable) {
+		beforeEachRunnables.add(new JnrTestRunnableSpecification(description, beforeEachRunnable));
 	}
 
 	/**
 	 * Specifies a code to run after all tests.
 	 * 
+	 * @param description
 	 * @param afterAllRunnable
 	 */
-	public void afterAll(JnrTestRunnable afterAllRunnable) {
-		afterAllRunnables.add(afterAllRunnable);
+	public void afterAll(String description, JnrTestRunnable afterAllRunnable) {
+		afterAllRunnables.add(new JnrTestRunnableSpecification(description, afterAllRunnable));
 	}
 
 	/**
 	 * Specifies a code to run after each test.
 	 * 
+	 * @param description
 	 * @param afterEachRunnable
 	 */
-	public void afterEach(JnrTestRunnable afterEachRunnable) {
-		afterEachRunnables.add(afterEachRunnable);
+	public void afterEach(String description, JnrTestRunnable afterEachRunnable) {
+		afterEachRunnables.add(new JnrTestRunnableSpecification(description, afterEachRunnable));
 	}
 
 	public List<JnrTestRunnableSpecification> getRunnableSpecifications() {
 		return runnableSpecifications;
 	}
 
-	public List<JnrTestRunnable> getBeforeAllRunnables() {
+	public List<JnrTestRunnableSpecification> getBeforeAllRunnables() {
 		return beforeAllRunnables;
 	}
 
-	public List<JnrTestRunnable> getBeforeEachRunnables() {
+	public List<JnrTestRunnableSpecification> getBeforeEachRunnables() {
 		return beforeEachRunnables;
 	}
 
-	public List<JnrTestRunnable> getAfterAllRunnables() {
+	public List<JnrTestRunnableSpecification> getAfterAllRunnables() {
 		return afterAllRunnables;
 	}
 
-	public List<JnrTestRunnable> getAfterEachRunnables() {
+	public List<JnrTestRunnableSpecification> getAfterEachRunnables() {
 		return afterEachRunnables;
 	}
 }

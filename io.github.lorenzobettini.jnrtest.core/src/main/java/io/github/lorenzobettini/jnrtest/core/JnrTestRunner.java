@@ -44,30 +44,32 @@ public class JnrTestRunner {
 		var store = testCase.getStore();
 		notifyListenersTestCaseResult(new JnrTestCaseResult(description, JnrTestCaseStatus.START));
 		for (var beforeAll : store.getBeforeAllRunnables()) {
-			executeSafely("before all " + description, beforeAll);
+			executeSafely(beforeAll);
 		}
 		for (var runnableSpecification : store.getRunnableSpecifications()) {
 			for (var extension : testExtensions) {
 				extension.beforeTest(testCase);
 			}
 			for (var beforeEach : store.getBeforeEachRunnables()) {
-				executeSafely("before each " + description, beforeEach);
+				executeSafely(beforeEach);
 			}
-			executeSafely(runnableSpecification.description(), runnableSpecification.testRunnable());
+			executeSafely(runnableSpecification);
 			for (var afterEach : store.getAfterEachRunnables()) {
-				executeSafely("after each " + description, afterEach);
+				executeSafely(afterEach);
 			}
 			for (var extension : testExtensions) {
 				extension.afterTest(testCase);
 			}
 		}
 		for (var afterAll : store.getAfterAllRunnables()) {
-			executeSafely("after all " + description, afterAll);
+			executeSafely(afterAll);
 		}
 		notifyListenersTestCaseResult(new JnrTestCaseResult(description, JnrTestCaseStatus.END));
 	}
 
-	private void executeSafely(String description, JnrTestRunnable testRunnable) {
+	private void executeSafely(JnrTestRunnableSpecification testRunnableSpecification) {
+		var description = testRunnableSpecification.description();
+		var testRunnable = testRunnableSpecification.testRunnable();
 		try {
 			testRunnable.runTest();
 			notifyListenersTestResult(

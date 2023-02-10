@@ -154,40 +154,40 @@ class JnrTestRunnerTest {
 				.testCase(new JnrTestCase("a test case") {
 			@Override
 			protected void specify() {
-				beforeEach(() -> {
+				beforeEach("", () -> {
 					callable.beforeEachMethod1();
 				});
-				beforeEach(() -> {
+				beforeEach("", () -> {
 					throw new RuntimeException("exception");
 				});
-				beforeEach(() -> {
+				beforeEach("", () -> {
 					callable.beforeEachMethod2();
 				});
-				beforeAll(() -> {
+				beforeAll("", () -> {
 					callable.beforeAllMethod1();
 				});
-				beforeAll(() -> {
+				beforeAll("", () -> {
 					throw new RuntimeException("exception");
 				});
-				beforeAll(() -> {
+				beforeAll("", () -> {
 					callable.beforeAllMethod2();
 				});
-				afterEach(() -> {
+				afterEach("", () -> {
 					callable.afterEachMethod1();
 				});
-				afterEach(() -> {
+				afterEach("", () -> {
 					throw new RuntimeException("exception");
 				});
-				afterEach(() -> {
+				afterEach("", () -> {
 					callable.afterEachMethod2();
 				});
-				afterAll(() -> {
+				afterAll("", () -> {
 					callable.afterAllMethod1();
 				});
-				afterAll(() -> {
+				afterAll("", () -> {
 					throw new RuntimeException("exception");
 				});
-				afterAll(() -> {
+				afterAll("", () -> {
 					callable.afterAllMethod2();
 				});
 				test("first test", () -> {
