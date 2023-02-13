@@ -96,6 +96,8 @@ class JnrTestRunnerTest {
 				this.results.append(event.toString() + "\n");
 			}
 		};
+		var listenerAdapter = new JnrTestListenerAdapter() {
+		};
 		JnrTestRunner runner = new JnrTestRunner()
 			.testCase(new JnrTestCase("a test case") {
 				@Override
@@ -123,6 +125,7 @@ class JnrTestRunnerTest {
 				}
 			});
 		runner.testListener(listener);
+		runner.testListener(listenerAdapter);
 		runner.execute();
 		assertEquals("""
 				[  START] a test case
