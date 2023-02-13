@@ -17,9 +17,6 @@ import org.mockito.MockitoAnnotations;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 
-/**
- * Unit test for simple App.
- */
 class JnrTestRunnerTest {
 
 	static interface Callable {
