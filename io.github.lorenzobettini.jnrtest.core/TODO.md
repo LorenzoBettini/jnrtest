@@ -4,11 +4,11 @@ V listeners: store also the exception?
 V how to distinguish before each, before all, etc. from standard
 tests?
 
-- better notification:
+V better notification:
 	- V starting and finishing a test case
 	- V result of a test
 
-- adapter for the listener
+V adapter for the listener
 
 V test runnable lifecycle event
 V differentiate between actual test event and before/after events?
