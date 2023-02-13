@@ -36,14 +36,15 @@ public class JnrTestRunner {
 
 	public void execute() {
 		for (var testCase : testCases) {
+			var description = testCase.getDescription();
+			notifyTestCaseResult(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.START));
 			execute(testCase);
+			notifyTestCaseResult(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.END));
 		}
 	}
 
 	private void execute(JnrTestCase testCase) {
-		var description = testCase.getDescription();
 		var store = testCase.getStore();
-		notifyTestCaseResult(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.START));
 		for (var beforeAll : store.getBeforeAllRunnables()) {
 			executeSafely(beforeAll, JnrTestRunnableKind.BEFORE_ALL, null);
 		}
@@ -67,7 +68,6 @@ public class JnrTestRunner {
 		for (var afterAll : store.getAfterAllRunnables()) {
 			executeSafely(afterAll, JnrTestRunnableKind.AFTER_ALL, null);
 		}
-		notifyTestCaseResult(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.END));
 	}
 
 	private void executeSafely(JnrTestRunnableSpecification testRunnableSpecification,

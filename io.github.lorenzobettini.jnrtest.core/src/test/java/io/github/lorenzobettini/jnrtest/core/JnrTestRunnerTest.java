@@ -1,6 +1,7 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.inOrder;
@@ -96,6 +97,8 @@ class JnrTestRunnerTest {
 				this.results.append(event.toString() + "\n");
 			}
 		};
+		var listenerAdapter = new JnrTestListenerAdapter() {
+		};
 		JnrTestRunner runner = new JnrTestRunner()
 			.testCase(new JnrTestCase("a test case") {
 				@Override
@@ -123,6 +126,7 @@ class JnrTestRunnerTest {
 				}
 			});
 		runner.testListener(listener);
+		runner.testListener(listenerAdapter);
 		runner.execute();
 		assertEquals("""
 				[  START] a test case
@@ -154,6 +158,44 @@ class JnrTestRunnerTest {
 				[    END] AFTER_EACH after each
 				[    END] another test case
 				""", listener.results.toString());
+	}
+
+	@Test
+	@DisplayName("should record results")
+	void shouldRecordResults() {
+		var testRecorder = new JnrTestRecorder();
+		JnrTestRunner runner = new JnrTestRunner()
+			.testCase(new JnrTestCase("a test case with success") {
+				@Override
+				protected void specify() {
+					beforeAll("before all", () -> {});
+					afterAll("after all", () -> {});
+					test("success test", () -> {
+						// success
+					});
+				}
+			});
+		runner.testListener(testRecorder);
+		runner.execute();
+		assertTrue(testRecorder.isSuccess());
+		runner.testCase(new JnrTestCase("a test case with failure") {
+			@Override
+			protected void specify() {
+				beforeAll("before all", () -> {});
+				afterAll("after all", () -> {});
+				test("failed test", () -> {
+					assertTrue(false);
+				});
+			}
+		});
+		runner.execute();
+		assertFalse(testRecorder.isSuccess());
+		// the first test case is executed twice
+		assertEquals("{a test case with success="
+			+ "[[SUCCESS] success test, [SUCCESS] success test],"
+			+ " a test case with failure="
+			+ "[[ FAILED] failed test]}",
+			testRecorder.getResults().toString());
 	}
 
 	@Test
