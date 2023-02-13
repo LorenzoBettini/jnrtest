@@ -6,7 +6,7 @@
 	<artifactId>io.github.lorenzobettini.jnrtest.core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>io.github.lorenzobettini.jnrtest.core</name>
-	<url>http://www.example.com</url>
+	<url>https://github.com/LorenzoBettini/jnrtest</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>17</maven.compiler.source>
