@@ -23,4 +23,6 @@ V each element of the store should contain also a description
 
 - parameterized test?
 
+- extension should be at the testcase level, not at the runner level
+
 - extension for Mockito and Guice as examples
