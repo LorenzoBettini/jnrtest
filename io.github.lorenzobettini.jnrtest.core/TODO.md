@@ -1,7 +1,7 @@
 - index descriptions to run a single test
 
 V listeners: store also the exception?
-- how to distinguish before each, before all, etc. from standard
+V how to distinguish before each, before all, etc. from standard
 tests?
 
 - better notification:
