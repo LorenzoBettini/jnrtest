@@ -1,8 +1,5 @@
 package io.github.lorenzobettini.jnrtest.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Specifies the tests represented by {@link JnrTestSpecification}, by
  * overriding {@link #specify()}.
@@ -12,12 +9,27 @@ import java.util.List;
  */
 public abstract class JnrTestCase {
 
-	private List<JnrTestRunnableSpecification> runnableSpecifications = new ArrayList<>();
+	private String description;
 
-	private List<JnrTestRunnable> beforeAllRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> beforeEachRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> afterAllRunnables = new ArrayList<>();
-	private List<JnrTestRunnable> afterEachRunnables = new ArrayList<>();
+	private JnrTestStore store = null;
+
+	protected JnrTestCase(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * Returns the {@link JnrTestStore}, created, the first time,
+	 * by callying {@link #specify()}.
+	 * 
+	 * @return
+	 */
+	public JnrTestStore getStore() {
+		if (store == null) {
+			store = new JnrTestStore();
+			specify();
+		}
+		return store;
+	}
 
 	/**
 	 * Responsible of specifying the tests by calling the method
@@ -33,62 +45,51 @@ public abstract class JnrTestCase {
 	 * @param testRunnable
 	 */
 	protected void test(String description, JnrTestRunnable testRunnable) {
-		runnableSpecifications.add(new JnrTestRunnableSpecification(description, testRunnable));
+		store.test(description, testRunnable);
 	}
 
 	/**
 	 * Specifies a code to run before all tests.
 	 * 
+	 * @param description
 	 * @param beforeAllRunnable
 	 */
-	protected void beforeAll(JnrTestRunnable beforeAllRunnable) {
-		beforeAllRunnables.add(beforeAllRunnable);
+	protected void beforeAll(String description, JnrTestRunnable beforeAllRunnable) {
+		store.beforeAll(description, beforeAllRunnable);
 	}
 
 	/**
 	 * Specifies a code to run before each test.
 	 * 
+	 * @param description
 	 * @param beforeEachRunnable
 	 */
-	protected void beforeEach(JnrTestRunnable beforeEachRunnable) {
-		beforeEachRunnables.add(beforeEachRunnable);
+	protected void beforeEach(String description, JnrTestRunnable beforeEachRunnable) {
+		store.beforeEach(description, beforeEachRunnable);
 	}
 
 	/**
 	 * Specifies a code to run after all tests.
 	 * 
+	 * @param description
 	 * @param afterAllRunnable
 	 */
-	protected void afterAll(JnrTestRunnable afterAllRunnable) {
-		afterAllRunnables.add(afterAllRunnable);
+	protected void afterAll(String description, JnrTestRunnable afterAllRunnable) {
+		store.afterAll(description, afterAllRunnable);
 	}
 
 	/**
 	 * Specifies a code to run after each test.
 	 * 
+	 * @param description
 	 * @param afterEachRunnable
 	 */
-	protected void afterEach(JnrTestRunnable afterEachRunnable) {
-		afterEachRunnables.add(afterEachRunnable);
+	protected void afterEach(String description, JnrTestRunnable afterEachRunnable) {
+		store.afterEach(description, afterEachRunnable);
 	}
 
-	public List<JnrTestRunnableSpecification> getRunnableSpecifications() {
-		return runnableSpecifications;
+	public String getDescription() {
+		return description;
 	}
 
-	public List<JnrTestRunnable> getBeforeAllRunnables() {
-		return beforeAllRunnables;
-	}
-
-	public List<JnrTestRunnable> getBeforeEachRunnables() {
-		return beforeEachRunnables;
-	}
-
-	public List<JnrTestRunnable> getAfterAllRunnables() {
-		return afterAllRunnables;
-	}
-
-	public List<JnrTestRunnable> getAfterEachRunnables() {
-		return afterEachRunnables;
-	}
 }

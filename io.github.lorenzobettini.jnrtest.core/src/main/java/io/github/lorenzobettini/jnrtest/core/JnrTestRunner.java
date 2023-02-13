@@ -1,9 +1,8 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Runs the tests of {@link JnrTestCase}; the actual test execution is
@@ -16,61 +15,90 @@ public class JnrTestRunner {
 
 	private List<JnrTestCase> testCases = new ArrayList<>();
 
-	private Set<JnrTestCase> alreadySpecified = new HashSet<>();
-
 	private List<JnrTestExtension> testExtensions = new ArrayList<>();
+
+	private List<JnrTestListener> listeners = new ArrayList<>();
 
 	public JnrTestRunner testCase(JnrTestCase testCase) {
 		testCases.add(testCase);
 		return this;
 	}
 
+	public JnrTestRunner extendWith(JnrTestExtension testDecorator) {
+		testExtensions.add(testDecorator);
+		return this;
+	}
+
+	public JnrTestRunner testListener(JnrTestListener listener) {
+		listeners.add(listener);
+		return this;
+	}
+
 	public void execute() {
 		for (var testCase : testCases) {
-			if (!alreadySpecified.contains(testCase)) {
-				testCase.specify();
-				alreadySpecified.add(testCase);
-			}
 			execute(testCase);
 		}
 	}
 
 	private void execute(JnrTestCase testCase) {
-		for (var beforeAll : testCase.getBeforeAllRunnables()) {
-			executeSafely(beforeAll);
+		var description = testCase.getDescription();
+		var store = testCase.getStore();
+		notifyTestCaseResult(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.START));
+		for (var beforeAll : store.getBeforeAllRunnables()) {
+			executeSafely(beforeAll, JnrTestRunnableKind.BEFORE_ALL, null);
 		}
-		for (var runnableSpecification : testCase.getRunnableSpecifications()) {
+		for (var runnableSpecification : store.getRunnableSpecifications()) {
 			for (var extension : testExtensions) {
 				extension.beforeTest(testCase);
 			}
-			for (var beforeEach : testCase.getBeforeEachRunnables()) {
-				executeSafely(beforeEach);
+			for (var beforeEach : store.getBeforeEachRunnables()) {
+				executeSafely(beforeEach, JnrTestRunnableKind.BEFORE_EACH, null);
 			}
-			executeSafely(runnableSpecification.testRunnable());
-			for (var afterEach : testCase.getAfterEachRunnables()) {
-				executeSafely(afterEach);
+			executeSafely(runnableSpecification,
+				JnrTestRunnableKind.TEST,
+				d -> notifyTestResult(new JnrTestResult(d, JnrTestResultStatus.SUCCESS, null)));
+			for (var afterEach : store.getAfterEachRunnables()) {
+				executeSafely(afterEach, JnrTestRunnableKind.AFTER_EACH, null);
 			}
 			for (var extension : testExtensions) {
 				extension.afterTest(testCase);
 			}
 		}
-		for (var afterAll : testCase.getAfterAllRunnables()) {
-			executeSafely(afterAll);
+		for (var afterAll : store.getAfterAllRunnables()) {
+			executeSafely(afterAll, JnrTestRunnableKind.AFTER_ALL, null);
 		}
+		notifyTestCaseResult(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.END));
 	}
 
-	private void executeSafely(JnrTestRunnable testRunnable) {
+	private void executeSafely(JnrTestRunnableSpecification testRunnableSpecification,
+			JnrTestRunnableKind kind,
+			Consumer<String> successConsumer) {
+		var description = testRunnableSpecification.description();
+		var testRunnable = testRunnableSpecification.testRunnable();
 		try {
+			notifyTestCaseResult(new JnrTestRunnableLifecycleEvent(description, kind, JnrTestRunnableStatus.START));
 			testRunnable.runTest();
+			if (successConsumer != null)
+				successConsumer.accept(description);
 		} catch (Exception e) {
-			// TODO report it
-		} catch (AssertionError error) {
-			// TODO report it
+			notifyTestResult(new JnrTestResult(description, JnrTestResultStatus.ERROR, e));
+		} catch (AssertionError assertionError) {
+			notifyTestResult(new JnrTestResult(description, JnrTestResultStatus.FAILED, assertionError));
+		} finally {
+			notifyTestCaseResult(new JnrTestRunnableLifecycleEvent(description, kind, JnrTestRunnableStatus.END));
 		}
 	}
 
-	public void extendWith(JnrTestExtension testDecorator) {
-		testExtensions.add(testDecorator);
+	private void notifyTestResult(JnrTestResult result) {
+		listeners.forEach(l -> l.notify(result));
+	}
+
+	private void notifyTestCaseResult(JnrTestCaseLifecycleEvent event) {
+		listeners.forEach(l -> l.notify(event));
+	}
+
+	private void notifyTestCaseResult(JnrTestRunnableLifecycleEvent event) {
+		listeners.forEach(l -> l.notify(event));
 	}
 
 }

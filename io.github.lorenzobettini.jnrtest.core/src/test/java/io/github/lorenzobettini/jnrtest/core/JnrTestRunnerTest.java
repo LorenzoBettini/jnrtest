@@ -48,7 +48,7 @@ class JnrTestRunnerTest {
 	void shouldRunAllTheTests() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTestCase() {
+			.testCase(new JnrTestCase("a test case") {
 				@Override
 				protected void specify() {
 					test("first test", () -> {
@@ -58,7 +58,7 @@ class JnrTestRunnerTest {
 						throw new RuntimeException("exception");
 					});
 				}
-			}).testCase(new JnrTestCase() {
+			}).testCase(new JnrTestCase("anoter test case") {
 				@Override
 				protected void specify() {
 					test("test failing assertion", () -> {
@@ -76,11 +76,92 @@ class JnrTestRunnerTest {
 	}
 
 	@Test
+	@DisplayName("should notify listeners")
+	void shouldNotifyListeners() {
+		var listener = new JnrTestListener() {
+			private StringBuilder results = new StringBuilder();
+
+			@Override
+			public void notify(JnrTestResult result) {
+				this.results.append(result.toString() + "\n");
+			}
+
+			@Override
+			public void notify(JnrTestCaseLifecycleEvent event) {
+				this.results.append(event.toString() + "\n");
+			}
+
+			@Override
+			public void notify(JnrTestRunnableLifecycleEvent event) {
+				this.results.append(event.toString() + "\n");
+			}
+		};
+		JnrTestRunner runner = new JnrTestRunner()
+			.testCase(new JnrTestCase("a test case") {
+				@Override
+				protected void specify() {
+					beforeAll("before all", () -> {});
+					afterAll("after all", () -> {});
+					test("first test", () -> {
+						// success
+					});
+					test("test throwing exception", () -> {
+						throw new RuntimeException("exception");
+					});
+				}
+			}).testCase(new JnrTestCase("another test case") {
+				@Override
+				protected void specify() {
+					beforeEach("before each", () -> {});
+					afterEach("after each", () -> {});
+					test("test failing assertion", () -> {
+						assertTrue(false);
+					});
+					test("second test", () -> {
+						// success
+					});
+				}
+			});
+		runner.testListener(listener);
+		runner.execute();
+		assertEquals("""
+				[  START] a test case
+				[  START] BEFORE_ALL before all
+				[    END] BEFORE_ALL before all
+				[  START] TEST first test
+				[SUCCESS] first test
+				[    END] TEST first test
+				[  START] TEST test throwing exception
+				[  ERROR] test throwing exception
+				[    END] TEST test throwing exception
+				[  START] AFTER_ALL after all
+				[    END] AFTER_ALL after all
+				[    END] a test case
+				[  START] another test case
+				[  START] BEFORE_EACH before each
+				[    END] BEFORE_EACH before each
+				[  START] TEST test failing assertion
+				[ FAILED] test failing assertion
+				[    END] TEST test failing assertion
+				[  START] AFTER_EACH after each
+				[    END] AFTER_EACH after each
+				[  START] BEFORE_EACH before each
+				[    END] BEFORE_EACH before each
+				[  START] TEST second test
+				[SUCCESS] second test
+				[    END] TEST second test
+				[  START] AFTER_EACH after each
+				[    END] AFTER_EACH after each
+				[    END] another test case
+				""", listener.results.toString());
+	}
+
+	@Test
 	@DisplayName("should specify the tests only once")
 	void shouldSpecifyTestsOnlyOnce() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-				.testCase(new JnrTestCase() {
+				.testCase(new JnrTestCase("a test case") {
 			@Override
 			protected void specify() {
 				test("first test", () -> {
@@ -99,43 +180,43 @@ class JnrTestRunnerTest {
 	void shouldExecuteLifecycle() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-				.testCase(new JnrTestCase() {
+				.testCase(new JnrTestCase("a test case") {
 			@Override
 			protected void specify() {
-				beforeEach(() -> {
+				beforeEach("", () -> {
 					callable.beforeEachMethod1();
 				});
-				beforeEach(() -> {
+				beforeEach("", () -> {
 					throw new RuntimeException("exception");
 				});
-				beforeEach(() -> {
+				beforeEach("", () -> {
 					callable.beforeEachMethod2();
 				});
-				beforeAll(() -> {
+				beforeAll("", () -> {
 					callable.beforeAllMethod1();
 				});
-				beforeAll(() -> {
+				beforeAll("", () -> {
 					throw new RuntimeException("exception");
 				});
-				beforeAll(() -> {
+				beforeAll("", () -> {
 					callable.beforeAllMethod2();
 				});
-				afterEach(() -> {
+				afterEach("", () -> {
 					callable.afterEachMethod1();
 				});
-				afterEach(() -> {
+				afterEach("", () -> {
 					throw new RuntimeException("exception");
 				});
-				afterEach(() -> {
+				afterEach("", () -> {
 					callable.afterEachMethod2();
 				});
-				afterAll(() -> {
+				afterAll("", () -> {
 					callable.afterAllMethod1();
 				});
-				afterAll(() -> {
+				afterAll("", () -> {
 					throw new RuntimeException("exception");
 				});
-				afterAll(() -> {
+				afterAll("", () -> {
 					callable.afterAllMethod2();
 				});
 				test("first test", () -> {
@@ -173,7 +254,7 @@ class JnrTestRunnerTest {
 	void shouldRunExtensions() {
 		var callable = mock(Callable.class);
 		var runner = new JnrTestRunner()
-				.testCase(new JnrTestCase() {
+				.testCase(new JnrTestCase("a test case") {
 			// this must be mocked by the first test extension
 			@Mock
 			Object sut = null;
