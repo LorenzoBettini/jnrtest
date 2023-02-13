@@ -1,5 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,6 +9,8 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -154,6 +157,57 @@ class JnrTestRunnerTest {
 				[  START] AFTER_EACH after each
 				[    END] AFTER_EACH after each
 				[    END] another test case
+				""", listener.results.toString());
+	}
+
+	@Test
+	@DisplayName("should runs all tests with parameters")
+	void shouldRunsAllTestsWithParameters() {
+		var listener = new JnrTestListenerAdapter() {
+			private StringBuilder results = new StringBuilder();
+
+			@Override
+			public void notify(JnrTestResult result) {
+				this.results.append(result.toString() + "\n");
+			}
+
+			@Override
+			public void notify(JnrTestCaseLifecycleEvent event) {
+				this.results.append(event.toString() + "\n");
+			}
+		};
+		JnrTestRunner runner = new JnrTestRunner()
+			.testCase(new JnrTestCase("a test case with parameterized test (single)") {
+				@Override
+				protected void specify() {
+					testWithParameters("parameter should be positive",
+						() -> List.of(0, 1, 2, 3),
+						i -> assertThat(i).isPositive()
+					);
+				}
+			})
+			.testCase(new JnrTestCase("a test case with parameterized test (pair)") {
+				@Override
+				protected void specify() {
+					testWithParameters("strings should be equal",
+						() -> List.of(new Pair<>("foo", "foo"), Pair.pair("foo", "bar")),
+						p -> assertEquals(p.first(), p.second())
+					);
+				}
+			});
+		runner.testListener(listener);
+		runner.execute();
+		assertEquals("""
+				[  START] a test case with parameterized test (single)
+				[ FAILED] parameter should be positive 0
+				[SUCCESS] parameter should be positive 1
+				[SUCCESS] parameter should be positive 2
+				[SUCCESS] parameter should be positive 3
+				[    END] a test case with parameterized test (single)
+				[  START] a test case with parameterized test (pair)
+				[SUCCESS] strings should be equal (foo,foo)
+				[ FAILED] strings should be equal (foo,bar)
+				[    END] a test case with parameterized test (pair)
 				""", listener.results.toString());
 	}
 

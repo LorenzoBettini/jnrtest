@@ -1,5 +1,8 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import java.util.Collection;
+import java.util.function.Supplier;
+
 /**
  * Specifies the tests represented by {@link JnrTestSpecification}, by
  * overriding {@link #specify()}.
@@ -12,6 +15,41 @@ public abstract class JnrTestCase {
 	private String description;
 
 	private JnrTestStore store = null;
+
+	/**
+	 * A pair for parameterized tests, when two parameters would be needed.
+	 * 
+	 * @author Lorenzo Bettini
+	 *
+	 * @param <T1>
+	 * @param <T2>
+	 */
+	public static class Pair<T1, T2> {
+		private T1 first;
+		private T2 second;
+
+		public Pair(T1 first, T2 second) {
+			this.first = first;
+			this.second = second;
+		}
+
+		public static <U, V> Pair<U, V> pair(U first, V second) {
+			return new Pair<>(first, second);
+		}
+
+		public T1 first() {
+			return first;
+		}
+
+		public T2 second() {
+			return second;
+		}
+
+		@Override
+		public String toString() {
+			return "(" + first + "," + second + ")";
+		}
+	}
 
 	protected JnrTestCase(String description) {
 		this.description = description;
@@ -46,6 +84,24 @@ public abstract class JnrTestCase {
 	 */
 	protected void test(String description, JnrTestRunnable testRunnable) {
 		store.test(description, testRunnable);
+	}
+
+	/**
+	 * Specify a test to run with parameters; parameters are provided by
+	 * parameterProvided, and the description is formatted with the parameters
+	 * provided for each single test.
+	 * 
+	 * @param <T>
+	 * @param description
+	 * @param parameterProvider
+	 * @param testRunnable
+	 */
+	protected <T> void testWithParameters(String description, Supplier<Collection<T>> parameterProvider,
+			JnrTestRunnableWithParameters<T> testRunnable) {
+		var parameters = parameterProvider.get();
+		for (T parameter : parameters) {
+			test(description + " " + parameter.toString(), () -> testRunnable.runTest(parameter));
+		}
 	}
 
 	/**

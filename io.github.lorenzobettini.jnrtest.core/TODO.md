@@ -18,10 +18,10 @@ V store
 V each element of the store should contain also a description
 (i.e., before, after, should also provide a description)
 
+V parameterized test
+
 - functional interface version of test case so that the test case can be specified as a lambda
 (with a parameter it of type store?)
-
-- parameterized test?
 
 - extension should be at the testcase level, not at the runner level
 
