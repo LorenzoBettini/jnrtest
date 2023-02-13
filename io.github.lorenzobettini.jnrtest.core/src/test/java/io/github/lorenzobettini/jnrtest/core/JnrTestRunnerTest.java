@@ -163,7 +163,7 @@ class JnrTestRunnerTest {
 	@Test
 	@DisplayName("should runs all tests with parameters")
 	void shouldRunsAllTestsWithParameters() {
-		var listener = new JnrTestListener() {
+		var listener = new JnrTestListenerAdapter() {
 			private StringBuilder results = new StringBuilder();
 
 			@Override
@@ -173,11 +173,6 @@ class JnrTestRunnerTest {
 
 			@Override
 			public void notify(JnrTestCaseLifecycleEvent event) {
-				this.results.append(event.toString() + "\n");
-			}
-
-			@Override
-			public void notify(JnrTestRunnableLifecycleEvent event) {
 				this.results.append(event.toString() + "\n");
 			}
 		};
@@ -204,26 +199,14 @@ class JnrTestRunnerTest {
 		runner.execute();
 		assertEquals("""
 				[  START] a test case with parameterized test (single)
-				[  START] TEST parameter should be positive 0
 				[ FAILED] parameter should be positive 0
-				[    END] TEST parameter should be positive 0
-				[  START] TEST parameter should be positive 1
 				[SUCCESS] parameter should be positive 1
-				[    END] TEST parameter should be positive 1
-				[  START] TEST parameter should be positive 2
 				[SUCCESS] parameter should be positive 2
-				[    END] TEST parameter should be positive 2
-				[  START] TEST parameter should be positive 3
 				[SUCCESS] parameter should be positive 3
-				[    END] TEST parameter should be positive 3
 				[    END] a test case with parameterized test (single)
 				[  START] a test case with parameterized test (pair)
-				[  START] TEST strings should be equal (foo,foo)
 				[SUCCESS] strings should be equal (foo,foo)
-				[    END] TEST strings should be equal (foo,foo)
-				[  START] TEST strings should be equal (foo,bar)
 				[ FAILED] strings should be equal (foo,bar)
-				[    END] TEST strings should be equal (foo,bar)
 				[    END] a test case with parameterized test (pair)
 				""", listener.results.toString());
 	}
