@@ -11,6 +11,7 @@ public class JnrExamplesTestMain {
 		var runner = new JnrTestRunner()
 				.testCase(new FactorialJnrTestCase())
 				.testCase(new FactorialJnrParameterizedTestCase())
+				.testCase(new MyStringUtilsJnrTestCase())
 				.testListener(recorder)
 				.testListener(new JnrTestStandardReporter());
 		runner.execute();
