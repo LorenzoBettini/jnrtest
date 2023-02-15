@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
+import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableKind;
 
 /**
  * Similar to JUnit TemporaryFolder
@@ -17,15 +18,46 @@ public class JnrTestTemporaryFolder {
 
 	private File temporaryFolder;
 
+	/**
+	 * The temporary folder will be created before each test and removed recursively
+	 * after each test.
+	 * 
+	 * @param testCase
+	 */
 	public JnrTestTemporaryFolder(JnrTestCase testCase) {
+		this(testCase, JnrTestRunnableKind.TEST);
+	}
+
+	/**
+	 * The temporary folder will be created before each test and removed recursively
+	 * after each test, unless {@link JnrTestRunnableKind#BEFORE_ALL} is passed: in
+	 * that case the temporary folder will be created once before all tests and
+	 * removed recursively after all tests.
+	 * 
+	 * @param testCase
+	 * @param kind
+	 */
+	public JnrTestTemporaryFolder(JnrTestCase testCase, JnrTestRunnableKind kind) {
 		this.testCase = testCase;
-		this.testCase.getStore().beforeEach("create temporary folder",
-			() ->
-				temporaryFolder = Files.createTempDirectory("jnrtest-temp-folder").toFile()
-		);
-		this.testCase.getStore().afterEach("delete temporary folder",
-			() -> delete()
-		);
+		if (kind == JnrTestRunnableKind.BEFORE_ALL) {
+			this.testCase.getStore().beforeAll("create temporary folder",
+				() ->
+					temporaryFolder = 
+						Files.createTempDirectory("jnrtest-temp-folder").toFile()
+			);
+			this.testCase.getStore().afterAll("delete temporary folder",
+				() -> delete()
+			);
+		} else {
+			this.testCase.getStore().beforeEach("create temporary folder",
+				() ->
+					temporaryFolder = 
+						Files.createTempDirectory("jnrtest-temp-folder").toFile()
+			);
+			this.testCase.getStore().afterEach("delete temporary folder",
+				() -> delete()
+			);
+		}
 	}
 
 	public File getTemporaryFolder() {
@@ -37,9 +69,9 @@ public class JnrTestTemporaryFolder {
 	}
 
 	private void recursiveDelete(File file) {
-		File[] files= file.listFiles();
+		var files= file.listFiles();
 		if (files != null)
-			for (File each : files)
+			for (var each : files)
 				recursiveDelete(each);
 		file.delete();
 	}
