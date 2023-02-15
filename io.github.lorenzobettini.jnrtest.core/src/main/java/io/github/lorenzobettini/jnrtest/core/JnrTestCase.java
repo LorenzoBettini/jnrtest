@@ -1,6 +1,7 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 import java.util.Collection;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -88,7 +89,7 @@ public abstract class JnrTestCase {
 
 	/**
 	 * Specify a test to run with parameters; parameters are provided by
-	 * parameterProvided, and the description is formatted with the parameters
+	 * parameterProvider, and the description is formatted with the parameters
 	 * provided for each single test.
 	 * 
 	 * @param <T>
@@ -101,6 +102,27 @@ public abstract class JnrTestCase {
 		var parameters = parameterProvider.get();
 		for (T parameter : parameters) {
 			test(description + " " + parameter.toString(), () -> testRunnable.runTest(parameter));
+		}
+	}
+
+	/**
+	 * Specify a test to run with parameters; parameters are provided by
+	 * parameterProvider, and the description for parameters is provided by the
+	 * descriptionProvider (that has to provide a description for each passed
+	 * parameter).
+	 * 
+	 * @param <T>
+	 * @param description
+	 * @param parameterProvider
+	 * @param descriptionProvider
+	 * @param testRunnable
+	 */
+	protected <T> void testWithParameters(String description, Supplier<Collection<T>> parameterProvider,
+			Function<T, String> descriptionProvider,
+			JnrTestRunnableWithParameters<T> testRunnable) {
+		var parameters = parameterProvider.get();
+		for (T parameter : parameters) {
+			test(description + " " + descriptionProvider.apply(parameter), () -> testRunnable.runTest(parameter));
 		}
 	}
 
