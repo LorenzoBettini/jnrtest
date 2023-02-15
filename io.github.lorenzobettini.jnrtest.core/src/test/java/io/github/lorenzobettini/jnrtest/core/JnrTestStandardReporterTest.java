@@ -81,6 +81,45 @@ class JnrTestStandardReporterTest {
 			.contains("an exception", "expected: <true> but was: <false>");
 	}
 
+	@Test
+	@DisplayName("should report results with elapsed time")
+	void shouldReportResultsWithElapsedTime() {
+		var testReporter = new JnrTestStandardReporter();
+		JnrTestRunner runner = new JnrTestRunner()
+			.testCase(new JnrTestCase("a test case with success") {
+				@Override
+				protected void specify() {
+					beforeAll("before all", () -> {});
+					afterAll("after all", () -> {});
+					test("success test", () -> {
+						// success
+					});
+					test("error test", () -> {
+						throw new Exception("an exception");
+					});
+				}
+			}).testCase(new JnrTestCase("a test case with failure") {
+				@Override
+				protected void specify() {
+					beforeAll("before all", () -> {});
+					afterAll("after all", () -> {});
+					test("failed test", () -> {
+						assertTrue(false);
+					});
+					test("success test", () -> {
+						// success
+					});
+				}
+			});
+		runner.testListener(testReporter.withElapsedTime());
+		runner.execute();
+		assertThat(getOutContent())
+			.contains(" - Time elapsed: ");
+		var errContent = getErrContent();
+		assertThat(errContent)
+			.contains("an exception", "expected: <true> but was: <false>");
+	}
+
 	private String getOutContent() {
 		return outContent.toString().replace("\r", "");
 	}
