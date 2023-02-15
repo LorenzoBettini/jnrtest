@@ -16,6 +16,7 @@ public class JnrExamplesTestMain {
 				.testCase(new MyStringUtilsJnrParameterizedTestCase())
 				.testCase(new JnrTestTemporaryFolderExampleTestCase())
 				.testCase(new JnrTestTemporaryFolderExampleBeforeAllTestCase())
+				.testCase(new JnrTestTemporaryFolderAnotherExampleTestCase())
 				.testListener(recorder)
 				.testListener(new JnrTestStandardReporter().withElapsedTime());
 		runner.execute();

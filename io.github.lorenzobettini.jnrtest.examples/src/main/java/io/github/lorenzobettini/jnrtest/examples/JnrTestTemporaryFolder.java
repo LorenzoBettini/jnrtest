@@ -5,6 +5,7 @@ import java.nio.file.Files;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableKind;
+import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableSpecification;
 
 /**
  * Similar to JUnit TemporaryFolder
@@ -13,8 +14,6 @@ import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableKind;
  *
  */
 public class JnrTestTemporaryFolder {
-
-	private JnrTestCase testCase;
 
 	private File temporaryFolder;
 
@@ -34,30 +33,32 @@ public class JnrTestTemporaryFolder {
 	 * that case the temporary folder will be created once before all tests and
 	 * removed recursively after all tests.
 	 * 
+	 * In both cases, the "before" execution is ensured to be executed before
+	 * possible test case's "before" executions, since the latter can rely on the
+	 * temporary folder to be already created. Similarly, the "after" is executed
+	 * after possible test case's "after" executions, since the latter might still
+	 * need the temporary folder.
+	 * 
 	 * @param testCase
 	 * @param kind
 	 */
 	public JnrTestTemporaryFolder(JnrTestCase testCase, JnrTestRunnableKind kind) {
-		this.testCase = testCase;
+		var before = testCase.getStore().getBeforeEachRunnables();
+		var after = testCase.getStore().getAfterEachRunnables();
 		if (kind == JnrTestRunnableKind.BEFORE_ALL) {
-			this.testCase.getStore().beforeAll("create temporary folder",
-				() ->
-					temporaryFolder = 
-						Files.createTempDirectory("jnrtest-temp-folder").toFile()
-			);
-			this.testCase.getStore().afterAll("delete temporary folder",
-				() -> delete()
-			);
-		} else {
-			this.testCase.getStore().beforeEach("create temporary folder",
-				() ->
-					temporaryFolder = 
-						Files.createTempDirectory("jnrtest-temp-folder").toFile()
-			);
-			this.testCase.getStore().afterEach("delete temporary folder",
-				() -> delete()
-			);
+			before = testCase.getStore().getBeforeAllRunnables();
+			after = testCase.getStore().getAfterAllRunnables();
 		}
+		// add to the head of the list, i.e., before test case's "before" executions
+		before.add(0, new JnrTestRunnableSpecification("create temporary folder",
+			() ->
+				temporaryFolder = 
+					Files.createTempDirectory("jnrtest-temp-folder").toFile()
+		));
+		// add to the end of the list
+		after.add(new JnrTestRunnableSpecification("delete temporary folder",
+			() -> delete()
+		));
 	}
 
 	public File getTemporaryFolder() {
