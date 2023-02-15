@@ -14,7 +14,7 @@ public class JnrExamplesTestMain {
 				.testCase(new MyStringUtilsJnrTestCase())
 				.testCase(new MyStringUtilsJnrParameterizedTestCase())
 				.testListener(recorder)
-				.testListener(new JnrTestStandardReporter());
+				.testListener(new JnrTestStandardReporter().withElapsedTime());
 		runner.execute();
 		if (!recorder.isSuccess())
 			throw new RuntimeException("There are test failures");
