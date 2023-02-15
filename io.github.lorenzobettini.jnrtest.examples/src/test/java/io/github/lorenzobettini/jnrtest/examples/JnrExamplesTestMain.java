@@ -10,6 +10,7 @@ public class JnrExamplesTestMain {
 		var recorder = new JnrTestRecorder();
 		var runner = new JnrTestRunner()
 				.testCase(new FactorialJnrTestCase())
+				.testCase(new FactorialJnrParameterizedTestCase())
 				.testListener(recorder)
 				.testListener(new JnrTestStandardReporter());
 		runner.execute();
