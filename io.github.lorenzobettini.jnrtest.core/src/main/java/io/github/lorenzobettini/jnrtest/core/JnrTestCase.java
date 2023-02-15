@@ -101,7 +101,7 @@ public abstract class JnrTestCase {
 			JnrTestRunnableWithParameters<T> testRunnable) {
 		var parameters = parameterProvider.get();
 		for (T parameter : parameters) {
-			test(description + " " + parameter.toString(), () -> testRunnable.runTest(parameter));
+			test(description + parameter.toString(), () -> testRunnable.runTest(parameter));
 		}
 	}
 
@@ -122,7 +122,7 @@ public abstract class JnrTestCase {
 			JnrTestRunnableWithParameters<T> testRunnable) {
 		var parameters = parameterProvider.get();
 		for (T parameter : parameters) {
-			test(description + " " + descriptionProvider.apply(parameter), () -> testRunnable.runTest(parameter));
+			test(description + descriptionProvider.apply(parameter), () -> testRunnable.runTest(parameter));
 		}
 	}
 
