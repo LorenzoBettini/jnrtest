@@ -35,4 +35,3 @@ jobs:
 
       - name: 'Build and test'
         run: mvn verify
-        working-directory: io.github.lorenzobettini.jnrtest.core

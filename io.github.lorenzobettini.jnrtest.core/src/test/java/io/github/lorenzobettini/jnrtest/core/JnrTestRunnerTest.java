@@ -180,7 +180,7 @@ class JnrTestRunnerTest {
 			.testCase(new JnrTestCase("a test case with parameterized test (single)") {
 				@Override
 				protected void specify() {
-					testWithParameters("parameter should be positive",
+					testWithParameters("parameter should be positive ",
 						() -> List.of(0, 1, 2, 3),
 						i -> assertThat(i).isPositive()
 					);
@@ -189,8 +189,18 @@ class JnrTestRunnerTest {
 			.testCase(new JnrTestCase("a test case with parameterized test (pair)") {
 				@Override
 				protected void specify() {
-					testWithParameters("strings should be equal",
+					testWithParameters("strings should be equal ",
 						() -> List.of(new Pair<>("foo", "foo"), Pair.pair("foo", "bar")),
+						p -> assertEquals(p.first(), p.second())
+					);
+				}
+			})
+			.testCase(new JnrTestCase("a test case with parameterized test and description") {
+				@Override
+				protected void specify() {
+					testWithParameters("strings should be equal: ",
+						() -> List.of(new Pair<>("foo", "foo"), Pair.pair("foo", "bar")),
+						p -> String.format("is \"%s\".equals(\"%s\")?", p.first(), p.second()),
 						p -> assertEquals(p.first(), p.second())
 					);
 				}
@@ -208,6 +218,10 @@ class JnrTestRunnerTest {
 				[SUCCESS] strings should be equal (foo,foo)
 				[ FAILED] strings should be equal (foo,bar)
 				[    END] a test case with parameterized test (pair)
+				[  START] a test case with parameterized test and description
+				[SUCCESS] strings should be equal: is "foo".equals("foo")?
+				[ FAILED] strings should be equal: is "foo".equals("bar")?
+				[    END] a test case with parameterized test and description
 				""", listener.results.toString());
 	}
 
