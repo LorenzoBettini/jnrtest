@@ -19,10 +19,29 @@ public class JnrTestRecorder extends JnrTestListenerAdapter {
 
 	private boolean success = true;
 
+	private boolean withElapsedTime = false;
+	private long startTime;
+	private long totalTime = 0;
+
+	public JnrTestRecorder withElapsedTime() {
+		withElapsedTime = true;
+		return this;
+	}
+
+	public long getTotalTime() {
+		return totalTime;
+	}
+
 	@Override
 	public void notify(JnrTestCaseLifecycleEvent event) {
-		if (event.status() != JnrTestCaseStatus.START)
+		if (event.status() == JnrTestCaseStatus.START && withElapsedTime)
+			startTime = System.currentTimeMillis();
+		if (event.status() != JnrTestCaseStatus.START) {
+			if (withElapsedTime) {
+				totalTime += (System.currentTimeMillis() - startTime);
+			}
 			return;
+		}
 		current = event.description();
 		results.computeIfAbsent(current,
 			desc -> new ArrayList<>());
@@ -42,4 +61,5 @@ public class JnrTestRecorder extends JnrTestListenerAdapter {
 	public boolean isSuccess() {
 		return success;
 	}
+
 }

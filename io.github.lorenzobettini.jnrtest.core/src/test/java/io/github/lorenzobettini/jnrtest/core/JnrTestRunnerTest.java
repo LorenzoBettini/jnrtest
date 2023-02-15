@@ -229,6 +229,7 @@ class JnrTestRunnerTest {
 	@DisplayName("should record results")
 	void shouldRecordResults() {
 		var testRecorder = new JnrTestRecorder();
+		var testRecorderWithElapsed = new JnrTestRecorder().withElapsedTime();
 		JnrTestRunner runner = new JnrTestRunner()
 			.testCase(new JnrTestCase("a test case with success") {
 				@Override
@@ -237,10 +238,14 @@ class JnrTestRunnerTest {
 					afterAll("after all", () -> {});
 					test("success test", () -> {
 						// success
+						// since we record time, let's make sure to have some
+						// delay, otherwise the elapsed time might be 0 on fast machines
+						Thread.sleep(10);
 					});
 				}
 			});
 		runner.testListener(testRecorder);
+		runner.testListener(testRecorderWithElapsed);
 		runner.execute();
 		assertTrue(testRecorder.isSuccess());
 		runner.testCase(new JnrTestCase("a test case with failure") {
@@ -261,6 +266,22 @@ class JnrTestRunnerTest {
 			+ " a test case with failure="
 			+ "[[ FAILED] failed test]}",
 			testRecorder.getResults().toString());
+		assertThat(testRecorderWithElapsed.getTotalTime())
+			.isPositive();
+
+		var aggregator = new JnrTestResultAggregator().aggregate(testRecorder);
+		assertEquals(2, aggregator.getSucceeded());
+		assertEquals(1, aggregator.getFailed());
+		assertEquals(0, aggregator.getErrors());
+		assertEquals("Tests run: 3, Succeeded: 2, Failures: 1, Errors: 0", aggregator.toString());
+		aggregator = new JnrTestResultAggregator().aggregate(testRecorderWithElapsed);
+		assertEquals(2, aggregator.getSucceeded());
+		assertEquals(1, aggregator.getFailed());
+		assertEquals(0, aggregator.getErrors());
+		assertThat(aggregator.getTotalTime())
+			.isPositive();
+		assertThat(aggregator.toString())
+			.contains("Tests run: 3, Succeeded: 2, Failures: 1, Errors: 0 - Time elapsed: ");
 	}
 
 	@Test
