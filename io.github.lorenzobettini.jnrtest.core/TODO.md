@@ -23,6 +23,6 @@ V parameterized test
 - functional interface version of test case so that the test case can be specified as a lambda
 (with a parameter it of type store?)
 
-- extension should be at the testcase level, not at the runner level
+V extension should be at the testcase level, not at the runner level
 
-- extension for Mockito and Guice as examples
+V extension for Mockito and Guice as examples

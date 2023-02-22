@@ -15,17 +15,10 @@ public class JnrTestRunner {
 
 	private List<JnrTestCase> testCases = new ArrayList<>();
 
-	private List<JnrTestExtension> testExtensions = new ArrayList<>();
-
 	private List<JnrTestListener> listeners = new ArrayList<>();
 
 	public JnrTestRunner testCase(JnrTestCase testCase) {
 		testCases.add(testCase);
-		return this;
-	}
-
-	public JnrTestRunner extendWith(JnrTestExtension testDecorator) {
-		testExtensions.add(testDecorator);
 		return this;
 	}
 
@@ -49,9 +42,6 @@ public class JnrTestRunner {
 			executeSafely(beforeAll, JnrTestRunnableKind.BEFORE_ALL, null);
 		}
 		for (var runnableSpecification : store.getRunnableSpecifications()) {
-			for (var extension : testExtensions) {
-				extension.beforeTest(testCase);
-			}
 			for (var beforeEach : store.getBeforeEachRunnables()) {
 				executeSafely(beforeEach, JnrTestRunnableKind.BEFORE_EACH, null);
 			}
@@ -60,9 +50,6 @@ public class JnrTestRunner {
 				d -> notifyTestResult(new JnrTestResult(d, JnrTestResultStatus.SUCCESS, null)));
 			for (var afterEach : store.getAfterEachRunnables()) {
 				executeSafely(afterEach, JnrTestRunnableKind.AFTER_EACH, null);
-			}
-			for (var extension : testExtensions) {
-				extension.afterTest(testCase);
 			}
 		}
 		for (var afterAll : store.getAfterAllRunnables()) {

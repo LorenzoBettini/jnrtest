@@ -3,7 +3,6 @@ package io.github.lorenzobettini.jnrtest.core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -14,11 +13,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import com.google.inject.Guice;
-import com.google.inject.Inject;
 
 class JnrTestRunnerTest {
 
@@ -432,73 +426,4 @@ class JnrTestRunnerTest {
 		inOrder.verify(callable).afterAllMethod1();
 	}
 
-	@Test
-	@DisplayName("should run extensions OLD")
-	void shouldRunExtensionsOLD() {
-		var callable = mock(Callable.class);
-		var runner = new JnrTestRunner()
-				.testCase(new JnrTestCase("a test case") {
-			// this must be mocked by the first test extension
-			@Mock
-			Object sut = null;
-
-			// this must be injected by the second test extension
-			@Inject
-			String stringSut;
-
-			@Override
-			protected void specify() {
-				test("first test", () -> {
-					// the assertion fails if the extension
-					// does not inject it, see below
-					assertEquals("first string", stringSut);
-					// this will not be called if the assertion fails
-					callable.firstMethod();
-				});
-				test("second test", () -> {
-					// the assertion fails if the extension
-					// does not mock it, see below
-					assertNotNull(sut);
-					// this will not be called if the assertion fails
-					callable.firstMethod();
-				});
-				test("third test", () -> {
-					// the assertion fails if the extension's
-					// afterTest has not been called
-					assertEquals("after first string", stringSut);
-					// this will not be called if the assertion fails
-					callable.firstMethod();
-				});
-			}
-		});
-		runner.extendWith(new JnrTestExtension() {
-			@Override
-			public void beforeTest(JnrTestCase t) {
-				MockitoAnnotations.openMocks(t);
-			}
-		});
-		runner.extendWith(new JnrTestExtension() {
-			// this will be modified in afterTest
-			// so this value is used only by the first test
-			String stringToInject = "first string";
-
-			@Override
-			public void beforeTest(JnrTestCase t) {
-				Guice.createInjector(
-					binder -> {
-						binder.bind(String.class)
-							.toInstance(stringToInject);
-				}).injectMembers(t);
-			}
-
-			@Override
-			public void afterTest(JnrTestCase t) {
-				stringToInject = "after first string";
-			}
-		});
-		runner.execute();
-		// this fails if the assertions above fail
-		// that is, if the extensions have not been used
-		verify(callable, times(3)).firstMethod();
-	}
 }
