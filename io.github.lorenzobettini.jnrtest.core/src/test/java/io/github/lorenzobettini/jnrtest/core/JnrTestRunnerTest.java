@@ -3,7 +3,6 @@ package io.github.lorenzobettini.jnrtest.core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -14,11 +13,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import com.google.inject.Guice;
-import com.google.inject.Inject;
 
 class JnrTestRunnerTest {
 
@@ -381,69 +375,55 @@ class JnrTestRunnerTest {
 	@DisplayName("should run extensions")
 	void shouldRunExtensions() {
 		var callable = mock(Callable.class);
-		var runner = new JnrTestRunner()
-				.testCase(new JnrTestCase("a test case") {
-			// this must be mocked by the first test extension
-			@Mock
-			Object sut = null;
-
-			// this must be injected by the second test extension
-			@Inject
-			String stringSut;
-
+		var testCase = new JnrTestCase("a test case") {
 			@Override
 			protected void specify() {
 				test("first test", () -> {
-					// the assertion fails if the extension
-					// does not inject it, see below
-					assertEquals("first string", stringSut);
-					// this will not be called if the assertion fails
 					callable.firstMethod();
 				});
 				test("second test", () -> {
-					// the assertion fails if the extension
-					// does not mock it, see below
-					assertNotNull(sut);
-					// this will not be called if the assertion fails
-					callable.firstMethod();
-				});
-				test("third test", () -> {
-					// the assertion fails if the extension's
-					// afterTest has not been called
-					assertEquals("after first string", stringSut);
-					// this will not be called if the assertion fails
-					callable.firstMethod();
+					callable.secondMethod();
 				});
 			}
-		});
-		runner.extendWith(new JnrTestExtension() {
+		};
+		var extensionAll = new JnrTestCaseExtension() {
 			@Override
-			public void beforeTest(JnrTestCase t) {
-				MockitoAnnotations.openMocks(t);
+			protected <T extends JnrTestCase> void extend(T testCase, List<JnrTestRunnableSpecification> before,
+					List<JnrTestRunnableSpecification> after) {
+				before.add(new JnrTestRunnableSpecification("before all",
+					() -> callable.beforeAllMethod1()));
+				after.add(new JnrTestRunnableSpecification("after all",
+					() -> callable.afterAllMethod1()));
 			}
-		});
-		runner.extendWith(new JnrTestExtension() {
-			// this will be modified in afterTest
-			// so this value is used only by the first test
-			String stringToInject = "first string";
-
+		};
+		var extensionEach = new JnrTestCaseExtension() {
 			@Override
-			public void beforeTest(JnrTestCase t) {
-				Guice.createInjector(
-					binder -> {
-						binder.bind(String.class)
-							.toInstance(stringToInject);
-				}).injectMembers(t);
+			protected <T extends JnrTestCase> void extend(T testCase, List<JnrTestRunnableSpecification> before,
+					List<JnrTestRunnableSpecification> after) {
+				before.add(new JnrTestRunnableSpecification("before each",
+						() -> callable.beforeEachMethod1()));
+				after.add(new JnrTestRunnableSpecification("after each",
+						() -> callable.afterEachMethod1()));
 			}
-
-			@Override
-			public void afterTest(JnrTestCase t) {
-				stringToInject = "after first string";
-			}
-		});
+		};
+		testCase = extensionAll.extendAll(testCase);
+		testCase = extensionEach.extendEach(testCase);
+		var runner = new JnrTestRunner()
+			.testCase(testCase);
 		runner.execute();
-		// this fails if the assertions above fail
-		// that is, if the extensions have not been used
-		verify(callable, times(3)).firstMethod();
+		var inOrder = inOrder(callable);
+		// before all
+		inOrder.verify(callable).beforeAllMethod1();
+		// first test
+		inOrder.verify(callable).beforeEachMethod1();
+		inOrder.verify(callable).firstMethod();
+		inOrder.verify(callable).afterEachMethod1();
+		// second test
+		inOrder.verify(callable).beforeEachMethod1();
+		inOrder.verify(callable).secondMethod();
+		inOrder.verify(callable).afterEachMethod1();
+		// after all
+		inOrder.verify(callable).afterAllMethod1();
 	}
+
 }

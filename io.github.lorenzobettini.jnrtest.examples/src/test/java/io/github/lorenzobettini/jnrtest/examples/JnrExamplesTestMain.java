@@ -4,6 +4,8 @@ import io.github.lorenzobettini.jnrtest.core.JnrTestRecorder;
 import io.github.lorenzobettini.jnrtest.core.JnrTestResultAggregator;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunner;
 import io.github.lorenzobettini.jnrtest.core.JnrTestStandardReporter;
+import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseGuiceExtension;
+import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseMockitoExtension;
 
 public class JnrExamplesTestMain {
 
@@ -17,8 +19,13 @@ public class JnrExamplesTestMain {
 				.testCase(new JnrTestTemporaryFolderExampleTestCase())
 				.testCase(new JnrTestTemporaryFolderExampleBeforeAllTestCase())
 				.testCase(new JnrTestTemporaryFolderAnotherExampleTestCase())
-				.testListener(recorder)
-				.testListener(new JnrTestStandardReporter().withElapsedTime());
+				.testCase(new JnrTestCaseMockitoExtension()
+					.extendEach(new StringServiceWithMockTestCase()))
+				.testCase(new JnrTestCaseGuiceExtension(
+						new StringRepositoryInMemoryGuiceModule())
+					.extendAll(new StringServiceWithGuiceTestCase()))
+			.testListener(recorder)
+			.testListener(new JnrTestStandardReporter().withElapsedTime());
 		runner.execute();
 		System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
 		if (!recorder.isSuccess())

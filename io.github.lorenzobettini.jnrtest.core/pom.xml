@@ -25,11 +25,5 @@
 			<artifactId>assertj-core</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Used only in tests for decorators -->
-		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 </project>
