@@ -381,6 +381,61 @@ class JnrTestRunnerTest {
 	@DisplayName("should run extensions")
 	void shouldRunExtensions() {
 		var callable = mock(Callable.class);
+		var testCase = new JnrTestCase("a test case") {
+			@Override
+			protected void specify() {
+				test("first test", () -> {
+					callable.firstMethod();
+				});
+				test("second test", () -> {
+					callable.secondMethod();
+				});
+			}
+		};
+		var extensionAll = new JnrTestCaseExtension() {
+			@Override
+			protected void extend(List<JnrTestRunnableSpecification> before,
+					List<JnrTestRunnableSpecification> after) {
+				before.add(new JnrTestRunnableSpecification("before all",
+					() -> callable.beforeAllMethod1()));
+				after.add(new JnrTestRunnableSpecification("after all",
+					() -> callable.afterAllMethod1()));
+			}
+		};
+		var extensionEach = new JnrTestCaseExtension() {
+			@Override
+			protected void extend(List<JnrTestRunnableSpecification> before,
+					List<JnrTestRunnableSpecification> after) {
+				before.add(new JnrTestRunnableSpecification("before each",
+						() -> callable.beforeEachMethod1()));
+				after.add(new JnrTestRunnableSpecification("after each",
+						() -> callable.afterEachMethod1()));
+			}
+		};
+		testCase = extensionAll.extendAll(testCase);
+		testCase = extensionEach.extendEach(testCase);
+		var runner = new JnrTestRunner()
+			.testCase(testCase);
+		runner.execute();
+		var inOrder = inOrder(callable);
+		// before all
+		inOrder.verify(callable).beforeAllMethod1();
+		// first test
+		inOrder.verify(callable).beforeEachMethod1();
+		inOrder.verify(callable).firstMethod();
+		inOrder.verify(callable).afterEachMethod1();
+		// second test
+		inOrder.verify(callable).beforeEachMethod1();
+		inOrder.verify(callable).secondMethod();
+		inOrder.verify(callable).afterEachMethod1();
+		// after all
+		inOrder.verify(callable).afterAllMethod1();
+	}
+
+	@Test
+	@DisplayName("should run extensions OLD")
+	void shouldRunExtensionsOLD() {
+		var callable = mock(Callable.class);
 		var runner = new JnrTestRunner()
 				.testCase(new JnrTestCase("a test case") {
 			// this must be mocked by the first test extension
