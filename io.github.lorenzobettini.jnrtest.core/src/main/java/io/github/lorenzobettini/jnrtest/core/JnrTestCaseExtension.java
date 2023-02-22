@@ -19,17 +19,17 @@ public abstract class JnrTestCaseExtension {
 
 	public <T extends JnrTestCase> T extendAll(T testCase) {
 		var store = testCase.getStore();
-		extend(store.getBeforeAllRunnables(), store.getAfterAllRunnables());
+		extend(testCase, store.getBeforeAllRunnables(), store.getAfterAllRunnables());
 		return testCase;
 	}
 
 	public <T extends JnrTestCase> T extendEach(T testCase) {
 		var store = testCase.getStore();
-		extend(store.getBeforeEachRunnables(), store.getAfterEachRunnables());
+		extend(testCase, store.getBeforeEachRunnables(), store.getAfterEachRunnables());
 		return testCase;
 	}
 
-	protected abstract void extend(List<JnrTestRunnableSpecification> before,
+	protected abstract <T extends JnrTestCase> void extend(T testCase, List<JnrTestRunnableSpecification> before,
 			List<JnrTestRunnableSpecification> after);
 
 }

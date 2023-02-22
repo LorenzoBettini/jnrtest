@@ -394,7 +394,7 @@ class JnrTestRunnerTest {
 		};
 		var extensionAll = new JnrTestCaseExtension() {
 			@Override
-			protected void extend(List<JnrTestRunnableSpecification> before,
+			protected <T extends JnrTestCase> void extend(T testCase, List<JnrTestRunnableSpecification> before,
 					List<JnrTestRunnableSpecification> after) {
 				before.add(new JnrTestRunnableSpecification("before all",
 					() -> callable.beforeAllMethod1()));
@@ -404,7 +404,7 @@ class JnrTestRunnerTest {
 		};
 		var extensionEach = new JnrTestCaseExtension() {
 			@Override
-			protected void extend(List<JnrTestRunnableSpecification> before,
+			protected <T extends JnrTestCase> void extend(T testCase, List<JnrTestRunnableSpecification> before,
 					List<JnrTestRunnableSpecification> after) {
 				before.add(new JnrTestRunnableSpecification("before each",
 						() -> callable.beforeEachMethod1()));
