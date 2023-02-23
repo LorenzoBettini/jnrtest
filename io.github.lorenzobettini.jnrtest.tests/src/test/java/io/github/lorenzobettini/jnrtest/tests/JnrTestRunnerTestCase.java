@@ -23,7 +23,7 @@ import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableLifecycleEvent;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableSpecification;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunner;
 
-public class JnrTestTestCase extends JnrTestCase {
+public class JnrTestRunnerTestCase extends JnrTestCase {
 
 	static interface Callable {
 		void firstMethod();
@@ -47,7 +47,7 @@ public class JnrTestTestCase extends JnrTestCase {
 		void afterEachMethod2();
 	}
 
-	public JnrTestTestCase() {
+	public JnrTestRunnerTestCase() {
 		super("tests for jnrtest with jnrtest");
 	}
 
