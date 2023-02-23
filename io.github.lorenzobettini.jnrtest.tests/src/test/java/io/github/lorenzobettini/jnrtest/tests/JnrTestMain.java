@@ -1,0 +1,23 @@
+package io.github.lorenzobettini.jnrtest.tests;
+
+import io.github.lorenzobettini.jnrtest.core.JnrTestRecorder;
+import io.github.lorenzobettini.jnrtest.core.JnrTestResultAggregator;
+import io.github.lorenzobettini.jnrtest.core.JnrTestRunner;
+import io.github.lorenzobettini.jnrtest.core.JnrTestStandardReporter;
+import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseMockitoExtension;
+
+public class JnrTestMain {
+
+	public static void main(String[] args) {
+		var recorder = new JnrTestRecorder().withElapsedTime();
+		var runner = new JnrTestRunner()
+				.testCase(new JnrTestCaseMockitoExtension()
+					.extendEach(new JnrTestTestCase()))
+			.testListener(recorder)
+			.testListener(new JnrTestStandardReporter().withElapsedTime());
+		runner.execute();
+		System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
+		if (!recorder.isSuccess())
+			throw new RuntimeException("There are test failures");
+	}
+}
