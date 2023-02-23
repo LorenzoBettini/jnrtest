@@ -48,7 +48,7 @@ public class JnrTestRunnerTestCase extends JnrTestCase {
 	}
 
 	public JnrTestRunnerTestCase() {
-		super("tests for jnrtest with jnrtest");
+		super("tests for JnrTestRunner with jnrtest");
 	}
 
 	@Override
