@@ -14,6 +14,7 @@ public class JnrExamplesTestMain {
 		var runner = new JnrTestRunner()
 				.testCase(new FactorialJnrTestCase())
 				.testCase(new FactorialJnrParameterizedTestCase())
+				.testCase(new FactorialJnrParameterizedWithDescriptionTestCase())
 				.testCase(new MyStringUtilsJnrTestCase())
 				.testCase(new MyStringUtilsJnrParameterizedTestCase())
 				.testCase(new JnrTestTemporaryFolderExampleTestCase())
