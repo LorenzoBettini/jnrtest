@@ -57,7 +57,7 @@ public class JnrTestTemporaryFolder {
 		));
 		// add to the end of the list
 		after.add(new JnrTestRunnableSpecification("delete temporary folder",
-			() -> delete()
+			this::delete
 		));
 	}
 
@@ -74,6 +74,6 @@ public class JnrTestTemporaryFolder {
 		if (files != null)
 			for (var each : files)
 				recursiveDelete(each);
-		file.delete();
+		file.delete(); // NOSONAR we ignore the outcome
 	}
 }
