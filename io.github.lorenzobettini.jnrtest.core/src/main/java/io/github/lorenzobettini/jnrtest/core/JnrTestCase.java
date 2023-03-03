@@ -99,10 +99,9 @@ public abstract class JnrTestCase {
 	 */
 	protected <T> void testWithParameters(String description, Supplier<Collection<T>> parameterProvider,
 			JnrTestRunnableWithParameters<T> testRunnable) {
-		var parameters = parameterProvider.get();
-		for (T parameter : parameters) {
-			test(description + parameter.toString(), () -> testRunnable.runTest(parameter));
-		}
+		testWithParameters(description, parameterProvider,
+			Object::toString,
+			testRunnable);
 	}
 
 	/**
