@@ -15,7 +15,7 @@
 		<maven.compiler.target>17</maven.compiler.target>
 		<junit-jupiter.version>5.12.1</junit-jupiter.version>
 		<mockito.version>4.8.0</mockito.version>
-		<assertj.version>3.23.1</assertj.version>
+		<assertj.version>3.27.3</assertj.version>
 	</properties>
 
 	<modules>
