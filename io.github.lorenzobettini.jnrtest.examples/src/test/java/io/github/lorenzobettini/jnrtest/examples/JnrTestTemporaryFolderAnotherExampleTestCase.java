@@ -34,7 +34,11 @@ public class JnrTestTemporaryFolderAnotherExampleTestCase extends JnrTestCase {
 		);
 		afterEach("truncate the temporary file",
 			// if the file does not exist, it creates it
-			() -> new FileOutputStream(tempFile, true).getChannel().truncate(0)
+			() -> {
+				try (FileOutputStream fos = new FileOutputStream(tempFile, true)) {
+					fos.getChannel().truncate(0);
+				}
+			}
 		);
 		test("temporary file exists",
 			() -> assertThat(tempFile)
@@ -55,8 +59,9 @@ public class JnrTestTemporaryFolderAnotherExampleTestCase extends JnrTestCase {
 		);
 		test("temporary file can be written",
 			() -> {
-				new FileOutputStream(tempFile, true)
-					.write(1);
+				try (FileOutputStream fos = new FileOutputStream(tempFile, true)) {
+					fos.write(1);
+				}
 				assertThat(tempFile)
 					.hasSize(1);
 			}
