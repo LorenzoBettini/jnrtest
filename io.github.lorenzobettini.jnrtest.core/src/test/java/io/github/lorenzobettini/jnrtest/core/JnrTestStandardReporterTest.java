@@ -20,7 +20,7 @@ class JnrTestStandardReporterTest {
 	private final PrintStream originalErr = System.err;
 
 	@BeforeEach
-	public void setUpStreams() {
+	void setUpStreams() {
 		outContent = new ByteArrayOutputStream();
 		errContent = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(outContent));
@@ -28,7 +28,7 @@ class JnrTestStandardReporterTest {
 	}
 
 	@AfterEach
-	public void restoreStreams() {
+	void restoreStreams() {
 		System.setOut(originalOut);
 		System.setErr(originalErr);
 	}
