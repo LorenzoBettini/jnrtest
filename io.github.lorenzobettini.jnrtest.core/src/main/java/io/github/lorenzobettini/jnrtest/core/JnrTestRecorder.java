@@ -15,7 +15,7 @@ public class JnrTestRecorder extends JnrTestListenerAdapter {
 
 	private Map<String, List<JnrTestResult>> results = new LinkedHashMap<>();
 
-	private String current;
+	private String currentKey;
 
 	private boolean success = true;
 
@@ -34,16 +34,17 @@ public class JnrTestRecorder extends JnrTestListenerAdapter {
 
 	@Override
 	public void notify(JnrTestCaseLifecycleEvent event) {
-		if (event.status() == JnrTestCaseStatus.START && withElapsedTime)
+		if (event.status() == JnrTestCaseStatus.START && withElapsedTime) {
 			startTime = System.currentTimeMillis();
+		}
 		if (event.status() != JnrTestCaseStatus.START) {
 			if (withElapsedTime) {
 				totalTime += (System.currentTimeMillis() - startTime);
 			}
 			return;
 		}
-		current = event.description();
-		results.computeIfAbsent(current,
+		currentKey = event.description();
+		results.computeIfAbsent(currentKey,
 			desc -> new ArrayList<>());
 	}
 
@@ -51,7 +52,7 @@ public class JnrTestRecorder extends JnrTestListenerAdapter {
 	public void notify(JnrTestResult result) {
 		if (result.status() != JnrTestResultStatus.SUCCESS)
 			success = false;
-		results.get(current).add(result);
+		results.get(currentKey).add(result);
 	}
 
 	public Map<String, List<JnrTestResult>> getResults() {
