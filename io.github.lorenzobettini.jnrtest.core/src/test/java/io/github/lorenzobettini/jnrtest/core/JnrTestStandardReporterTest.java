@@ -76,8 +76,7 @@ class JnrTestStandardReporterTest {
 			Tests run: 2, Succeeded: 1, Failures: 1, Errors: 0
 			""",
 			getOutContent());
-		var errContent = getErrContent();
-		assertThat(errContent)
+		assertThat(getErrContent())
 			.contains("an exception", "expected: <true> but was: <false>");
 	}
 
@@ -115,8 +114,7 @@ class JnrTestStandardReporterTest {
 		runner.execute();
 		assertThat(getOutContent())
 			.contains(" - Time elapsed: ");
-		var errContent = getErrContent();
-		assertThat(errContent)
+		assertThat(getErrContent())
 			.contains("an exception", "expected: <true> but was: <false>");
 	}
 
