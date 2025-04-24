@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Lorenzo Bettini
  * 
  */
-public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter {
+public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements JnrTestRecorderInterface {
 
 	private Map<String, List<JnrTestResult>> results = new ConcurrentHashMap<>();
 
@@ -30,6 +30,7 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter {
 		return this;
 	}
 
+	@Override
 	public long getTotalTime() {
 		return totalTime;
 	}
@@ -58,10 +59,12 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter {
 		results.get(currentKey.get()).add(result);
 	}
 
+	@Override
 	public Map<String, List<JnrTestResult>> getResults() {
 		return results;
 	}
 
+	@Override
 	public boolean isSuccess() {
 		return success;
 	}

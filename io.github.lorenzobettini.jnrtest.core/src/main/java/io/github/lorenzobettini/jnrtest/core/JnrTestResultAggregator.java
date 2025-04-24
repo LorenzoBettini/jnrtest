@@ -1,7 +1,7 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 /**
- * Aggregates results recorded by {@link JnrTestRecorder}.
+ * Aggregates results recorded by {@link JnrTestRecorderInterface}.
  * 
  * @author Lorenzo Bettini
  *
@@ -13,7 +13,7 @@ public class JnrTestResultAggregator {
 	private int errors;
 	private long totalTime;
 
-	public JnrTestResultAggregator aggregate(JnrTestRecorder testRecorder) {
+	public JnrTestResultAggregator aggregate(JnrTestRecorderInterface testRecorder) {
 		testRecorder.getResults().values().stream()
 			.flatMap(l -> l.stream())
 			.forEach(result -> {
