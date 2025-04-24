@@ -50,8 +50,9 @@ public class JnrTestRecorder extends JnrTestListenerAdapter {
 
 	@Override
 	public void notify(JnrTestResult result) {
-		if (result.status() != JnrTestResultStatus.SUCCESS)
+		if (result.status() != JnrTestResultStatus.SUCCESS) {
 			success = false;
+		}
 		results.get(currentKey).add(result);
 	}
 
