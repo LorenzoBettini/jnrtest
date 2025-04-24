@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Thread-safe implementation of JnrTestRecorder.
@@ -23,7 +24,7 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements
 	private boolean success = true;
 
 	private boolean withElapsedTime = false;
-	private long totalTime = 0;
+	private AtomicLong totalTime = new AtomicLong(0);
 
 	public JnrTestThreadSafeRecorder withElapsedTime() {
 		withElapsedTime = true;
@@ -32,7 +33,7 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements
 
 	@Override
 	public long getTotalTime() {
-		return totalTime;
+		return totalTime.get();
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements
 		}
 		if (event.status() != JnrTestCaseStatus.START) {
 			if (withElapsedTime) {
-				totalTime += (System.currentTimeMillis() - startTime.get());
+				totalTime.addAndGet(System.currentTimeMillis() - startTime.get());
 			}
 			return;
 		}
