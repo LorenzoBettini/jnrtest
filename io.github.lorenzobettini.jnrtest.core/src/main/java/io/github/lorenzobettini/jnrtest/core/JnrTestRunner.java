@@ -30,23 +30,23 @@ public class JnrTestRunner {
 		for (var testCase : testCases) {
 			var description = testCase.getDescription();
 			notifyTestCaseLifecycleEvent(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.START));
-			executeTestCase(testCase);
+			executeTestCase(testCase.getStore());
 			notifyTestCaseLifecycleEvent(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.END));
 		}
 	}
 
-	private void executeTestCase(JnrTestCase testCase) {
-		executeBeforeAll(testCase);
-		executeTestRunnables(testCase);
-		executeAfterAll(testCase);
+	private void executeTestCase(JnrTestStore store) {
+		executeBeforeAll(store);
+		executeTestRunnables(store);
+		executeAfterAll(store);
 	}
 
-	private void executeBeforeAll(JnrTestCase testCase) {
-		executeLifecycleRunnables(testCase.getStore().getBeforeAllRunnables(), JnrTestRunnableKind.BEFORE_ALL);
+	private void executeBeforeAll(JnrTestStore store) {
+		executeLifecycleRunnables(store.getBeforeAllRunnables(), JnrTestRunnableKind.BEFORE_ALL);
 	}
 
-	private void executeAfterAll(JnrTestCase testCase) {
-		executeLifecycleRunnables(testCase.getStore().getAfterAllRunnables(), JnrTestRunnableKind.AFTER_ALL);
+	private void executeAfterAll(JnrTestStore store) {
+		executeLifecycleRunnables(store.getAfterAllRunnables(), JnrTestRunnableKind.AFTER_ALL);
 	}
 
 	private void executeBeforeEach(JnrTestStore store) {
@@ -63,8 +63,7 @@ public class JnrTestRunner {
 		}
 	}
 
-	private void executeTestRunnables(JnrTestCase testCase) {
-		var store = testCase.getStore();
+	private void executeTestRunnables(JnrTestStore store) {
 		for (var runnableSpecification : store.getRunnableSpecifications()) {
 			executeBeforeEach(store);
 			executeSafely(runnableSpecification, JnrTestRunnableKind.TEST,
