@@ -27,12 +27,14 @@ public class JnrTestRunner {
 	}
 
 	public void execute() {
-		for (var testCase : testCases) {
-			var description = testCase.getDescription();
-			notifyTestCaseLifecycleEvent(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.START));
-			executeTestCase(testCase.getStore());
-			notifyTestCaseLifecycleEvent(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.END));
-		}
+		testCases.stream().forEach(this::executeTestCase);
+	}
+
+	private void executeTestCase(JnrTestCase testCase) {
+		var description = testCase.getDescription();
+		notifyTestCaseLifecycleEvent(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.START));
+		executeTestCase(testCase.getStore());
+		notifyTestCaseLifecycleEvent(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.END));
 	}
 
 	private void executeTestCase(JnrTestStore store) {
