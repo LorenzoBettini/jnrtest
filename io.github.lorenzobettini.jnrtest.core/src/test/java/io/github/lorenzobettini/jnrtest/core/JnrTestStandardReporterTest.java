@@ -20,7 +20,7 @@ class JnrTestStandardReporterTest {
 	private final PrintStream originalErr = System.err;
 
 	@BeforeEach
-	public void setUpStreams() {
+	void setUpStreams() {
 		outContent = new ByteArrayOutputStream();
 		errContent = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(outContent));
@@ -28,7 +28,7 @@ class JnrTestStandardReporterTest {
 	}
 
 	@AfterEach
-	public void restoreStreams() {
+	void restoreStreams() {
 		System.setOut(originalOut);
 		System.setErr(originalErr);
 	}
@@ -76,8 +76,7 @@ class JnrTestStandardReporterTest {
 			Tests run: 2, Succeeded: 1, Failures: 1, Errors: 0
 			""",
 			getOutContent());
-		var errContent = getErrContent();
-		assertThat(errContent)
+		assertThat(getErrContent())
 			.contains("an exception", "expected: <true> but was: <false>");
 	}
 
@@ -115,8 +114,7 @@ class JnrTestStandardReporterTest {
 		runner.execute();
 		assertThat(getOutContent())
 			.contains(" - Time elapsed: ");
-		var errContent = getErrContent();
-		assertThat(errContent)
+		assertThat(getErrContent())
 			.contains("an exception", "expected: <true> but was: <false>");
 	}
 

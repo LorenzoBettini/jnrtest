@@ -82,8 +82,7 @@ public class JnrTestStandardReporterTestCase extends JnrTestCase {
 				Tests run: 2, Succeeded: 1, Failures: 1, Errors: 0
 				""",
 				getOutContent());
-			var errContent = getErrContent();
-			assertThat(errContent)
+			assertThat(getErrContent())
 				.contains("an exception", "expected: <true> but was: <false>");
 		});
 		test("should report results with elapsed time", () -> {
@@ -118,8 +117,7 @@ public class JnrTestStandardReporterTestCase extends JnrTestCase {
 			runner.execute();
 			assertThat(getOutContent())
 				.contains(" - Time elapsed: ");
-			var errContent = getErrContent();
-			assertThat(errContent)
+			assertThat(getErrContent())
 				.contains("an exception", "expected: <true> but was: <false>");
 		});
 	}
