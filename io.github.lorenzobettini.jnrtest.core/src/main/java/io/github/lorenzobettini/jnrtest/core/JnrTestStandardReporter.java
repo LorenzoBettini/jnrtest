@@ -70,7 +70,7 @@ public class JnrTestStandardReporter implements JnrTestListener {
 	}
 
 	public void show(String message) {
-		System.out.println(message);
+		System.out.println(message); // NOSONAR we really want to print to the console
 	}
 
 }
