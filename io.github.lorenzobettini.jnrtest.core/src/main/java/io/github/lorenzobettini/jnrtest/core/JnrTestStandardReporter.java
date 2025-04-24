@@ -5,11 +5,10 @@ public class JnrTestStandardReporter implements JnrTestListener {
 	private int succeeded;
 	private int failed;
 	private int errors;
-
-	private boolean withElapsedTime = false;
 	private long startTime;
 	private long elapsedTime;
 	private long totalTime = 0;
+	private boolean withElapsedTime = false;
 
 	public JnrTestStandardReporter withElapsedTime() {
 		withElapsedTime = true;
