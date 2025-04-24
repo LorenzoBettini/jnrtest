@@ -42,8 +42,24 @@ public class JnrTestRunner {
 	}
 
 	private void executeBeforeAll(JnrTestCase testCase) {
-		for (var beforeAll : testCase.getStore().getBeforeAllRunnables()) {
-			executeSafely(beforeAll, JnrTestRunnableKind.BEFORE_ALL, null);
+		executeLifecycleRunnables(testCase.getStore().getBeforeAllRunnables(), JnrTestRunnableKind.BEFORE_ALL);
+	}
+
+	private void executeAfterAll(JnrTestCase testCase) {
+		executeLifecycleRunnables(testCase.getStore().getAfterAllRunnables(), JnrTestRunnableKind.AFTER_ALL);
+	}
+
+	private void executeBeforeEach(JnrTestStore store) {
+		executeLifecycleRunnables(store.getBeforeEachRunnables(), JnrTestRunnableKind.BEFORE_EACH);
+	}
+
+	private void executeAfterEach(JnrTestStore store) {
+		executeLifecycleRunnables(store.getAfterEachRunnables(), JnrTestRunnableKind.AFTER_EACH);
+	}
+
+	private void executeLifecycleRunnables(List<JnrTestRunnableSpecification> runnables, JnrTestRunnableKind kind) {
+		for (var runnable : runnables) {
+			executeSafely(runnable, kind, null);
 		}
 	}
 
@@ -54,24 +70,6 @@ public class JnrTestRunner {
 			executeSafely(runnableSpecification, JnrTestRunnableKind.TEST,
 					d -> notifyTestResult(new JnrTestResult(d, JnrTestResultStatus.SUCCESS, null)));
 			executeAfterEach(store);
-		}
-	}
-
-	private void executeBeforeEach(JnrTestStore store) {
-		for (var beforeEach : store.getBeforeEachRunnables()) {
-			executeSafely(beforeEach, JnrTestRunnableKind.BEFORE_EACH, null);
-		}
-	}
-
-	private void executeAfterEach(JnrTestStore store) {
-		for (var afterEach : store.getAfterEachRunnables()) {
-			executeSafely(afterEach, JnrTestRunnableKind.AFTER_EACH, null);
-		}
-	}
-
-	private void executeAfterAll(JnrTestCase testCase) {
-		for (var afterAll : testCase.getStore().getAfterAllRunnables()) {
-			executeSafely(afterAll, JnrTestRunnableKind.AFTER_ALL, null);
 		}
 	}
 
