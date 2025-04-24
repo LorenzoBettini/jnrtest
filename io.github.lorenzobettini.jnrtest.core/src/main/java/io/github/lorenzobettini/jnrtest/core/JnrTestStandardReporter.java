@@ -29,20 +29,22 @@ public class JnrTestStandardReporter implements JnrTestListener {
 			reset();
 			show(event.toString());
 		}
-		if (event.status() == JnrTestCaseStatus.END)
+		if (event.status() == JnrTestCaseStatus.END) {
 			show(String.format("Tests run: %d, Succeeded: %d, Failures: %d, Errors: %d",
 					succeeded + failed + errors,
-					succeeded, failed, errors) + (
-						withElapsedTime ? String.format(" - Time elapsed: %f s", (float) totalTime/3600) : ""));
+					succeeded, failed, errors)
+					+ (withElapsedTime ? String.format(" - Time elapsed: %f s", (float) totalTime / 3600) : ""));
+		}
 	}
 
 	@Override
 	public void notify(JnrTestRunnableLifecycleEvent event) {
-		if (!withElapsedTime || event.kind() != JnrTestRunnableKind.TEST)
+		if (!withElapsedTime || event.kind() != JnrTestRunnableKind.TEST) {
 			return;
-		if (event.status() == JnrTestRunnableStatus.START)
+		}
+		if (event.status() == JnrTestRunnableStatus.START) {
 			this.startTime = System.currentTimeMillis();
-		else {
+		} else {
 			this.elapsedTime = System.currentTimeMillis() - startTime;
 			this.totalTime += elapsedTime;
 		}
@@ -51,22 +53,22 @@ public class JnrTestStandardReporter implements JnrTestListener {
 	@Override
 	public void notify(JnrTestResult result) {
 		switch (result.status()) {
-		case SUCCESS: {
-			succeeded++;
-			break;
+			case SUCCESS: {
+				succeeded++;
+				break;
+			}
+			case FAILED: {
+				failed++;
+				result.throwable().printStackTrace();
+				break;
+			}
+			case ERROR: {
+				errors++;
+				result.throwable().printStackTrace();
+			}
 		}
-		case FAILED: {
-			failed++;
-			result.throwable().printStackTrace();
-			break;
-		}
-		case ERROR: {
-			errors++;
-			result.throwable().printStackTrace();
-		}
-		}
-		show(result.toString() + (
-			withElapsedTime ? String.format(" - Time elapsed: %f s", (float) elapsedTime/3600) : ""));
+		show(result.toString()
+				+ (withElapsedTime ? String.format(" - Time elapsed: %f s", (float) elapsedTime / 3600) : ""));
 	}
 
 	public void show(String message) {
