@@ -2,24 +2,15 @@ package io.github.lorenzobettini.jnrtest.core;
 
 public class JnrTestStandardReporter implements JnrTestListener {
 
-	private int succeeded;
-	private int failed;
-	private int errors;
-	private long startTime;
-	private long elapsedTime;
-	private long totalTime = 0;
-	private boolean withElapsedTime = false;
+	private JnrTestStatistics testStatistics = new JnrTestStatistics();
 
 	public JnrTestStandardReporter withElapsedTime() {
-		withElapsedTime = true;
+		testStatistics.setWithElapsedTime(true);
 		return this;
 	}
 
 	private void reset() {
-		succeeded = 0;
-		failed = 0;
-		errors = 0;
-		totalTime = 0;
+		testStatistics.reset();
 	}
 
 	@Override
@@ -30,22 +21,23 @@ public class JnrTestStandardReporter implements JnrTestListener {
 		}
 		if (event.status() == JnrTestCaseStatus.END) {
 			show(String.format("Tests run: %d, Succeeded: %d, Failures: %d, Errors: %d",
-					succeeded + failed + errors,
-					succeeded, failed, errors)
-					+ (withElapsedTime ? String.format(" - Time elapsed: %f s", (float) totalTime / 3600) : ""));
+					testStatistics.getTotalTests(),
+					testStatistics.getSucceeded(),
+					testStatistics.getFailed(),
+					testStatistics.getErrors())
+					+ (testStatistics.isWithElapsedTime() ? String.format(" - Time elapsed: %f s", (float) testStatistics.getTotalTime() / 3600) : ""));
 		}
 	}
 
 	@Override
 	public void notify(JnrTestRunnableLifecycleEvent event) {
-		if (!withElapsedTime || event.kind() != JnrTestRunnableKind.TEST) {
+		if (!testStatistics.isWithElapsedTime() || event.kind() != JnrTestRunnableKind.TEST) {
 			return;
 		}
 		if (event.status() == JnrTestRunnableStatus.START) {
-			this.startTime = System.currentTimeMillis();
+			testStatistics.startTimer();
 		} else {
-			this.elapsedTime = System.currentTimeMillis() - startTime;
-			this.totalTime += elapsedTime;
+			testStatistics.stopTimer();
 		}
 	}
 
@@ -53,21 +45,21 @@ public class JnrTestStandardReporter implements JnrTestListener {
 	public void notify(JnrTestResult result) {
 		switch (result.status()) {
 			case SUCCESS: {
-				succeeded++;
+				testStatistics.incrementSucceeded();
 				break;
 			}
 			case FAILED: {
-				failed++;
+				testStatistics.incrementFailed();
 				result.throwable().printStackTrace();
 				break;
 			}
 			case ERROR: {
-				errors++;
+				testStatistics.incrementErrors();
 				result.throwable().printStackTrace();
 			}
 		}
 		show(result.toString()
-				+ (withElapsedTime ? String.format(" - Time elapsed: %f s", (float) elapsedTime / 3600) : ""));
+				+ (testStatistics.isWithElapsedTime() ? String.format(" - Time elapsed: %f s", (float) testStatistics.getElapsedTime() / 3600) : ""));
 	}
 
 	public void show(String message) {
