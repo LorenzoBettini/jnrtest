@@ -234,7 +234,7 @@ class JnrTestRunnerTest {
 						// success
 						// since we record time, let's make sure to have some
 						// delay, otherwise the elapsed time might be 0 on fast machines
-						Thread.sleep(10);
+						Thread.sleep(10); // NOSONAR
 					});
 				}
 			});
