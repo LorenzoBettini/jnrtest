@@ -1,6 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import java.util.Map;
@@ -8,6 +8,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 
 public class JnrTestThreadSafeRecorderTest {
@@ -25,10 +26,11 @@ public class JnrTestThreadSafeRecorderTest {
 		recorder.notify(endEvent);
 
 		Map<String, List<JnrTestResult>> results = recorder.getResults();
-		assertTrue(results.containsKey("Test1"));
-		assertEquals(1, results.get("Test1").size());
-		assertEquals(JnrTestResultStatus.SUCCESS, results.get("Test1").get(0).status());
-		assertTrue(recorder.isSuccess());
+		assertThat(results)
+			.containsOnlyKeys("Test1")
+			.extractingByKey("Test1", InstanceOfAssertFactories.list(JnrTestResult.class))
+			.containsExactly(successResult);
+		assertThat(recorder.isSuccess()).isTrue();
 	}
 
 	@Test
@@ -61,12 +63,15 @@ public class JnrTestThreadSafeRecorderTest {
 		executor.shutdown();
 
 		Map<String, List<JnrTestResult>> results = recorder.getResults();
-		assertEquals(threadCount, results.size());
-		results.forEach((key, value) -> {
-			assertEquals(1, value.size());
-			assertEquals(JnrTestResultStatus.SUCCESS, value.get(0).status());
-		});
-		assertTrue(recorder.isSuccess());
+		assertThat(results).hasSize(threadCount);
+		for (int i = 0; i < threadCount; i++) {
+			String testName = "Test" + i;
+			assertThat(results)
+				.containsKey(testName)
+				.extractingByKey(testName, InstanceOfAssertFactories.list(JnrTestResult.class))
+				.containsExactly(new JnrTestResult(testName, JnrTestResultStatus.SUCCESS, null));
+		}
+		assertThat(recorder.isSuccess()).isTrue();
 	}
 
 	@Test
@@ -87,7 +92,7 @@ public class JnrTestThreadSafeRecorderTest {
 
 					JnrTestResult result = threadIndex % 2 == 0
 							? new JnrTestResult(testName, JnrTestResultStatus.SUCCESS, null)
-							: new JnrTestResult(testName, JnrTestResultStatus.FAILED, new RuntimeException("Failure"));
+							: new JnrTestResult(testName, JnrTestResultStatus.FAILED, null);
 
 					recorder.notify(startEvent);
 					recorder.notify(result);
@@ -102,7 +107,17 @@ public class JnrTestThreadSafeRecorderTest {
 		executor.shutdown();
 
 		Map<String, List<JnrTestResult>> results = recorder.getResults();
-		assertEquals(threadCount, results.size());
-		assertFalse(recorder.isSuccess());
+		assertThat(results).hasSize(threadCount);
+		for (int i = 0; i < threadCount; i++) {
+			String testName = "Test" + i;
+			JnrTestResult expectedResult = i % 2 == 0
+					? new JnrTestResult(testName, JnrTestResultStatus.SUCCESS, null)
+					: new JnrTestResult(testName, JnrTestResultStatus.FAILED, null); // Use null for Throwable
+			assertThat(results)
+				.containsKey(testName)
+				.extractingByKey(testName, InstanceOfAssertFactories.list(JnrTestResult.class))
+				.containsExactly(expectedResult);
+		}
+		assertThat(recorder.isSuccess()).isFalse();
 	}
 }
