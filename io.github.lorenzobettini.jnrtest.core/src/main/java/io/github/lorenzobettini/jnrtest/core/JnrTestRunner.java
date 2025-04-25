@@ -3,6 +3,7 @@ package io.github.lorenzobettini.jnrtest.core;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * Runs the tests of {@link JnrTestCase}; the actual test execution is
@@ -27,7 +28,17 @@ public class JnrTestRunner {
 	}
 
 	public void execute() {
-		testCases.stream().forEach(this::executeTestCase);
+		getTestCasesStream().forEach(this::executeTestCase);
+	}
+
+	/**
+	 * Returns a stream of test cases to be executed. Subclasses can override this
+	 * method to customize the stream of test cases.
+	 * 
+	 * @return a stream of test cases
+	 */
+	protected Stream<JnrTestCase> getTestCasesStream() {
+		return testCases.stream();
 	}
 
 	private void executeTestCase(JnrTestCase testCase) {
