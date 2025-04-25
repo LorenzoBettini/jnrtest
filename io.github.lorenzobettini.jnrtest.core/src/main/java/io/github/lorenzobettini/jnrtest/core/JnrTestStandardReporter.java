@@ -1,8 +1,29 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import java.io.PrintStream;
+
+/**
+ * Standard reporter for JnrTest.
+ * 
+ * This class implements the JnrTestListener interface and provides a simple
+ * console output for test results.
+ * It defaults to using System.out for output, but can be configured to use any
+ * {@link PrintStream}.
+ * 
+ * @author Lorenzo Bettini
+ */
 public class JnrTestStandardReporter implements JnrTestListener {
 
+	private final PrintStream printStream;
 	private JnrTestStatistics testStatistics = new JnrTestStatistics();
+
+	public JnrTestStandardReporter() {
+		this(System.out);
+	}
+
+	public JnrTestStandardReporter(PrintStream printStream) {
+		this.printStream = printStream;
+	}
 
 	public JnrTestStandardReporter withElapsedTime() {
 		testStatistics.setWithElapsedTime(true);
@@ -63,7 +84,7 @@ public class JnrTestStandardReporter implements JnrTestListener {
 	}
 
 	public void show(String message) {
-		System.out.println(message); // NOSONAR we really want to print to the console
+		printStream.println(message);
 	}
 
 }
