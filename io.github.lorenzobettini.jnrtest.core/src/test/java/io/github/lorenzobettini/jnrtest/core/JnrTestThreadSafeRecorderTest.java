@@ -76,7 +76,10 @@ public class JnrTestThreadSafeRecorderTest {
 
 	@Test
 	public void testMultiThreadedFailures() throws InterruptedException {
-		JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
+        // Even in case of failure, pass a null Throwable because it does not
+        // implement equals and the verification would fail
+
+        JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
 
 		int threadCount = 5;
 		ExecutorService executor = Executors.newFixedThreadPool(threadCount);
