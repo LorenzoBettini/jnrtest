@@ -66,20 +66,39 @@
 							<goal>exec</goal>
 						</goals>
 						<phase>test</phase>
+						<configuration>
+							<executable>java</executable>
+							<forceJava>true</forceJava>
+							<classpathScope>test</classpathScope>
+							<arguments>
+								<argument>-javaagent:${org.mockito:mockito-core:jar}</argument>
+								<argument>-classpath</argument>
+								<classpath />
+								<argument>
+									io.github.lorenzobettini.jnrtest.examples.JnrExamplesTestMain</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>run-jnr-parallel-tests</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>test</phase>
+						<configuration>
+							<executable>java</executable>
+							<forceJava>true</forceJava>
+							<classpathScope>test</classpathScope>
+							<arguments>
+								<argument>-javaagent:${org.mockito:mockito-core:jar}</argument>
+								<argument>-classpath</argument>
+								<classpath />
+								<argument>
+									io.github.lorenzobettini.jnrtest.examples.JnrExamplesParallelTestMain</argument>
+							</arguments>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<executable>java</executable>
-					<forceJava>true</forceJava>
-					<classpathScope>test</classpathScope>
-					<arguments>
-						<argument>-javaagent:${org.mockito:mockito-core:jar}</argument>
-						<argument>-classpath</argument>
-						<classpath />
-						<argument>
-							io.github.lorenzobettini.jnrtest.examples.JnrExamplesTestMain</argument>
-					</arguments>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

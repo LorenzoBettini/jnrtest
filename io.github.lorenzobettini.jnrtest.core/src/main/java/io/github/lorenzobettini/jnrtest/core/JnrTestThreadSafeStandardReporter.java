@@ -13,6 +13,12 @@ public class JnrTestThreadSafeStandardReporter implements JnrTestListener {
 	private final ThreadLocal<JnrTestStandardReporter> currentReporter = new ThreadLocal<>();
 	private final ThreadLocal<ByteArrayOutputStream> currentOutputStream = new ThreadLocal<>();
 	private final ThreadLocal<String> currentKey = new ThreadLocal<>();
+    private boolean withElapsedTime = false;
+
+    public JnrTestThreadSafeStandardReporter withElapsedTime() {
+        this.withElapsedTime = true;
+        return this;
+    }
 
 	@Override
 	public void notify(JnrTestCaseLifecycleEvent event) {
@@ -22,7 +28,7 @@ public class JnrTestThreadSafeStandardReporter implements JnrTestListener {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			PrintStream printStream = new PrintStream(outputStream);
 			currentOutputStream.set(outputStream);
-			currentReporter.set(new JnrTestStandardReporter(printStream));
+			currentReporter.set(new JnrTestStandardReporter(printStream).withElapsedTime(withElapsedTime));
             currentReporter.get().notify(event);
 		} else if (event.status() == JnrTestCaseStatus.END) {
 			JnrTestStandardReporter reporter = currentReporter.get();

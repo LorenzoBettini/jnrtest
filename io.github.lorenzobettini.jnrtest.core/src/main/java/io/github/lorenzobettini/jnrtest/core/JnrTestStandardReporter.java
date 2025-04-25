@@ -30,6 +30,11 @@ public class JnrTestStandardReporter implements JnrTestListener {
 		return this;
 	}
 
+	public JnrTestStandardReporter withElapsedTime(boolean withElapsedTime) {
+		testStatistics.setWithElapsedTime(withElapsedTime);
+		return this;
+	}
+
 	private void reset() {
 		testStatistics.reset();
 	}
