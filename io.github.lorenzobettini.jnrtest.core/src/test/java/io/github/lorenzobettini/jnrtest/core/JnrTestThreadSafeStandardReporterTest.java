@@ -59,8 +59,8 @@ class JnrTestThreadSafeStandardReporterTest {
 		executorService.shutdown();
 		assertThat(executorService.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
 
-		// Verify the output contains each expected block
-		String output = outputStream.toString();
+		 // Normalize output to handle different EOL characters
+		String output = outputStream.toString().replace("\r\n", "\n");
 		for (int i = 0; i < 10; i++) {
 			String testCaseName = "TestCase-" + i;
 
@@ -73,7 +73,7 @@ class JnrTestThreadSafeStandardReporterTest {
 			expectedBlock.append("Tests run: 5, Succeeded: 5, Failures: 0, Errors: 0\n");
 
 			// Verify the output contains the expected block
-			assertThat(output).contains(expectedBlock.toString());
+			assertThat(output).contains(expectedBlock.toString().replace("\r\n", "\n"));
 		}
 	}
 
@@ -106,7 +106,8 @@ class JnrTestThreadSafeStandardReporterTest {
 			Tests run: 3, Succeeded: 3, Failures: 0, Errors: 0
 			""";
 
-		// Verify the output matches the expected output
-		assertThat(outputStream.toString()).isEqualTo(expectedOutput);
+		 // Normalize output to handle different EOL characters
+		String normalizedOutput = outputStream.toString().replace("\r\n", "\n");
+		assertThat(normalizedOutput).isEqualTo(expectedOutput.replace("\r\n", "\n"));
 	}
 }
