@@ -59,15 +59,21 @@ class JnrTestThreadSafeStandardReporterTest {
 		executorService.shutdown();
 		assertThat(executorService.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
 
-		// Verify the output contains expected strings
+		// Verify the output contains each expected block
 		String output = outputStream.toString();
 		for (int i = 0; i < 10; i++) {
 			String testCaseName = "TestCase-" + i;
-			assertThat(output).contains(testCaseName);
+
+			// Generate the expected block for this test case
+			StringBuilder expectedBlock = new StringBuilder();
+			expectedBlock.append("[  START] ").append(testCaseName).append("\n");
 			for (int j = 0; j < 5; j++) {
-				String testName = testCaseName + "-Test-" + j;
-				assertThat(output).contains(testName);
+				expectedBlock.append("[SUCCESS] ").append(testCaseName).append("-Test-").append(j).append("\n");
 			}
+			expectedBlock.append("Tests run: 5, Succeeded: 5, Failures: 0, Errors: 0\n");
+
+			// Verify the output contains the expected block
+			assertThat(output).contains(expectedBlock.toString());
 		}
 	}
 
