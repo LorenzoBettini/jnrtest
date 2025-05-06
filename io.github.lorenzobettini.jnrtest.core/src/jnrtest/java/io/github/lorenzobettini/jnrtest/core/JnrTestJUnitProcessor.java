@@ -6,12 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -30,7 +27,7 @@ public class JnrTestJUnitProcessor {
     private static final Pattern AFTER_ALL_PATTERN = Pattern.compile("@AfterAll\\s+static\\s+void\\s+(\\w+)\\s*\\(");
     private static final Pattern AFTER_EACH_PATTERN = Pattern.compile("@AfterEach\\s+void\\s+(\\w+)\\s*\\(");
     private static final Pattern TEST_PATTERN = Pattern.compile("@Test\\s+void\\s+(\\w+)\\s*\\(");
-    private static final Pattern DISPLAY_NAME_PATTERN = Pattern.compile("@DisplayName\\s*\\(\\s*\"([^\"]*)\"\\s*\\)");
+    private static final Pattern DISPLAY_NAME_PATTERN = Pattern.compile("@DisplayName\\s*\\(\\s*\"([^\"]*)\"\\s*\\)[\\s\\n]*@Test[\\s\\n]*void\\s+(\\w+)");
 
     private Path sourceDirectory;
     private Path outputDirectory;
@@ -173,10 +170,12 @@ public class JnrTestJUnitProcessor {
      */
     private String getDisplayName(String content, String methodName) {
         // Look for @DisplayName before the method
-        Pattern pattern = Pattern.compile("@DisplayName\\s*\\(\\s*\"([^\"]*)\"\\s*\\)[\\s\\n]*@Test[\\s\\n]*void\\s+" + methodName);
-        Matcher matcher = pattern.matcher(content);
-        if (matcher.find()) {
-            return matcher.group(1);
+        Matcher matcher = DISPLAY_NAME_PATTERN.matcher(content);
+        while (matcher.find()) {
+            String foundMethodName = matcher.group(2);
+            if (foundMethodName.equals(methodName)) {
+                return matcher.group(1);
+            }
         }
         return null;
     }
