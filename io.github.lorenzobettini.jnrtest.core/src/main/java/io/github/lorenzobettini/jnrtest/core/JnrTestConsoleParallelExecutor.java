@@ -1,9 +1,11 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 /**
- * A high-level class that provides a simplified API for setting up and executing test cases
+ * A high-level class that provides a simplified API for setting up and
+ * executing test cases
  * in a parallel environment.
- * It handles the creation of thread-safe recorders and reporters, execution of tests, and reporting of results.
+ * It handles the creation of thread-safe recorders and reporters, execution of
+ * tests, and reporting of results.
  * 
  * @author Lorenzo Bettini
  */
@@ -13,7 +15,8 @@ public class JnrTestConsoleParallelExecutor {
     private final JnrTestThreadSafeConsoleReporter reporter;
 
     /**
-     * Creates a new JnrTestConsoleParallelExecutor with default thread-safe recorder and reporter configured with elapsed time.
+     * Creates a new JnrTestConsoleParallelExecutor with default thread-safe
+     * recorder and reporter configured with elapsed time.
      */
     public JnrTestConsoleParallelExecutor() {
         this.recorder = new JnrTestThreadSafeRecorder().withElapsedTime();
@@ -46,12 +49,11 @@ public class JnrTestConsoleParallelExecutor {
     }
 
     /**
-     * Executes all test cases, prints the results, and throws an exception if any tests fail.
+     * Executes all test cases, prints the results, and throws an exception if any
+     * tests fail.
      */
     public void execute() {
-        runner.execute();
-        System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
-        if (!recorder.isSuccess()) {
+        if (!executeWithoutThrowing()) {
             throw new RuntimeException("There are test failures");
         }
     }
@@ -65,23 +67,5 @@ public class JnrTestConsoleParallelExecutor {
         runner.execute();
         System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
         return recorder.isSuccess();
-    }
-
-    /**
-     * Gets the test recorder used by this executor.
-     *
-     * @return the test recorder
-     */
-    public JnrTestThreadSafeRecorder getRecorder() {
-        return recorder;
-    }
-
-    /**
-     * Gets the test runner used by this executor.
-     *
-     * @return the test runner
-     */
-    public JnrTestParallelRunner getRunner() {
-        return runner;
     }
 }

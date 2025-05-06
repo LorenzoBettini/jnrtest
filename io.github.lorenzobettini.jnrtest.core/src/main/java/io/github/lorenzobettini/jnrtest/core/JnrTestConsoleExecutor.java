@@ -46,17 +46,6 @@ public class JnrTestConsoleExecutor {
     }
 
     /**
-     * Executes all test cases, prints the results, and throws an exception if any tests fail.
-     */
-    public void execute() {
-        runner.execute();
-        System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
-        if (!recorder.isSuccess()) {
-            throw new RuntimeException("There are test failures");
-        }
-    }
-
-    /**
      * Executes all test cases and prints the results.
      *
      * @return true if all tests passed, false otherwise
@@ -68,20 +57,11 @@ public class JnrTestConsoleExecutor {
     }
 
     /**
-     * Gets the test recorder used by this executor.
-     *
-     * @return the test recorder
+     * Executes all test cases, prints the results, and throws an exception if any tests fail.
      */
-    public JnrTestRecorder getRecorder() {
-        return recorder;
-    }
-
-    /**
-     * Gets the test runner used by this executor.
-     *
-     * @return the test runner
-     */
-    public JnrTestRunner getRunner() {
-        return runner;
+    public void execute() {
+        if (!executeWithoutThrowing()) {
+            throw new RuntimeException("There are test failures");
+        }
     }
 }
