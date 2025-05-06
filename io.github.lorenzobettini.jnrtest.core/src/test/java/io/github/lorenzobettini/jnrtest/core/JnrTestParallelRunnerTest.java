@@ -45,6 +45,9 @@ class JnrTestParallelRunnerTest {
 					afterAll("after all", () -> {});
 					test("success test", () -> {
 						// success
+						// since we record time, let's make sure to have some
+						// delay, otherwise the elapsed time might be 0 on fast machines
+						Thread.sleep(10); // NOSONAR
 					});
 					test("error test", () -> {
 						throw new Exception("an exception");
