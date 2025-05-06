@@ -27,9 +27,17 @@ public class JnrTestJUnitProcessor {
 	private static final Pattern BEFORE_EACH_PATTERN = Pattern.compile("@BeforeEach\\s+void\\s+(\\w+)\\s*\\(");
 	private static final Pattern AFTER_ALL_PATTERN = Pattern.compile("@AfterAll\\s+static\\s+void\\s+(\\w+)\\s*\\(");
 	private static final Pattern AFTER_EACH_PATTERN = Pattern.compile("@AfterEach\\s+void\\s+(\\w+)\\s*\\(");
+	
+	// Pattern for test methods with @Test before method declaration
 	private static final Pattern TEST_PATTERN = Pattern.compile("@Test\\s+void\\s+(\\w+)\\s*\\(");
-	private static final Pattern DISPLAY_NAME_PATTERN = Pattern
-			.compile("@DisplayName\\s*\\(\\s*\"([^\"]*)\"\\s*\\)[\\s\\n]*@Test[\\s\\n]*void\\s+(\\w+)");
+	// Pattern for test methods with @Test after @DisplayName
+	private static final Pattern TEST_AFTER_DISPLAYNAME_PATTERN = Pattern.compile("@DisplayName[^@]*@Test[^v]*void\\s+(\\w+)\\s*\\(");
+	// Pattern for test methods with @DisplayName after @Test
+	private static final Pattern TEST_BEFORE_DISPLAYNAME_PATTERN = Pattern.compile("@Test[^@]*@DisplayName[^v]*void\\s+(\\w+)\\s*\\(");
+	
+	// DisplayName patterns to grab display names in either position
+	private static final Pattern DISPLAY_NAME_PATTERN_BEFORE = Pattern.compile("@DisplayName\\s*\\(\\s*\"([^\"]*)\"\\s*\\)[\\s\\n]*@Test[\\s\\n]*void\\s+(\\w+)");
+	private static final Pattern DISPLAY_NAME_PATTERN_AFTER = Pattern.compile("@Test[\\s\\n]*@DisplayName\\s*\\(\\s*\"([^\"]*)\"\\s*\\)[\\s\\n]*void\\s+(\\w+)");
 
 	private Path sourceDirectory;
 	private Path outputDirectory;
@@ -88,6 +96,38 @@ public class JnrTestJUnitProcessor {
 	}
 
 	/**
+	 * Extract test methods from the file content.
+	 */
+	private List<String> extractTestMethods(String content) {
+		List<String> methods = new ArrayList<>();
+		
+		// Find regular test methods
+		Matcher matcher = TEST_PATTERN.matcher(content);
+		while (matcher.find()) {
+			methods.add(matcher.group(1));
+		}
+		
+		// Check for any test methods we might have missed with other annotation patterns
+		addMissingTestMethods(methods, content, TEST_AFTER_DISPLAYNAME_PATTERN);
+		addMissingTestMethods(methods, content, TEST_BEFORE_DISPLAYNAME_PATTERN);
+		
+		return methods;
+	}
+	
+	/**
+	 * Add test methods from the given pattern if they're not already in the list.
+	 */
+	private void addMissingTestMethods(List<String> methods, String content, Pattern pattern) {
+		Matcher matcher = pattern.matcher(content);
+		while (matcher.find()) {
+			String methodName = matcher.group(1);
+			if (!methods.contains(methodName)) {
+				methods.add(methodName);
+			}
+		}
+	}
+
+	/**
 	 * Process a single JUnit test file and generate the corresponding JnrTest file.
 	 */
 	private void processFile(Path file) {
@@ -108,7 +148,7 @@ public class JnrTestJUnitProcessor {
 			List<String> beforeEachMethods = extractMethods(content, BEFORE_EACH_PATTERN);
 			List<String> afterAllMethods = extractMethods(content, AFTER_ALL_PATTERN);
 			List<String> afterEachMethods = extractMethods(content, AFTER_EACH_PATTERN);
-			List<String> testMethods = extractMethods(content, TEST_PATTERN);
+			List<String> testMethods = extractTestMethods(content);
 
 			// Generate the JnrTest class
 			String jnrTestContent = generateJnrTestClass(packageName, className, jnrTestClassName, beforeAllMethods,
@@ -167,14 +207,24 @@ public class JnrTestJUnitProcessor {
 	 * Get the display name for a test method if it exists.
 	 */
 	private String getDisplayName(String content, String methodName) {
-		// Look for @DisplayName before the method
-		Matcher matcher = DISPLAY_NAME_PATTERN.matcher(content);
-		while (matcher.find()) {
-			String foundMethodName = matcher.group(2);
+		// Look for @DisplayName before the @Test annotation
+		Matcher matcherBefore = DISPLAY_NAME_PATTERN_BEFORE.matcher(content);
+		while (matcherBefore.find()) {
+			String foundMethodName = matcherBefore.group(2);
 			if (foundMethodName.equals(methodName)) {
-				return matcher.group(1);
+				return matcherBefore.group(1);
 			}
 		}
+		
+		// Look for @DisplayName after the @Test annotation
+		Matcher matcherAfter = DISPLAY_NAME_PATTERN_AFTER.matcher(content);
+		while (matcherAfter.find()) {
+			String foundMethodName = matcherAfter.group(2);
+			if (foundMethodName.equals(methodName)) {
+				return matcherAfter.group(1);
+			}
+		}
+		
 		return null;
 	}
 

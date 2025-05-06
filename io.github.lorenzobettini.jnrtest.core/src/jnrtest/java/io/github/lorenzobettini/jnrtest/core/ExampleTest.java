@@ -46,4 +46,12 @@ class ExampleTest {
 		System.out.println("Test 2");
 		assertEquals(1, count);
 	}
+
+	@Test
+	@DisplayName("Test 3")
+	void test3() {
+		System.out.println("Test 3");
+		assertEquals(1, count);
+	}
+
 }

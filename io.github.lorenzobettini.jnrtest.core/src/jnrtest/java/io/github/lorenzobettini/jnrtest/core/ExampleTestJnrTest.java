@@ -28,6 +28,10 @@ public class ExampleTestJnrTest extends JnrTestCase {
 		test("test2", () -> {
 			originalTest.test2();
 		});
+
+		test("Test 3", () -> {
+			originalTest.test3();
+		});
 	}
 	
 }
