@@ -1,17 +1,13 @@
 package io.github.lorenzobettini.jnrtest.examples;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTestRecorder;
-import io.github.lorenzobettini.jnrtest.core.JnrTestResultAggregator;
-import io.github.lorenzobettini.jnrtest.core.JnrTestRunner;
-import io.github.lorenzobettini.jnrtest.core.JnrTestConsoleReporter;
+import io.github.lorenzobettini.jnrtest.core.JnrTestConsoleExecutor;
 import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseGuiceExtension;
 import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseMockitoExtension;
 
 public class JnrExamplesTestMain {
 
 	public static void main(String[] args) {
-		var recorder = new JnrTestRecorder().withElapsedTime();
-		var runner = new JnrTestRunner()
+		new JnrTestConsoleExecutor()
 				.testCase(new FactorialJnrTestCase())
 				.testCase(new FactorialJnrParameterizedTestCase())
 				.testCase(new FactorialJnrParameterizedWithDescriptionTestCase())
@@ -25,11 +21,6 @@ public class JnrExamplesTestMain {
 				.testCase(new JnrTestCaseGuiceExtension(
 						new StringRepositoryInMemoryGuiceModule())
 					.extendAll(new StringServiceWithGuiceTestCase()))
-			.testListener(recorder)
-			.testListener(new JnrTestConsoleReporter().withElapsedTime());
-		runner.execute();
-		System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
-		if (!recorder.isSuccess())
-			throw new RuntimeException("There are test failures");
+				.execute();
 	}
 }
