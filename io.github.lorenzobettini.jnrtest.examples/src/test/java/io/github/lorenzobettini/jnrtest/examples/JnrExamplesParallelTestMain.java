@@ -3,7 +3,7 @@ package io.github.lorenzobettini.jnrtest.examples;
 import io.github.lorenzobettini.jnrtest.core.JnrTestParallelRunner;
 import io.github.lorenzobettini.jnrtest.core.JnrTestResultAggregator;
 import io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeRecorder;
-import io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeStandardReporter;
+import io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeConsoleReporter;
 import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseGuiceExtension;
 import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseMockitoExtension;
 
@@ -26,7 +26,7 @@ public class JnrExamplesParallelTestMain {
 						new StringRepositoryInMemoryGuiceModule())
 					.extendAll(new StringServiceWithGuiceTestCase()))
 			.testListener(recorder)
-			.testListener(new JnrTestThreadSafeStandardReporter().withElapsedTime());
+			.testListener(new JnrTestThreadSafeConsoleReporter().withElapsedTime());
 		runner.execute();
 		System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
 		if (!recorder.isSuccess())

@@ -3,7 +3,7 @@ package io.github.lorenzobettini.jnrtest.examples;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRecorder;
 import io.github.lorenzobettini.jnrtest.core.JnrTestResultAggregator;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunner;
-import io.github.lorenzobettini.jnrtest.core.JnrTestStandardReporter;
+import io.github.lorenzobettini.jnrtest.core.JnrTestConsoleReporter;
 import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseGuiceExtension;
 import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseMockitoExtension;
 
@@ -26,7 +26,7 @@ public class JnrExamplesTestMain {
 						new StringRepositoryInMemoryGuiceModule())
 					.extendAll(new StringServiceWithGuiceTestCase()))
 			.testListener(recorder)
-			.testListener(new JnrTestStandardReporter().withElapsedTime());
+			.testListener(new JnrTestConsoleReporter().withElapsedTime());
 		runner.execute();
 		System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
 		if (!recorder.isSuccess())

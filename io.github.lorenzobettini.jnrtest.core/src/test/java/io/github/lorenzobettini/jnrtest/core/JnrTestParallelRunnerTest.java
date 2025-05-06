@@ -35,7 +35,7 @@ class JnrTestParallelRunnerTest {
 	@Test
 	@DisplayName("should run in parallel")
 	void shouldReportResults() {
-		var testReporter = new JnrTestThreadSafeStandardReporter();
+		var testReporter = new JnrTestThreadSafeConsoleReporter();
 		var testRecorderWithElapsed = new JnrTestThreadSafeRecorder().withElapsedTime();
 		JnrTestRunner runner = new JnrTestParallelRunner()
 			.testCase(new JnrTestCase("a test case with success") {
