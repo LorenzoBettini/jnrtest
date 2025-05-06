@@ -1,0 +1,15 @@
+package io.github.lorenzobettini.jnrtest.core;
+
+public class JnrTestThreadSafeRecorderTestJnrTest extends JnrTestCase {
+
+	private JnrTestThreadSafeRecorderTest originalTest = new JnrTestThreadSafeRecorderTest();
+
+	public JnrTestThreadSafeRecorderTestJnrTest() {
+		super("JnrTestThreadSafeRecorderTest in JnrTest");
+	}
+
+	@Override
+	protected void specify() {
+	}
+	
+}
