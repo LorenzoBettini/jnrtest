@@ -17,12 +17,12 @@ public class JnrTestConsoleExecutorTestJnrTest extends JnrTestCase {
 		afterEach("call restoreStreams",
 			() -> originalTest.restoreStreams());
 
-		test("should add listeners correctly", () -> {
-			originalTest.shouldAddListenersCorrectly();
-		});
-
 		test("should add test cases correctly", () -> {
 			originalTest.shouldAddTestCasesCorrectly();
+		});
+
+		test("should add listeners correctly", () -> {
+			originalTest.shouldAddListenersCorrectly();
 		});
 
 		test("should execute tests without throwing when all tests pass", () -> {

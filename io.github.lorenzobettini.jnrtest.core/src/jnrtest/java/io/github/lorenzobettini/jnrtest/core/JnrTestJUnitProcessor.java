@@ -28,8 +28,8 @@ public class JnrTestJUnitProcessor {
 	private static final Pattern AFTER_ALL_PATTERN = Pattern.compile("@AfterAll\\s+static\\s+void\\s+(\\w+)\\s*\\(");
 	private static final Pattern AFTER_EACH_PATTERN = Pattern.compile("@AfterEach\\s+void\\s+(\\w+)\\s*\\(");
 	
-	// Pattern for test methods with @Test before method declaration
-	private static final Pattern TEST_PATTERN = Pattern.compile("@Test\\s+void\\s+(\\w+)\\s*\\(");
+	// Pattern for test methods with @Test before method declaration - captures any whitespace/comments between @Test and void
+	private static final Pattern TEST_PATTERN = Pattern.compile("@Test\\s+(?:[^v]*?)void\\s+(\\w+)\\s*\\(");
 	// Pattern for test methods with @Test after @DisplayName
 	private static final Pattern TEST_AFTER_DISPLAYNAME_PATTERN = Pattern.compile("@DisplayName[^@]*@Test[^v]*void\\s+(\\w+)\\s*\\(");
 	// Pattern for test methods with @DisplayName after @Test

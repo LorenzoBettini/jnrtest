@@ -10,6 +10,18 @@ public class JnrTestThreadSafeRecorderTestJnrTest extends JnrTestCase {
 
 	@Override
 	protected void specify() {
+
+		test("testSingleThreadedRecording", () -> {
+			originalTest.testSingleThreadedRecording();
+		});
+
+		test("testMultiThreadedRecording", () -> {
+			originalTest.testMultiThreadedRecording();
+		});
+
+		test("testMultiThreadedFailures", () -> {
+			originalTest.testMultiThreadedFailures();
+		});
 	}
 	
 }
