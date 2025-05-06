@@ -6,7 +6,6 @@ import java.util.stream.Stream;
  * A specialized {@link JnrTestRunner} that executes test cases in parallel.
  * 
  * @author Lorenzo Bettini
- *
  */
 public class JnrTestParallelRunner extends JnrTestRunner {
 

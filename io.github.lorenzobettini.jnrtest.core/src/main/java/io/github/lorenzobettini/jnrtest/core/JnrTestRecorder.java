@@ -9,7 +9,6 @@ import java.util.Map;
  * Records test results for each test case.
  * 
  * @author Lorenzo Bettini
- *
  */
 public class JnrTestRecorder extends JnrTestListenerAdapter implements JnrTestRecorderInterface {
 

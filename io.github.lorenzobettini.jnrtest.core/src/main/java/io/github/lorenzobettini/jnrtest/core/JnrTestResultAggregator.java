@@ -4,7 +4,6 @@ package io.github.lorenzobettini.jnrtest.core;
  * Aggregates results recorded by {@link JnrTestRecorderInterface}.
  * 
  * @author Lorenzo Bettini
- *
  */
 public class JnrTestResultAggregator {
 

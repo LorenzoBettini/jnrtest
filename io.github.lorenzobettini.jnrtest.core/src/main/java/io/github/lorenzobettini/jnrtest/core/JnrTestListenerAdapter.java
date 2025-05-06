@@ -4,7 +4,6 @@ package io.github.lorenzobettini.jnrtest.core;
  * Adapter for {@link JnrTestListener} implementing all methods as empty.
  * 
  * @author Lorenzo Bettini
- *
  */
 public abstract class JnrTestListenerAdapter implements JnrTestListener {
 

@@ -8,6 +8,11 @@ import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
 import io.github.lorenzobettini.jnrtest.core.JnrTestCaseExtension;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableSpecification;
 
+/**
+ * A Mockito extension for JnrTestCase.
+ * 
+ * @author Lorenzo Bettini
+ */
 public class JnrTestCaseMockitoExtension extends JnrTestCaseExtension {
 
 	private AutoCloseable autoCloseable;

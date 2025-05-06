@@ -1,5 +1,10 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+/**
+ * Tracks and reports test execution statistics.
+ * 
+ * @author Lorenzo Bettini
+ */
 public class JnrTestStatistics {
 
     private int succeeded;

@@ -1,5 +1,9 @@
 package io.github.lorenzobettini.jnrtest.examples;
 
+/**
+ * 
+ * @author Lorenzo Bettini
+ */
 public class Factorial {
 
 	public int compute(int n) {

@@ -9,7 +9,6 @@ import java.util.Map;
  * Provides methods for managing test results and elapsed time.
  * 
  * @author Lorenzo Bettini
- * 
  */
 public interface JnrTestRecorderInterface {
 

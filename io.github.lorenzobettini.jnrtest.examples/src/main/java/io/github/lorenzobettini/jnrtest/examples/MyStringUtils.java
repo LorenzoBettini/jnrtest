@@ -1,5 +1,10 @@
 package io.github.lorenzobettini.jnrtest.examples;
 
+/**
+ * Utility methods for string manipulation.
+ * 
+ * @author Lorenzo Bettini
+ */
 public class MyStringUtils {
 
 	public String leftTrim(String input) {
