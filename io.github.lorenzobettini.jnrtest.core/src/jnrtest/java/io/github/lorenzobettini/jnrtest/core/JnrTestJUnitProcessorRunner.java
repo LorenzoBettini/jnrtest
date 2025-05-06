@@ -15,7 +15,8 @@ public class JnrTestJUnitProcessorRunner {
 					"test", "java", "io", "github", "lorenzobettini", "jnrtest", "core");
 
 			// Output directory for generated JnrTest files
-			Path outputDirectory = Paths.get(currentDir.toString(), "generated-jnrtests");
+			Path outputDirectory = Paths.get(currentDir.toString(), "io.github.lorenzobettini.jnrtest.core", "src",
+					"jnrtest", "java");
 
 			System.out.println("Processing test files from: " + sourceDirectory);
 			System.out.println("Writing output to: " + outputDirectory);
