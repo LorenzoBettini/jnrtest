@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class JnrTestStandardReporterTest {
+class JnrTestConsoleReporterTest {
 
 	private ByteArrayOutputStream outContent;
 	private ByteArrayOutputStream errContent;
@@ -36,7 +36,7 @@ class JnrTestStandardReporterTest {
 	@Test
 	@DisplayName("should report results")
 	void shouldReportResults() {
-		var testReporter = new JnrTestStandardReporter();
+		var testReporter = new JnrTestConsoleReporter();
 		JnrTestRunner runner = new JnrTestRunner()
 			.testCase(new JnrTestCase("a test case with success") {
 				@Override
@@ -83,7 +83,7 @@ class JnrTestStandardReporterTest {
 	@Test
 	@DisplayName("should report results with elapsed time")
 	void shouldReportResultsWithElapsedTime() {
-		var testReporter = new JnrTestStandardReporter();
+		var testReporter = new JnrTestConsoleReporter();
 		JnrTestRunner runner = new JnrTestRunner()
 			.testCase(new JnrTestCase("a test case with success") {
 				@Override

@@ -35,7 +35,7 @@ class JnrTestParallelRunnerTest {
 	@Test
 	@DisplayName("should run in parallel")
 	void shouldReportResults() {
-		var testReporter = new JnrTestThreadSafeStandardReporter();
+		var testReporter = new JnrTestThreadSafeConsoleReporter();
 		var testRecorderWithElapsed = new JnrTestThreadSafeRecorder().withElapsedTime();
 		JnrTestRunner runner = new JnrTestParallelRunner()
 			.testCase(new JnrTestCase("a test case with success") {
@@ -45,6 +45,9 @@ class JnrTestParallelRunnerTest {
 					afterAll("after all", () -> {});
 					test("success test", () -> {
 						// success
+						// since we record time, let's make sure to have some
+						// delay, otherwise the elapsed time might be 0 on fast machines
+						Thread.sleep(10); // NOSONAR
 					});
 					test("error test", () -> {
 						throw new Exception("an exception");

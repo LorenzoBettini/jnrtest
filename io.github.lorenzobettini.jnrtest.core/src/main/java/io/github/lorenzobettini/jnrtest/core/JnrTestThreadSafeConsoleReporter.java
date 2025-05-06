@@ -8,14 +8,14 @@ import java.io.ByteArrayOutputStream;
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestThreadSafeStandardReporter implements JnrTestListener {
+public class JnrTestThreadSafeConsoleReporter implements JnrTestListener {
 
-	private final ThreadLocal<JnrTestStandardReporter> currentReporter = new ThreadLocal<>();
+	private final ThreadLocal<JnrTestConsoleReporter> currentReporter = new ThreadLocal<>();
 	private final ThreadLocal<ByteArrayOutputStream> currentOutputStream = new ThreadLocal<>();
 	private final ThreadLocal<String> currentKey = new ThreadLocal<>();
     private boolean withElapsedTime = false;
 
-    public JnrTestThreadSafeStandardReporter withElapsedTime() {
+    public JnrTestThreadSafeConsoleReporter withElapsedTime() {
         this.withElapsedTime = true;
         return this;
     }
@@ -28,10 +28,10 @@ public class JnrTestThreadSafeStandardReporter implements JnrTestListener {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			PrintStream printStream = new PrintStream(outputStream);
 			currentOutputStream.set(outputStream);
-			currentReporter.set(new JnrTestStandardReporter(printStream).withElapsedTime(withElapsedTime));
+			currentReporter.set(new JnrTestConsoleReporter(printStream).withElapsedTime(withElapsedTime));
             currentReporter.get().notify(event);
 		} else if (event.status() == JnrTestCaseStatus.END) {
-			JnrTestStandardReporter reporter = currentReporter.get();
+			JnrTestConsoleReporter reporter = currentReporter.get();
             reporter.notify(event);
 			ByteArrayOutputStream outputStream = currentOutputStream.get();
 			System.out.print(outputStream.toString());
@@ -40,13 +40,13 @@ public class JnrTestThreadSafeStandardReporter implements JnrTestListener {
 
 	@Override
 	public void notify(JnrTestRunnableLifecycleEvent event) {
-		JnrTestStandardReporter reporter = currentReporter.get();
+		JnrTestConsoleReporter reporter = currentReporter.get();
 		reporter.notify(event);
 	}
 
 	@Override
 	public void notify(JnrTestResult result) {
-		JnrTestStandardReporter reporter = currentReporter.get();
+		JnrTestConsoleReporter reporter = currentReporter.get();
 		reporter.notify(result);
 	}
 }

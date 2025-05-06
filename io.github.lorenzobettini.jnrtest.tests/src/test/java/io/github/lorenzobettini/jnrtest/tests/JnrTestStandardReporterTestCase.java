@@ -9,7 +9,7 @@ import java.io.PrintStream;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunner;
-import io.github.lorenzobettini.jnrtest.core.JnrTestStandardReporter;
+import io.github.lorenzobettini.jnrtest.core.JnrTestConsoleReporter;
 
 /**
  * Note that since we redirect output, when running this tests, we will not
@@ -42,7 +42,7 @@ public class JnrTestStandardReporterTestCase extends JnrTestCase {
 			System.setErr(originalErr);
 		});
 		test("should report results", () -> {
-			var testReporter = new JnrTestStandardReporter();
+			var testReporter = new JnrTestConsoleReporter();
 			JnrTestRunner runner = new JnrTestRunner()
 				.testCase(new JnrTestCase("a test case with success") {
 					@Override
@@ -86,7 +86,7 @@ public class JnrTestStandardReporterTestCase extends JnrTestCase {
 				.contains("an exception", "expected: <true> but was: <false>");
 		});
 		test("should report results with elapsed time", () -> {
-			var testReporter = new JnrTestStandardReporter();
+			var testReporter = new JnrTestConsoleReporter();
 			JnrTestRunner runner = new JnrTestRunner()
 				.testCase(new JnrTestCase("a test case with success") {
 					@Override

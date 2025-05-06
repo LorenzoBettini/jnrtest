@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JnrTestThreadSafeStandardReporterTest {
+class JnrTestThreadSafeConsoleReporterTest {
 
 	private ByteArrayOutputStream outputStream;
 	private PrintStream originalOut;
@@ -31,7 +31,7 @@ class JnrTestThreadSafeStandardReporterTest {
 
 	@Test
 	void testThreadSafetyWithResultsAndVerification() throws InterruptedException {
-		JnrTestThreadSafeStandardReporter reporter = new JnrTestThreadSafeStandardReporter();
+		JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter();
 
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
 
@@ -79,7 +79,7 @@ class JnrTestThreadSafeStandardReporterTest {
 
 	@Test
 	void testSingleThreadCompleteOutputVerification() {
-		JnrTestThreadSafeStandardReporter reporter = new JnrTestThreadSafeStandardReporter();
+		JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter();
 
 		String testCaseName = "TestCase-1";
 		JnrTestCaseLifecycleEvent startEvent = new JnrTestCaseLifecycleEvent(

@@ -12,25 +12,25 @@ import java.io.PrintStream;
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestStandardReporter implements JnrTestListener {
+public class JnrTestConsoleReporter implements JnrTestListener {
 
 	private final PrintStream printStream;
 	private JnrTestStatistics testStatistics = new JnrTestStatistics();
 
-	public JnrTestStandardReporter() {
+	public JnrTestConsoleReporter() {
 		this(System.out);
 	}
 
-	public JnrTestStandardReporter(PrintStream printStream) {
+	public JnrTestConsoleReporter(PrintStream printStream) {
 		this.printStream = printStream;
 	}
 
-	public JnrTestStandardReporter withElapsedTime() {
+	public JnrTestConsoleReporter withElapsedTime() {
 		testStatistics.setWithElapsedTime(true);
 		return this;
 	}
 
-	public JnrTestStandardReporter withElapsedTime(boolean withElapsedTime) {
+	public JnrTestConsoleReporter withElapsedTime(boolean withElapsedTime) {
 		testStatistics.setWithElapsedTime(withElapsedTime);
 		return this;
 	}
