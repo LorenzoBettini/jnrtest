@@ -1,0 +1,87 @@
+package io.github.lorenzobettini.jnrtest.core;
+
+/**
+ * A high-level class that provides a simplified API for setting up and executing test cases
+ * in a sequential environment.
+ * It handles the creation of recorders and reporters, execution of tests, and reporting of results.
+ * 
+ * @author Lorenzo Bettini
+ */
+public class JnrTestConsoleExecutor {
+    private final JnrTestRunner runner;
+    private final JnrTestRecorder recorder;
+    private final JnrTestConsoleReporter reporter;
+
+    /**
+     * Creates a new JnrTestConsoleExecutor with default recorder and reporter configured with elapsed time.
+     */
+    public JnrTestConsoleExecutor() {
+        this.recorder = new JnrTestRecorder().withElapsedTime();
+        this.reporter = new JnrTestConsoleReporter().withElapsedTime();
+        this.runner = new JnrTestRunner();
+        this.runner.testListener(recorder);
+        this.runner.testListener(reporter);
+    }
+
+    /**
+     * Adds a test case to be executed.
+     *
+     * @param testCase the test case to add
+     * @return this instance for method chaining
+     */
+    public JnrTestConsoleExecutor testCase(JnrTestCase testCase) {
+        runner.testCase(testCase);
+        return this;
+    }
+
+    /**
+     * Adds a listener to the test execution.
+     *
+     * @param listener the listener to add
+     * @return this instance for method chaining
+     */
+    public JnrTestConsoleExecutor testListener(JnrTestListener listener) {
+        runner.testListener(listener);
+        return this;
+    }
+
+    /**
+     * Executes all test cases, prints the results, and throws an exception if any tests fail.
+     */
+    public void execute() {
+        runner.execute();
+        System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
+        if (!recorder.isSuccess()) {
+            throw new RuntimeException("There are test failures");
+        }
+    }
+
+    /**
+     * Executes all test cases and prints the results.
+     *
+     * @return true if all tests passed, false otherwise
+     */
+    public boolean executeWithoutThrowing() {
+        runner.execute();
+        System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
+        return recorder.isSuccess();
+    }
+
+    /**
+     * Gets the test recorder used by this executor.
+     *
+     * @return the test recorder
+     */
+    public JnrTestRecorder getRecorder() {
+        return recorder;
+    }
+
+    /**
+     * Gets the test runner used by this executor.
+     *
+     * @return the test runner
+     */
+    public JnrTestRunner getRunner() {
+        return runner;
+    }
+}
