@@ -9,9 +9,8 @@ import java.util.Map;
  * Records test results for each test case.
  * 
  * @author Lorenzo Bettini
- *
  */
-public class JnrTestRecorder extends JnrTestListenerAdapter {
+public class JnrTestRecorder extends JnrTestListenerAdapter implements JnrTestRecorderInterface {
 
 	private Map<String, List<JnrTestResult>> results = new LinkedHashMap<>();
 
@@ -28,6 +27,7 @@ public class JnrTestRecorder extends JnrTestListenerAdapter {
 		return this;
 	}
 
+	@Override
 	public long getTotalTime() {
 		return totalTime;
 	}
@@ -56,10 +56,12 @@ public class JnrTestRecorder extends JnrTestListenerAdapter {
 		results.get(currentKey).add(result);
 	}
 
+	@Override
 	public Map<String, List<JnrTestResult>> getResults() {
 		return results;
 	}
 
+	@Override
 	public boolean isSuccess() {
 		return success;
 	}

@@ -9,6 +9,11 @@ import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
 import io.github.lorenzobettini.jnrtest.core.JnrTestCaseExtension;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableSpecification;
 
+/**
+ * A Guice extension for JnrTestCase.
+ * 
+ * @author Lorenzo Bettini
+ */
 public class JnrTestCaseGuiceExtension extends JnrTestCaseExtension {
 
 	private Module module;

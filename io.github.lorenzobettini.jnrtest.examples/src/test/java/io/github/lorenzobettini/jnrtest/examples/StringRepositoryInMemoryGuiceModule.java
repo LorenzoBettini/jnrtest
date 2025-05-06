@@ -5,6 +5,10 @@ import java.util.Collection;
 
 import com.google.inject.Binder;
 
+/**
+ * 
+ * @author Lorenzo Bettini
+ */
 public class StringRepositoryInMemoryGuiceModule implements com.google.inject.Module {
 
 	@Override

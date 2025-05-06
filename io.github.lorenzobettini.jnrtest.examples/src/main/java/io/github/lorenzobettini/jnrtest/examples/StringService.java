@@ -4,6 +4,11 @@ import java.util.Collection;
 
 import com.google.inject.Inject;
 
+/**
+ * Provides string-related services.
+ * 
+ * @author Lorenzo Bettini
+ */
 public class StringService {
 
 	private StringRepository repository;

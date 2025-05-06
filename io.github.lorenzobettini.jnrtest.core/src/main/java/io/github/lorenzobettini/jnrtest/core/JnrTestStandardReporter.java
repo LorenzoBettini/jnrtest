@@ -1,26 +1,42 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import java.io.PrintStream;
+
+/**
+ * Standard reporter for JnrTest.
+ * 
+ * This class implements the JnrTestListener interface and provides a simple
+ * console output for test results.
+ * It defaults to using System.out for output, but can be configured to use any
+ * {@link PrintStream}.
+ * 
+ * @author Lorenzo Bettini
+ */
 public class JnrTestStandardReporter implements JnrTestListener {
 
-	private int succeeded;
-	private int failed;
-	private int errors;
+	private final PrintStream printStream;
+	private JnrTestStatistics testStatistics = new JnrTestStatistics();
 
-	private boolean withElapsedTime = false;
-	private long startTime;
-	private long elapsedTime;
-	private long totalTime = 0;
+	public JnrTestStandardReporter() {
+		this(System.out);
+	}
+
+	public JnrTestStandardReporter(PrintStream printStream) {
+		this.printStream = printStream;
+	}
 
 	public JnrTestStandardReporter withElapsedTime() {
-		withElapsedTime = true;
+		testStatistics.setWithElapsedTime(true);
+		return this;
+	}
+
+	public JnrTestStandardReporter withElapsedTime(boolean withElapsedTime) {
+		testStatistics.setWithElapsedTime(withElapsedTime);
 		return this;
 	}
 
 	private void reset() {
-		succeeded = 0;
-		failed = 0;
-		errors = 0;
-		totalTime = 0;
+		testStatistics.reset();
 	}
 
 	@Override
@@ -29,48 +45,51 @@ public class JnrTestStandardReporter implements JnrTestListener {
 			reset();
 			show(event.toString());
 		}
-		if (event.status() == JnrTestCaseStatus.END)
+		if (event.status() == JnrTestCaseStatus.END) {
 			show(String.format("Tests run: %d, Succeeded: %d, Failures: %d, Errors: %d",
-					succeeded + failed + errors,
-					succeeded, failed, errors) + (
-						withElapsedTime ? String.format(" - Time elapsed: %f s", (float) totalTime/3600) : ""));
+					testStatistics.getTotalTests(),
+					testStatistics.getSucceeded(),
+					testStatistics.getFailed(),
+					testStatistics.getErrors())
+					+ (testStatistics.isWithElapsedTime() ? String.format(" - Time elapsed: %f s", (float) testStatistics.getTotalTime() / 3600) : ""));
+		}
 	}
 
 	@Override
 	public void notify(JnrTestRunnableLifecycleEvent event) {
-		if (!withElapsedTime || event.kind() != JnrTestRunnableKind.TEST)
+		if (!testStatistics.isWithElapsedTime() || event.kind() != JnrTestRunnableKind.TEST) {
 			return;
-		if (event.status() == JnrTestRunnableStatus.START)
-			this.startTime = System.currentTimeMillis();
-		else {
-			this.elapsedTime = System.currentTimeMillis() - startTime;
-			this.totalTime += elapsedTime;
+		}
+		if (event.status() == JnrTestRunnableStatus.START) {
+			testStatistics.startTimer();
+		} else {
+			testStatistics.stopTimer();
 		}
 	}
 
 	@Override
 	public void notify(JnrTestResult result) {
 		switch (result.status()) {
-		case SUCCESS: {
-			succeeded++;
-			break;
+			case SUCCESS: {
+				testStatistics.incrementSucceeded();
+				break;
+			}
+			case FAILED: {
+				testStatistics.incrementFailed();
+				result.throwable().printStackTrace();
+				break;
+			}
+			case ERROR: {
+				testStatistics.incrementErrors();
+				result.throwable().printStackTrace();
+			}
 		}
-		case FAILED: {
-			failed++;
-			result.throwable().printStackTrace();
-			break;
-		}
-		case ERROR: {
-			errors++;
-			result.throwable().printStackTrace();
-		}
-		}
-		show(result.toString() + (
-			withElapsedTime ? String.format(" - Time elapsed: %f s", (float) elapsedTime/3600) : ""));
+		show(result.toString()
+				+ (testStatistics.isWithElapsedTime() ? String.format(" - Time elapsed: %f s", (float) testStatistics.getElapsedTime() / 3600) : ""));
 	}
 
 	public void show(String message) {
-		System.out.println(message); // NOSONAR we really want to print to the console
+		printStream.println(message);
 	}
 
 }
