@@ -18,14 +18,14 @@ import io.github.lorenzobettini.jnrtest.core.JnrTestConsoleReporter;
  * @author Lorenzo Bettini
  *
  */
-public class JnrTestStandardReporterTestCase extends JnrTestCase {
+public class JnrTestConsoleReporterTestCase extends JnrTestCase {
 
 	private ByteArrayOutputStream outContent;
 	private ByteArrayOutputStream errContent;
 	private final PrintStream originalOut = System.out;
 	private final PrintStream originalErr = System.err;
 
-	public JnrTestStandardReporterTestCase() {
+	public JnrTestConsoleReporterTestCase() {
 		super("tests for JnrTestStandardReporter with jnrtest");
 	}
 

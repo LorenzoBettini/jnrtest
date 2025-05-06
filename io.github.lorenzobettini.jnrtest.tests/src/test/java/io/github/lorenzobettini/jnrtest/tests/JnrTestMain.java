@@ -11,7 +11,7 @@ public class JnrTestMain {
 		var recorder = new JnrTestRecorder().withElapsedTime();
 		var runner = new JnrTestRunner()
 				.testCase(new JnrTestRunnerTestCase())
-				.testCase(new JnrTestStandardReporterTestCase())
+				.testCase(new JnrTestConsoleReporterTestCase())
 			.testListener(recorder)
 			.testListener(new JnrTestConsoleReporter().withElapsedTime());
 		runner.execute();
