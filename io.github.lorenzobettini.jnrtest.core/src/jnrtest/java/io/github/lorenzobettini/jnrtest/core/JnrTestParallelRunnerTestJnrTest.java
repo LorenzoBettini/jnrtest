@@ -11,15 +11,10 @@ public class JnrTestParallelRunnerTestJnrTest extends JnrTestCase {
 	@Override
 	protected void specify() {
 		beforeEach("call setUpStreams",
-		() -> {
-			originalTest.setUpStreams();
-		});
+			() -> originalTest.setUpStreams());
 		afterEach("call restoreStreams",
 			() -> originalTest.restoreStreams());
-
-		test("should run in parallel", () -> {
-			originalTest.shouldReportResults();
-		});
+		test("should run in parallel",
+			() -> originalTest.shouldReportResults());
 	}
-	
 }

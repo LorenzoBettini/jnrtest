@@ -6,39 +6,57 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+import javax.tools.JavaCompiler.CompilationTask;
+
+import java.util.Arrays;
+
 /**
- * An annotation processor that generates JnrTestCase subclasses from JUnit
+ * A processor that generates JnrTestCase subclasses from JUnit
  * Jupiter test classes. For each Java file containing Jupiter @Test
  * annotations, it generates a corresponding JnrTestCase subclass with the same
- * name plus the suffix "JnrTest".
+ * name plus the suffix "JnrTest". It also generates a main class for running
+ * all the generated JnrTest classes.
+ * 
+ * It uses the Java Compiler API ({@link JavaCompiler}) to parse the Java files and extract the
+ * relevant information about the test methods and their annotations.
  * 
  * @author Lorenzo Bettini
  */
 public class JnrTestJUnitProcessor {
-	// Patterns to identify JUnit annotations and test methods
-	private static final Pattern CLASS_PATTERN = Pattern.compile("class\\s+(\\w+)");
-	private static final Pattern PACKAGE_PATTERN = Pattern.compile("package\\s+([^;]+);");
-	private static final Pattern BEFORE_ALL_PATTERN = Pattern.compile("@BeforeAll\\s+static\\s+void\\s+(\\w+)\\s*\\(");
-	private static final Pattern BEFORE_EACH_PATTERN = Pattern.compile("@BeforeEach\\s+void\\s+(\\w+)\\s*\\(");
-	private static final Pattern AFTER_ALL_PATTERN = Pattern.compile("@AfterAll\\s+static\\s+void\\s+(\\w+)\\s*\\(");
-	private static final Pattern AFTER_EACH_PATTERN = Pattern.compile("@AfterEach\\s+void\\s+(\\w+)\\s*\\(");
 	
-	// Pattern for test methods with @Test before method declaration - captures any whitespace/comments between @Test and void
-	private static final Pattern TEST_PATTERN = Pattern.compile("@Test\\s+(?:[^v]*?)void\\s+(\\w+)\\s*\\(");
-	// Pattern for test methods with @Test after @DisplayName
-	private static final Pattern TEST_AFTER_DISPLAYNAME_PATTERN = Pattern.compile("@DisplayName[^@]*@Test[^v]*void\\s+(\\w+)\\s*\\(");
-	// Pattern for test methods with @DisplayName after @Test
-	private static final Pattern TEST_BEFORE_DISPLAYNAME_PATTERN = Pattern.compile("@Test[^@]*@DisplayName[^v]*void\\s+(\\w+)\\s*\\(");
+	private static final String TEST_ANNOTATION = "org.junit.jupiter.api.Test";
+	private static final String BEFORE_ALL_ANNOTATION = "org.junit.jupiter.api.BeforeAll";
+	private static final String BEFORE_EACH_ANNOTATION = "org.junit.jupiter.api.BeforeEach";
+	private static final String AFTER_ALL_ANNOTATION = "org.junit.jupiter.api.AfterAll";
+	private static final String AFTER_EACH_ANNOTATION = "org.junit.jupiter.api.AfterEach";
+	private static final String DISPLAY_NAME_ANNOTATION = "org.junit.jupiter.api.DisplayName";
 	
-	// DisplayName patterns to grab display names in either position
-	private static final Pattern DISPLAY_NAME_PATTERN_BEFORE = Pattern.compile("@DisplayName\\s*\\(\\s*\"([^\"]*)\"\\s*\\)[\\s\\n]*@Test[\\s\\n]*void\\s+(\\w+)");
-	private static final Pattern DISPLAY_NAME_PATTERN_AFTER = Pattern.compile("@Test[\\s\\n]*@DisplayName\\s*\\(\\s*\"([^\"]*)\"\\s*\\)[\\s\\n]*void\\s+(\\w+)");
-
 	private Path sourceDirectory;
 	private Path outputDirectory;
 	private List<String> generatedClasses;
@@ -65,24 +83,40 @@ public class JnrTestJUnitProcessor {
 	 */
 	public List<String> process() throws IOException {
 		generatedClasses.clear();
+		
+		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		if (compiler == null) {
+			throw new IOException("No Java compiler available. Make sure JDK (not JRE) is used.");
+		}
+		
+		// Find all Java files in source directory that are JUnit test classes
+		List<Path> javaFilePaths = new ArrayList<>();
 		try (Stream<Path> paths = Files.walk(sourceDirectory)) {
 			paths.filter(Files::isRegularFile)
 				.filter(p -> p.toString().endsWith(".java"))
 				.filter(this::isJUnitTestClass)
-				.sorted()
-				.forEach(this::processFile);
-			}
+				.sorted() // Sort files to ensure consistent order
+				.forEach(javaFilePaths::add);
+		}
 		
-		// Generate a main class to run all tests
-		if (!generatedClasses.isEmpty()) {
-			generateJnrTestMain();
+		if (!javaFilePaths.isEmpty()) {
+			// Process each file and generate the corresponding JnrTest file
+			for (Path javaFile : javaFilePaths) {
+				processJavaFile(javaFile);
+			}
+			
+			// Generate a main class to run all tests
+			if (!generatedClasses.isEmpty()) {
+				generateJnrTestMain();
+			}
 		}
 		
 		return generatedClasses;
 	}
-
+	
 	/**
-	 * Checks if a file is a JUnit test class.
+	 * Check if a file is a JUnit test class using basic content checks.
+	 * We'll do full processing later.
 	 */
 	private boolean isJUnitTestClass(Path file) {
 		try {
@@ -92,158 +126,227 @@ public class JnrTestJUnitProcessor {
 				return false;
 			}
 
-			// Read the file content
+			// Read the file content and do a basic check
 			String content = Files.readString(file);
-
-			// Check if it's a proper JUnit test class with specific JUnit Jupiter
-			// annotations
-			boolean hasTestAnnotation = content.contains("@Test");
-			boolean importsJUnit = content.contains("import org.junit.jupiter.api.Test");
-
-			// Only process actual JUnit test classes
-			return hasTestAnnotation && importsJUnit && extractClassName(content) != null;
+			return content.contains("@Test") && 
+				  content.contains("import org.junit.jupiter.api.Test");
 
 		} catch (IOException e) {
 			System.err.println("Error reading file: " + file);
 			return false;
 		}
 	}
-
-	/**
-	 * Extract test methods from the file content.
-	 */
-	private List<String> extractTestMethods(String content) {
-		List<String> methods = new ArrayList<>();
-		
-		// Find regular test methods
-		Matcher matcher = TEST_PATTERN.matcher(content);
-		while (matcher.find()) {
-			methods.add(matcher.group(1));
-		}
-		
-		// Check for any test methods we might have missed with other annotation patterns
-		addMissingTestMethods(methods, content, TEST_AFTER_DISPLAYNAME_PATTERN);
-		addMissingTestMethods(methods, content, TEST_BEFORE_DISPLAYNAME_PATTERN);
-		
-		return methods;
-	}
 	
 	/**
-	 * Add test methods from the given pattern if they're not already in the list.
+	 * Process a single Java file using the Java Compiler API and generate a JnrTest class.
 	 */
-	private void addMissingTestMethods(List<String> methods, String content, Pattern pattern) {
-		Matcher matcher = pattern.matcher(content);
-		while (matcher.find()) {
-			String methodName = matcher.group(1);
-			if (!methods.contains(methodName)) {
-				methods.add(methodName);
-			}
-		}
-	}
-
-	/**
-	 * Process a single JUnit test file and generate the corresponding JnrTest file.
-	 */
-	private void processFile(Path file) {
+	private void processJavaFile(Path javaFile) {
 		try {
-			String content = Files.readString(file);
-			String packageName = extractPackageName(content);
-			String className = extractClassName(content);
-
-			if (className == null) {
-				System.err.println("Could not extract class name from: " + file);
-				return;
+			// Parse the Java file using a source-only approach
+			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+			DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+			
+			try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
+				// Set up the compilation task
+				Iterable<? extends JavaFileObject> compilationUnits = 
+					fileManager.getJavaFileObjects(javaFile.toFile());
+				
+				// Create a temporary in-memory compilation - parse only, no bytecode generation
+				List<String> options = Arrays.asList(
+					"-proc:only",      // Only annotation processing, no compilation
+					"-implicit:none"    // Don't generate class files for implicitly referenced files
+				);
+				
+				CompilationTask task = compiler.getTask(
+					null,              // Writer - null for System.err
+					fileManager,       // File manager
+					diagnostics,       // Diagnostic listener
+					options,           // Options to the compiler
+					null,              // Classes to compile - null means compile everything
+					compilationUnits   // Compilation units to compile
+				);
+				
+				// Create our custom processor to analyze the file
+				TestFileProcessor processor = new TestFileProcessor();
+				task.setProcessors(Collections.singletonList(processor));
+				
+				// Parse the file (doesn't actually compile, just parses)
+				boolean success = task.call();
+				
+				// Check for errors
+				if (!success) {
+					System.err.println("Failed to process " + javaFile);
+					for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+						System.err.format("Error on line %d: %s%n", 
+							diagnostic.getLineNumber(), 
+							diagnostic.getMessage(null));
+					}
+					return;
+				}
+				
+				// Get processing results
+				if (processor.getClassInfo() != null) {
+					ClassInfo classInfo = processor.getClassInfo();
+					
+					// Generate the JnrTest class
+					String jnrTestClassName = classInfo.className + "JnrTest";
+					String fullyQualifiedName = classInfo.packageName + "." + jnrTestClassName;
+					
+					String jnrTestContent = generateJnrTestClass(classInfo);
+					
+					// Write the output file
+					Path outputPath = createOutputPath(classInfo.packageName, jnrTestClassName);
+					Files.createDirectories(outputPath.getParent());
+					try (PrintWriter writer = new PrintWriter(outputPath.toFile())) {
+						writer.println(jnrTestContent);
+					}
+					
+					// Add the generated class to our list
+					generatedClasses.add(fullyQualifiedName);
+					
+					System.out.println("Generated: " + outputPath);
+				}
 			}
-
-			String jnrTestClassName = className + "JnrTest";
-			String fullyQualifiedName = packageName + "." + jnrTestClassName;
-
-			// Extract test methods and lifecycle methods
-			List<String> beforeAllMethods = extractMethods(content, BEFORE_ALL_PATTERN);
-			List<String> beforeEachMethods = extractMethods(content, BEFORE_EACH_PATTERN);
-			List<String> afterAllMethods = extractMethods(content, AFTER_ALL_PATTERN);
-			List<String> afterEachMethods = extractMethods(content, AFTER_EACH_PATTERN);
-			List<String> testMethods = extractTestMethods(content);
-
-			// Generate the JnrTest class
-			String jnrTestContent = generateJnrTestClass(packageName, className, jnrTestClassName, beforeAllMethods,
-					beforeEachMethods, afterAllMethods, afterEachMethods, testMethods, content);
-
-			// Write the output file
-			Path outputPath = createOutputPath(packageName, jnrTestClassName);
-			Files.createDirectories(outputPath.getParent());
-			try (PrintWriter writer = new PrintWriter(outputPath.toFile())) {
-				writer.println(jnrTestContent);
-			}
-
-			// Add the generated class to our list
-			generatedClasses.add(fullyQualifiedName);
-
-			System.out.println("Generated: " + outputPath);
-
 		} catch (IOException e) {
-			System.err.println("Error processing file: " + file);
+			System.err.println("Error processing file: " + javaFile);
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
-	 * Extract the package name from the file content.
+	 * Custom annotation processor to analyze a Java test file.
 	 */
-	private String extractPackageName(String content) {
-		Matcher matcher = PACKAGE_PATTERN.matcher(content);
-		if (matcher.find()) {
-			return matcher.group(1);
-		}
-		return "";
-	}
-
-	/**
-	 * Extract the class name from the file content.
-	 */
-	private String extractClassName(String content) {
-		Matcher matcher = CLASS_PATTERN.matcher(content);
-		if (matcher.find()) {
-			return matcher.group(1);
-		}
-		return null;
-	}
-
-	/**
-	 * Extract method names that match the given pattern.
-	 */
-	private List<String> extractMethods(String content, Pattern pattern) {
-		List<String> methods = new ArrayList<>();
-		Matcher matcher = pattern.matcher(content);
-		while (matcher.find()) {
-			methods.add(matcher.group(1));
-		}
-		return methods;
-	}
-
-	/**
-	 * Get the display name for a test method if it exists.
-	 */
-	private String getDisplayName(String content, String methodName) {
-		// Look for @DisplayName before the @Test annotation
-		Matcher matcherBefore = DISPLAY_NAME_PATTERN_BEFORE.matcher(content);
-		while (matcherBefore.find()) {
-			String foundMethodName = matcherBefore.group(2);
-			if (foundMethodName.equals(methodName)) {
-				return matcherBefore.group(1);
+	@SupportedAnnotationTypes({
+		TEST_ANNOTATION,
+		BEFORE_ALL_ANNOTATION,
+		BEFORE_EACH_ANNOTATION,
+		AFTER_ALL_ANNOTATION,
+		AFTER_EACH_ANNOTATION,
+		DISPLAY_NAME_ANNOTATION
+	})
+	@SupportedSourceVersion(SourceVersion.RELEASE_21)
+	private static class TestFileProcessor extends AbstractProcessor {
+		private ClassInfo classInfo = null;
+		
+		@Override
+		public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+			if (roundEnv.processingOver()) {
+				return false;
 			}
+			
+			// Find classes with @Test methods
+			for (TypeElement annotation : annotations) {
+				String annotationType = annotation.getQualifiedName().toString();
+				
+				// Process elements based on annotation type
+				for (Element element : roundEnv.getElementsAnnotatedWith(annotation)) {
+					if (element.getKind() == ElementKind.METHOD) {
+						ExecutableElement methodElement = (ExecutableElement) element;
+						TypeElement classElement = (TypeElement) methodElement.getEnclosingElement();
+						
+						// Initialize class info if not already done
+						if (classInfo == null || !classInfo.className.equals(classElement.getSimpleName().toString())) {
+							classInfo = new ClassInfo();
+							classInfo.className = classElement.getSimpleName().toString();
+							
+							// Get package name
+							Element enclosing = classElement.getEnclosingElement();
+							if (enclosing instanceof PackageElement) {
+								classInfo.packageName = ((PackageElement) enclosing).getQualifiedName().toString();
+							}
+						}
+						
+						String methodName = methodElement.getSimpleName().toString();
+						
+						// Process based on annotation type
+						switch (annotationType) {
+							case TEST_ANNOTATION:
+								classInfo.testMethods.add(methodName);
+								break;
+							case BEFORE_ALL_ANNOTATION:
+								if (methodElement.getModifiers().contains(Modifier.STATIC)) {
+									classInfo.beforeAllMethods.add(methodName);
+								}
+								break;
+							case BEFORE_EACH_ANNOTATION:
+								classInfo.beforeEachMethods.add(methodName);
+								break;
+							case AFTER_ALL_ANNOTATION:
+								if (methodElement.getModifiers().contains(Modifier.STATIC)) {
+									classInfo.afterAllMethods.add(methodName);
+								}
+								break;
+							case AFTER_EACH_ANNOTATION:
+								classInfo.afterEachMethods.add(methodName);
+								break;
+							case DISPLAY_NAME_ANNOTATION:
+								// Extract the display name value from the annotation
+								String displayName = extractDisplayNameValue(methodElement);
+								if (displayName != null) {
+									classInfo.displayNames.put(methodName, displayName);
+								}
+								break;
+						}
+					}
+				}
+			}
+			
+			return true;
 		}
 		
-		// Look for @DisplayName after the @Test annotation
-		Matcher matcherAfter = DISPLAY_NAME_PATTERN_AFTER.matcher(content);
-		while (matcherAfter.find()) {
-			String foundMethodName = matcherAfter.group(2);
-			if (foundMethodName.equals(methodName)) {
-				return matcherAfter.group(1);
+		/**
+		 * Extract display name value from the DisplayName annotation if present.
+		 */
+		private String extractDisplayNameValue(ExecutableElement methodElement) {
+			for (AnnotationMirror annotationMirror : methodElement.getAnnotationMirrors()) {
+				if (annotationMirror.getAnnotationType().toString().equals(DISPLAY_NAME_ANNOTATION)) {
+					for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : 
+							annotationMirror.getElementValues().entrySet()) {
+						if (entry.getKey().getSimpleName().toString().equals("value")) {
+							// Remove quotes from the string literal
+							String value = entry.getValue().toString();
+							return value.substring(1, value.length() - 1);
+						}
+					}
+				}
 			}
+			return null;
 		}
 		
-		return null;
+		public ClassInfo getClassInfo() {
+			return classInfo;
+		}
+		
+		@Override
+		public Set<String> getSupportedAnnotationTypes() {
+			return Set.of(
+				TEST_ANNOTATION,
+				BEFORE_ALL_ANNOTATION,
+				BEFORE_EACH_ANNOTATION,
+				AFTER_ALL_ANNOTATION,
+				AFTER_EACH_ANNOTATION,
+				DISPLAY_NAME_ANNOTATION
+			);
+		}
+		
+		@Override
+		public SourceVersion getSupportedSourceVersion() {
+			return SourceVersion.RELEASE_21;
+		}
+	}
+	
+	/**
+	 * Class to store information about a test class
+	 */
+	private static class ClassInfo {
+		String packageName = "";
+		String className = "";
+		List<String> beforeAllMethods = new ArrayList<>();
+		List<String> beforeEachMethods = new ArrayList<>();
+		List<String> afterAllMethods = new ArrayList<>();
+		List<String> afterEachMethods = new ArrayList<>();
+		List<String> testMethods = new ArrayList<>();
+		Map<String, String> displayNames = new HashMap<>();
 	}
 
 	/**
@@ -256,70 +359,74 @@ public class JnrTestJUnitProcessor {
 
 	/**
 	 * Generate the content of the JnrTest class.
+	 * 
+	 * @param classInfo The ClassInfo object containing all test class information
+	 * @return The generated JnrTest class content as a string
 	 */
-	private String generateJnrTestClass(String packageName, String originalClassName, String jnrTestClassName,
-			List<String> beforeAllMethods, List<String> beforeEachMethods, List<String> afterAllMethods,
-			List<String> afterEachMethods, List<String> testMethods, String originalContent) {
+	private String generateJnrTestClass(ClassInfo classInfo) {
+		String jnrTestClassName = classInfo.className + "JnrTest";
 
-		StringBuilder builder = new StringBuilder();
+		// Generate the class header
+		String classHeader = """
+			package %s;
 
-		// Package declaration
-		builder.append("package ").append(packageName).append(";\n\n");
+			public class %s extends JnrTestCase {
 
-		// Class declaration
-		builder.append("public class ").append(jnrTestClassName).append(" extends JnrTestCase {\n\n");
+				private %s originalTest = new %s();
 
-		// Original test instance
-		builder.append("\tprivate ").append(originalClassName).append(" originalTest = new ").append(originalClassName)
-				.append("();\n\n");
+				public %s() {
+					super("%s in JnrTest");
+				}
 
-		// Constructor
-		builder.append("\tpublic ").append(jnrTestClassName).append("() {\n").append("\t\tsuper(\"")
-				.append(originalClassName).append(" in JnrTest\");\n").append("\t}\n\n");
+				@Override
+				protected void specify() {
+			""".formatted(
+				classInfo.packageName,
+				jnrTestClassName,
+				classInfo.className, classInfo.className,
+				jnrTestClassName,
+				classInfo.className
+			);
 
-		// Specify method
-		builder.append("\t@Override\n").append("\tprotected void specify() {\n");
-
+		StringBuilder methodsBuilder = new StringBuilder(classHeader);
+		
 		// Add beforeAll methods
-		for (String methodName : beforeAllMethods) {
-			builder.append("\t\tbeforeAll(\"call ").append(methodName).append("\",\n").append("\t\t\t() -> ")
-					.append(originalClassName).append(".").append(methodName).append("());\n");
+		for (String methodName : classInfo.beforeAllMethods) {
+			methodsBuilder.append("\t\tbeforeAll(\"call " + methodName + "\",\n")
+					.append("\t\t\t() -> " + classInfo.className + "." + methodName + "());\n");
 		}
 
 		// Add beforeEach methods
-		for (String methodName : beforeEachMethods) {
-			builder.append("\t\tbeforeEach(\"call ").append(methodName).append("\",\n").append("\t\t() -> {\n")
-					.append("\t\t\toriginalTest.").append(methodName).append("();\n").append("\t\t});\n");
+		for (String methodName : classInfo.beforeEachMethods) {
+			methodsBuilder.append("\t\tbeforeEach(\"call " + methodName + "\",\n")
+					.append("\t\t\t() -> originalTest." + methodName + "());\n");
 		}
 
 		// Add afterAll methods
-		for (String methodName : afterAllMethods) {
-			builder.append("\t\tafterAll(\"call ").append(methodName).append("\",\n").append("\t\t\t() ->")
-					.append(originalClassName).append(".").append(methodName).append("());\n");
+		for (String methodName : classInfo.afterAllMethods) {
+			methodsBuilder.append("\t\tafterAll(\"call " + methodName + "\",\n")
+					.append("\t\t\t() -> " + classInfo.className + "." + methodName + "());\n");
 		}
 
 		// Add afterEach methods
-		for (String methodName : afterEachMethods) {
-			builder.append("\t\tafterEach(\"call ").append(methodName).append("\",\n")
-					.append("\t\t\t() -> originalTest.").append(methodName).append("());\n");
+		for (String methodName : classInfo.afterEachMethods) {
+			methodsBuilder.append("\t\tafterEach(\"call " + methodName + "\",\n")
+					.append("\t\t\t() -> originalTest." + methodName + "());\n");
 		}
 
 		// Add test methods
-		for (String methodName : testMethods) {
-			String displayName = getDisplayName(originalContent, methodName);
+		for (String methodName : classInfo.testMethods) {
+			String displayName = classInfo.displayNames.get(methodName);
 			String testDescription = displayName != null ? displayName : methodName;
 
-			builder.append("\n\t\ttest(\"").append(testDescription).append("\", () -> {\n")
-					.append("\t\t\toriginalTest.").append(methodName).append("();\n").append("\t\t});\n");
+			methodsBuilder.append("\t\ttest(\"" + testDescription + "\",\n")
+					.append("\t\t\t() -> originalTest." + methodName + "());\n");
 		}
 
-		// Close specify method
-		builder.append("\t}\n");
+		// Class footer
+		methodsBuilder.append("\t}\n}");
 
-		// Close class
-		builder.append("\t\n}");
-
-		return builder.toString();
+		return methodsBuilder.toString();
 	}
 
 	/**
@@ -334,29 +441,39 @@ public class JnrTestJUnitProcessor {
 		Path outputPath = outputDirectory.resolve(packagePath).resolve("JnrTestMain.java");
 		Files.createDirectories(outputPath.getParent());
 
-		// Generate the JnrTestMain class
-		StringBuilder content = new StringBuilder();
-		content.append("package ").append(packageName).append(";\n\n");
-		content.append("/**\n");
-		content.append(" * Main class to run all generated JnrTest classes.\n");
-		content.append(" * Automatically generated by JnrTestJUnitProcessor.\n");
-		content.append(" */\n");
-		content.append("public class JnrTestMain {\n\n");
-		content.append("\tpublic static void main(String[] args) {\n");
-		content.append("\t\tvar executor = new JnrTestConsoleExecutor();\n\n");
+		String classHeader = """
+			package %s;
 
-		// Add each test class
+			/**
+			 * Main class to run all generated JnrTest classes.
+			 * Automatically generated by JnrTestJUnitProcessor.
+			 */
+			public class JnrTestMain {
+
+				public static void main(String[] args) {
+					var executor = new JnrTestConsoleExecutor();
+
+			""".formatted(packageName);
+
+		StringBuilder contentBuilder = new StringBuilder(classHeader);
+
 		for (String testClass : generatedClasses) {
-			content.append("\t\texecutor.testCase(new ").append(testClass).append("());\n");
+			contentBuilder.append("\t\texecutor.testCase(new ")
+					.append(testClass)
+					.append("());\n");
 		}
 
-		content.append("\n\t\texecutor.execute();\n");
-		content.append("\t}\n");
-		content.append("}\n");
+		String footer = """
 
-		// Write the JnrTestMain.java file
+					executor.execute();
+				}
+			}
+			""";
+		
+		contentBuilder.append(footer);
+
 		try (PrintWriter writer = new PrintWriter(outputPath.toFile())) {
-			writer.print(content.toString());
+			writer.print(contentBuilder.toString());
 		}
 
 		System.out.println("Generated JnrTestMain.java at: " + outputPath);
