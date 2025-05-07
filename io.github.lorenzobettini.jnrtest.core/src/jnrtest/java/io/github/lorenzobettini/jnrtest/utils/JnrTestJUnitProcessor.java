@@ -1,4 +1,4 @@
-package io.github.lorenzobettini.jnrtest.core;
+package io.github.lorenzobettini.jnrtest.utils;
 
 import java.io.IOException;
 import java.io.PrintWriter;

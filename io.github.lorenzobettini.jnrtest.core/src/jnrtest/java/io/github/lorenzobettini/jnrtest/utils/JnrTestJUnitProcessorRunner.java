@@ -1,4 +1,4 @@
-package io.github.lorenzobettini.jnrtest.core;
+package io.github.lorenzobettini.jnrtest.utils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
