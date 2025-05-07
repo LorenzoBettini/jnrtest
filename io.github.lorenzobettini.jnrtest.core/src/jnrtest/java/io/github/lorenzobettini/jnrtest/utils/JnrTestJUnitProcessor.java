@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
@@ -27,8 +26,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -40,23 +37,14 @@ import javax.tools.JavaCompiler.CompilationTask;
 import java.util.Arrays;
 
 /**
- * An annotation processor that generates JnrTestCase subclasses from JUnit
+ * A processor that generates JnrTestCase subclasses from JUnit
  * Jupiter test classes. For each Java file containing Jupiter @Test
  * annotations, it generates a corresponding JnrTestCase subclass with the same
  * name plus the suffix "JnrTest".
  * 
  * @author Lorenzo Bettini
  */
-@SupportedAnnotationTypes({
-	"org.junit.jupiter.api.Test",
-	"org.junit.jupiter.api.BeforeAll",
-	"org.junit.jupiter.api.BeforeEach",
-	"org.junit.jupiter.api.AfterAll",
-	"org.junit.jupiter.api.AfterEach",
-	"org.junit.jupiter.api.DisplayName"
-})
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
-public class JnrTestJUnitProcessor extends AbstractProcessor {
+public class JnrTestJUnitProcessor {
 	
 	private static final String TEST_ANNOTATION = "org.junit.jupiter.api.Test";
 	private static final String BEFORE_ALL_ANNOTATION = "org.junit.jupiter.api.BeforeAll";
@@ -235,6 +223,15 @@ public class JnrTestJUnitProcessor extends AbstractProcessor {
 	/**
 	 * Custom annotation processor to analyze a Java test file.
 	 */
+	@SupportedAnnotationTypes({
+		TEST_ANNOTATION,
+		BEFORE_ALL_ANNOTATION,
+		BEFORE_EACH_ANNOTATION,
+		AFTER_ALL_ANNOTATION,
+		AFTER_EACH_ANNOTATION,
+		DISPLAY_NAME_ANNOTATION
+	})
+	@SupportedSourceVersion(SourceVersion.RELEASE_11)
 	private static class TestFileProcessor extends AbstractProcessor {
 		private ClassInfo classInfo = null;
 		
@@ -524,12 +521,5 @@ public class JnrTestJUnitProcessor extends AbstractProcessor {
 			e.printStackTrace();
 			System.exit(1);
 		}
-	}
-	
-	@Override
-	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-		// This method is required by AbstractProcessor, but we don't use it
-		// in our standalone implementation
-		return false;
 	}
 }
