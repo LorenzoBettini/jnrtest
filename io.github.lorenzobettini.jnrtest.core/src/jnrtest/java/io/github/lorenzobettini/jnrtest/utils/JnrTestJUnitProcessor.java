@@ -231,7 +231,7 @@ public class JnrTestJUnitProcessor {
 		AFTER_EACH_ANNOTATION,
 		DISPLAY_NAME_ANNOTATION
 	})
-	@SupportedSourceVersion(SourceVersion.RELEASE_11)
+	@SupportedSourceVersion(SourceVersion.RELEASE_21)
 	private static class TestFileProcessor extends AbstractProcessor {
 		private ClassInfo classInfo = null;
 		
@@ -338,7 +338,7 @@ public class JnrTestJUnitProcessor {
 		
 		@Override
 		public SourceVersion getSupportedSourceVersion() {
-			return SourceVersion.latest();
+			return SourceVersion.RELEASE_21;
 		}
 	}
 	
