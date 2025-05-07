@@ -9,13 +9,13 @@ public class JnrTestMain {
 	public static void main(String[] args) {
 		var executor = new JnrTestConsoleExecutor();
 
-		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeRecorderTestJnrTest());
-		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestParallelRunnerTestJnrTest());
-		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestRunnerTestJnrTest());
-		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleReporterTestJnrTest());
-		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeConsoleReporterTestJnrTest());
 		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleExecutorTestJnrTest());
 		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleParallelExecutorTestJnrTest());
+		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleReporterTestJnrTest());
+		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestParallelRunnerTestJnrTest());
+		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestRunnerTestJnrTest());
+		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeConsoleReporterTestJnrTest());
+		executor.testCase(new io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeRecorderTestJnrTest());
 
 		executor.execute();
 	}

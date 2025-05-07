@@ -66,8 +66,11 @@ public class JnrTestJUnitProcessor {
 	public List<String> process() throws IOException {
 		generatedClasses.clear();
 		try (Stream<Path> paths = Files.walk(sourceDirectory)) {
-			paths.filter(Files::isRegularFile).filter(p -> p.toString().endsWith(".java"))
-					.filter(this::isJUnitTestClass).forEach(this::processFile);
+			paths.filter(Files::isRegularFile)
+				.filter(p -> p.toString().endsWith(".java"))
+				.filter(this::isJUnitTestClass)
+				.sorted()
+				.forEach(this::processFile);
 			}
 		
 		// Generate a main class to run all tests
