@@ -192,17 +192,7 @@ public class JnrTestJUnitProcessor {
 					String jnrTestClassName = classInfo.className + "JnrTest";
 					String fullyQualifiedName = classInfo.packageName + "." + jnrTestClassName;
 					
-					String jnrTestContent = generateJnrTestClass(
-						classInfo.packageName, 
-						classInfo.className,
-						jnrTestClassName,
-						classInfo.beforeAllMethods,
-						classInfo.beforeEachMethods, 
-						classInfo.afterAllMethods,
-						classInfo.afterEachMethods,
-						classInfo.testMethods,
-						classInfo.displayNames
-					);
+					String jnrTestContent = generateJnrTestClass(classInfo);
 					
 					// Write the output file
 					Path outputPath = createOutputPath(classInfo.packageName, jnrTestClassName);
@@ -369,17 +359,12 @@ public class JnrTestJUnitProcessor {
 
 	/**
 	 * Generate the content of the JnrTest class.
+	 * 
+	 * @param classInfo The ClassInfo object containing all test class information
+	 * @return The generated JnrTest class content as a string
 	 */
-	private String generateJnrTestClass(
-			String packageName, 
-			String originalClassName, 
-			String jnrTestClassName,
-			List<String> beforeAllMethods, 
-			List<String> beforeEachMethods, 
-			List<String> afterAllMethods,
-			List<String> afterEachMethods, 
-			List<String> testMethods,
-			Map<String, String> displayNames) {
+	private String generateJnrTestClass(ClassInfo classInfo) {
+		String jnrTestClassName = classInfo.className + "JnrTest";
 
 		// Generate the class header
 		String classHeader = """
@@ -396,42 +381,42 @@ public class JnrTestJUnitProcessor {
 				@Override
 				protected void specify() {
 			""".formatted(
-				packageName,
+				classInfo.packageName,
 				jnrTestClassName,
-				originalClassName, originalClassName,
+				classInfo.className, classInfo.className,
 				jnrTestClassName,
-				originalClassName
+				classInfo.className
 			);
 
 		StringBuilder methodsBuilder = new StringBuilder(classHeader);
 		
 		// Add beforeAll methods
-		for (String methodName : beforeAllMethods) {
+		for (String methodName : classInfo.beforeAllMethods) {
 			methodsBuilder.append("\t\tbeforeAll(\"call " + methodName + "\",\n")
-					.append("\t\t\t() -> " + originalClassName + "." + methodName + "());\n");
+					.append("\t\t\t() -> " + classInfo.className + "." + methodName + "());\n");
 		}
 
 		// Add beforeEach methods
-		for (String methodName : beforeEachMethods) {
+		for (String methodName : classInfo.beforeEachMethods) {
 			methodsBuilder.append("\t\tbeforeEach(\"call " + methodName + "\",\n")
 					.append("\t\t\t() -> originalTest." + methodName + "());\n");
 		}
 
 		// Add afterAll methods
-		for (String methodName : afterAllMethods) {
+		for (String methodName : classInfo.afterAllMethods) {
 			methodsBuilder.append("\t\tafterAll(\"call " + methodName + "\",\n")
-					.append("\t\t\t() -> " + originalClassName + "." + methodName + "());\n");
+					.append("\t\t\t() -> " + classInfo.className + "." + methodName + "());\n");
 		}
 
 		// Add afterEach methods
-		for (String methodName : afterEachMethods) {
+		for (String methodName : classInfo.afterEachMethods) {
 			methodsBuilder.append("\t\tafterEach(\"call " + methodName + "\",\n")
 					.append("\t\t\t() -> originalTest." + methodName + "());\n");
 		}
 
 		// Add test methods
-		for (String methodName : testMethods) {
-			String displayName = displayNames.get(methodName);
+		for (String methodName : classInfo.testMethods) {
+			String displayName = classInfo.displayNames.get(methodName);
 			String testDescription = displayName != null ? displayName : methodName;
 
 			methodsBuilder.append("\t\ttest(\"" + testDescription + "\",\n")
