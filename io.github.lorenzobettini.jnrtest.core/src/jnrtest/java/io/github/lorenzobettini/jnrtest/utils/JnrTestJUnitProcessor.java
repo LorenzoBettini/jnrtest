@@ -431,9 +431,8 @@ public class JnrTestJUnitProcessor {
 			String displayName = displayNames.get(methodName);
 			String testDescription = displayName != null ? displayName : methodName;
 
-			methodsBuilder.append("\t\ttest(\"" + testDescription + "\", () -> {\n")
-			              .append("\t\t\toriginalTest." + methodName + "();\n")
-			              .append("\t\t});\n");
+			methodsBuilder.append("\t\ttest(\"" + testDescription + "\",\n")
+			              .append("\t\t\t() -> originalTest." + methodName + "());\n");
 		}
 
 		// Class footer

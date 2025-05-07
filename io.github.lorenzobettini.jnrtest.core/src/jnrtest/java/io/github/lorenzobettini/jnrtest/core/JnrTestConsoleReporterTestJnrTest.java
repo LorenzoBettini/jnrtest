@@ -14,11 +14,9 @@ public class JnrTestConsoleReporterTestJnrTest extends JnrTestCase {
 			() -> originalTest.setUpStreams());
 		afterEach("call restoreStreams",
 			() -> originalTest.restoreStreams());
-		test("should report results", () -> {
-			originalTest.shouldReportResults();
-		});
-		test("should report results with elapsed time", () -> {
-			originalTest.shouldReportResultsWithElapsedTime();
-		});
+		test("should report results",
+			() -> originalTest.shouldReportResults());
+		test("should report results with elapsed time",
+			() -> originalTest.shouldReportResultsWithElapsedTime());
 	}
 }

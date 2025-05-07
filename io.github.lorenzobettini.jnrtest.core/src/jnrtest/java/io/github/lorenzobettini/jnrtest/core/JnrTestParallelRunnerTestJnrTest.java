@@ -14,8 +14,7 @@ public class JnrTestParallelRunnerTestJnrTest extends JnrTestCase {
 			() -> originalTest.setUpStreams());
 		afterEach("call restoreStreams",
 			() -> originalTest.restoreStreams());
-		test("should run in parallel", () -> {
-			originalTest.shouldReportResults();
-		});
+		test("should run in parallel",
+			() -> originalTest.shouldReportResults());
 	}
 }

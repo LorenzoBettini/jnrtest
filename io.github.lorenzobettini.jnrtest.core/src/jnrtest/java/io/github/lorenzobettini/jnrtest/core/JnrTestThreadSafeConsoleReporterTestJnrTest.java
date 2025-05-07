@@ -14,11 +14,9 @@ public class JnrTestThreadSafeConsoleReporterTestJnrTest extends JnrTestCase {
 			() -> originalTest.setUp());
 		afterEach("call tearDown",
 			() -> originalTest.tearDown());
-		test("testThreadSafetyWithResultsAndVerification", () -> {
-			originalTest.testThreadSafetyWithResultsAndVerification();
-		});
-		test("testSingleThreadCompleteOutputVerification", () -> {
-			originalTest.testSingleThreadCompleteOutputVerification();
-		});
+		test("testThreadSafetyWithResultsAndVerification",
+			() -> originalTest.testThreadSafetyWithResultsAndVerification());
+		test("testSingleThreadCompleteOutputVerification",
+			() -> originalTest.testSingleThreadCompleteOutputVerification());
 	}
 }
