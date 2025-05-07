@@ -40,7 +40,11 @@ import java.util.Arrays;
  * A processor that generates JnrTestCase subclasses from JUnit
  * Jupiter test classes. For each Java file containing Jupiter @Test
  * annotations, it generates a corresponding JnrTestCase subclass with the same
- * name plus the suffix "JnrTest".
+ * name plus the suffix "JnrTest". It also generates a main class for running
+ * all the generated JnrTest classes.
+ * 
+ * It uses the Java Compiler API ({@link JavaCompiler}) to parse the Java files and extract the
+ * relevant information about the test methods and their annotations.
  * 
  * @author Lorenzo Bettini
  */
@@ -80,19 +84,18 @@ public class JnrTestJUnitProcessor {
 	public List<String> process() throws IOException {
 		generatedClasses.clear();
 		
-		// Get the Java compiler
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		if (compiler == null) {
 			throw new IOException("No Java compiler available. Make sure JDK (not JRE) is used.");
 		}
 		
-		// Find all Java files in source directory
+		// Find all Java files in source directory that are JUnit test classes
 		List<Path> javaFilePaths = new ArrayList<>();
 		try (Stream<Path> paths = Files.walk(sourceDirectory)) {
 			paths.filter(Files::isRegularFile)
 				.filter(p -> p.toString().endsWith(".java"))
 				.filter(this::isJUnitTestClass)
-				.sorted()
+				.sorted() // Sort files to ensure consistent order
 				.forEach(javaFilePaths::add);
 		}
 		
@@ -163,7 +166,7 @@ public class JnrTestJUnitProcessor {
 					compilationUnits   // Compilation units to compile
 				);
 				
-				// Create a custom processor to analyze the file
+				// Create our custom processor to analyze the file
 				TestFileProcessor processor = new TestFileProcessor();
 				task.setProcessors(Collections.singletonList(processor));
 				
@@ -302,7 +305,7 @@ public class JnrTestJUnitProcessor {
 		}
 		
 		/**
-		 * Extract display name value from the DisplayName annotation.
+		 * Extract display name value from the DisplayName annotation if present.
 		 */
 		private String extractDisplayNameValue(ExecutableElement methodElement) {
 			for (AnnotationMirror annotationMirror : methodElement.getAnnotationMirrors()) {
@@ -405,25 +408,25 @@ public class JnrTestJUnitProcessor {
 		// Add beforeAll methods
 		for (String methodName : beforeAllMethods) {
 			methodsBuilder.append("\t\tbeforeAll(\"call " + methodName + "\",\n")
-			              .append("\t\t\t() -> " + originalClassName + "." + methodName + "());\n");
+					.append("\t\t\t() -> " + originalClassName + "." + methodName + "());\n");
 		}
 
 		// Add beforeEach methods
 		for (String methodName : beforeEachMethods) {
 			methodsBuilder.append("\t\tbeforeEach(\"call " + methodName + "\",\n")
-			              .append("\t\t\t() -> originalTest." + methodName + "());\n");
+					.append("\t\t\t() -> originalTest." + methodName + "());\n");
 		}
 
 		// Add afterAll methods
 		for (String methodName : afterAllMethods) {
 			methodsBuilder.append("\t\tafterAll(\"call " + methodName + "\",\n")
-			              .append("\t\t\t() -> " + originalClassName + "." + methodName + "());\n");
+					.append("\t\t\t() -> " + originalClassName + "." + methodName + "());\n");
 		}
 
 		// Add afterEach methods
 		for (String methodName : afterEachMethods) {
 			methodsBuilder.append("\t\tafterEach(\"call " + methodName + "\",\n")
-			              .append("\t\t\t() -> originalTest." + methodName + "());\n");
+					.append("\t\t\t() -> originalTest." + methodName + "());\n");
 		}
 
 		// Add test methods
@@ -432,7 +435,7 @@ public class JnrTestJUnitProcessor {
 			String testDescription = displayName != null ? displayName : methodName;
 
 			methodsBuilder.append("\t\ttest(\"" + testDescription + "\",\n")
-			              .append("\t\t\t() -> originalTest." + methodName + "());\n");
+					.append("\t\t\t() -> originalTest." + methodName + "());\n");
 		}
 
 		// Class footer
@@ -453,7 +456,6 @@ public class JnrTestJUnitProcessor {
 		Path outputPath = outputDirectory.resolve(packagePath).resolve("JnrTestMain.java");
 		Files.createDirectories(outputPath.getParent());
 
-		// Start with the class header using text blocks
 		String classHeader = """
 			package %s;
 
@@ -470,14 +472,12 @@ public class JnrTestJUnitProcessor {
 
 		StringBuilder contentBuilder = new StringBuilder(classHeader);
 
-		// Add each test class with appropriate indentation
 		for (String testClass : generatedClasses) {
 			contentBuilder.append("\t\texecutor.testCase(new ")
 					.append(testClass)
 					.append("());\n");
 		}
 
-		// Add footer using text blocks
 		String footer = """
 
 					executor.execute();
@@ -487,7 +487,6 @@ public class JnrTestJUnitProcessor {
 		
 		contentBuilder.append(footer);
 
-		// Write the JnrTestMain.java file
 		try (PrintWriter writer = new PrintWriter(outputPath.toFile())) {
 			writer.print(contentBuilder.toString());
 		}
