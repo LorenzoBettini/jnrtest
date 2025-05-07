@@ -1,1 +1,0 @@
-In this project we have the same tests of the project jnrtest.core (written in JUnit) re-implemented in JnrTest itself.

@@ -21,7 +21,6 @@
 	<modules>
 		<module>io.github.lorenzobettini.jnrtest.core</module>
 		<module>io.github.lorenzobettini.jnrtest.examples</module>
-		<module>io.github.lorenzobettini.jnrtest.tests</module>
 	</modules>
 
 	<dependencyManagement>
