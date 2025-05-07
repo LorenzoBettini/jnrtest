@@ -29,10 +29,15 @@ import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
+import javax.tools.JavaCompiler.CompilationTask;
+
+import java.util.Arrays;
 
 /**
  * An annotation processor that generates JnrTestCase subclasses from JUnit
@@ -93,21 +98,17 @@ public class JnrTestJUnitProcessor extends AbstractProcessor {
             throw new IOException("No Java compiler available. Make sure JDK (not JRE) is used.");
         }
         
-        try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null)) {
-            // Find all Java files in source directory
-            List<Path> javaFilePaths = new ArrayList<>();
-            try (Stream<Path> paths = Files.walk(sourceDirectory)) {
-                paths.filter(Files::isRegularFile)
-                    .filter(p -> p.toString().endsWith(".java"))
-                    .filter(this::isJUnitTestClass)
-                    .sorted()
-                    .forEach(javaFilePaths::add);
-            }
-            
-            if (javaFilePaths.isEmpty()) {
-                return generatedClasses;
-            }
-            
+        // Find all Java files in source directory
+        List<Path> javaFilePaths = new ArrayList<>();
+        try (Stream<Path> paths = Files.walk(sourceDirectory)) {
+            paths.filter(Files::isRegularFile)
+                .filter(p -> p.toString().endsWith(".java"))
+                .filter(this::isJUnitTestClass)
+                .sorted()
+                .forEach(javaFilePaths::add);
+        }
+        
+        if (!javaFilePaths.isEmpty()) {
             // Process each file and generate the corresponding JnrTest file
             for (Path javaFile : javaFilePaths) {
                 processJavaFile(javaFile);
@@ -150,26 +151,47 @@ public class JnrTestJUnitProcessor extends AbstractProcessor {
      */
     private void processJavaFile(Path javaFile) {
         try {
-            // Read file content
-            String content = Files.readString(javaFile);
-            
-            // Parse the Java file using the Compiler API
+            // Parse the Java file using a source-only approach
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-            try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null)) {
+            DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+            
+            try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
                 // Set up the compilation task
                 Iterable<? extends JavaFileObject> compilationUnits = 
                     fileManager.getJavaFileObjects(javaFile.toFile());
                 
-                // Create a temporary in-memory compilation
-                JavaCompiler.CompilationTask task = compiler.getTask(
-                    null, fileManager, null, null, null, compilationUnits);
+                // Create a temporary in-memory compilation - parse only, no bytecode generation
+                List<String> options = Arrays.asList(
+                    "-proc:only",      // Only annotation processing, no compilation
+                    "-implicit:none"    // Don't generate class files for implicitly referenced files
+                );
+                
+                CompilationTask task = compiler.getTask(
+                    null,              // Writer - null for System.err
+                    fileManager,       // File manager
+                    diagnostics,       // Diagnostic listener
+                    options,           // Options to the compiler
+                    null,              // Classes to compile - null means compile everything
+                    compilationUnits   // Compilation units to compile
+                );
                 
                 // Create a custom processor to analyze the file
                 TestFileProcessor processor = new TestFileProcessor();
                 task.setProcessors(Collections.singletonList(processor));
                 
                 // Parse the file (doesn't actually compile, just parses)
-                task.call();
+                boolean success = task.call();
+                
+                // Check for errors
+                if (!success) {
+                    System.err.println("Failed to process " + javaFile);
+                    for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
+                        System.err.format("Error on line %d: %s%n", 
+                            diagnostic.getLineNumber(), 
+                            diagnostic.getMessage(null));
+                    }
+                    return;
+                }
                 
                 // Get processing results
                 if (processor.getClassInfo() != null) {
