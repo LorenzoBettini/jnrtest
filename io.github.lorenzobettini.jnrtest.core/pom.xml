@@ -86,7 +86,10 @@
 							<goal>exec</goal>
 						</goals>
 						<configuration>
-							<executable>./report-total-time.sh</executable>
+							<executable>bash</executable>
+							<arguments>
+								<argument>report-total-time.sh</argument>
+							</arguments>
 						</configuration>
 					</execution>
 					<execution>
