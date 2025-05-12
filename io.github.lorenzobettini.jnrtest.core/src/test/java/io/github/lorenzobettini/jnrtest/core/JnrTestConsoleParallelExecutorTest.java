@@ -46,7 +46,7 @@ class JnrTestConsoleParallelExecutorTest {
 	void shouldAddTestClassesCorrectly() {
 		// Create a mock test class
 		JnrTest testCase = mock(JnrTest.class);
-		when(testCase.getDescription()).thenReturn("Mock Test Case");
+		when(testCase.getDescription()).thenReturn("Mock Test Class");
 		
 		// Create executor and add test class
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
@@ -74,7 +74,7 @@ class JnrTestConsoleParallelExecutorTest {
 	@DisplayName("should execute tests without throwing when all tests pass")
 	void shouldExecuteWithoutThrowingWhenAllTestsPass() {
 		// Create a test class that passes
-		JnrTest passingTestCase = new JnrTest("Passing Test Case") {
+		JnrTest passingTestClass = new JnrTest("Passing Test Class") {
 			@Override
 			protected void specify() {
 				test("passing test", () -> {
@@ -85,7 +85,7 @@ class JnrTestConsoleParallelExecutorTest {
 		
 		// Create executor and add passing test
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		executor.add(passingTestCase);
+		executor.add(passingTestClass);
 		
 		// Execute without throwing
 		boolean result = executor.executeWithoutThrowing();
@@ -99,7 +99,7 @@ class JnrTestConsoleParallelExecutorTest {
 	@DisplayName("should throw exception when execute fails")
 	void shouldThrowExceptionWhenExecuteFails() {
 		// Create a test class that fails
-		JnrTest failingTestCase = new JnrTest("Failing Test Case") {
+		JnrTest failingTestClass = new JnrTest("Failing Test Class") {
 			@Override
 			protected void specify() {
 				test("failing test", () -> {
@@ -110,7 +110,7 @@ class JnrTestConsoleParallelExecutorTest {
 		
 		// Create executor and add failing test
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		executor.add(failingTestCase);
+		executor.add(failingTestClass);
 		
 		// Execute and expect exception
 		Exception exception = assertThrows(RuntimeException.class, () -> {
@@ -126,7 +126,7 @@ class JnrTestConsoleParallelExecutorTest {
 	@DisplayName("should return false when executeWithoutThrowing fails")
 	void shouldReturnFalseWhenExecuteWithoutThrowingFails() {
 		// Create a test class that fails
-		JnrTest failingTestCase = new JnrTest("Failing Test Case") {
+		JnrTest failingTestClass = new JnrTest("Failing Test Class") {
 			@Override
 			protected void specify() {
 				test("failing test", () -> {
@@ -137,7 +137,7 @@ class JnrTestConsoleParallelExecutorTest {
 		
 		// Create executor and add failing test
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		executor.add(failingTestCase);
+		executor.add(failingTestClass);
 		
 		// Execute without throwing
 		boolean result = executor.executeWithoutThrowing();
@@ -150,7 +150,7 @@ class JnrTestConsoleParallelExecutorTest {
 	@DisplayName("should handle multiple test classes in parallel")
 	void shouldHandleMultipleTestClassesInParallel() {
 		// Create multiple test classes
-		JnrTest testCase1 = new JnrTest("Test Case 1") {
+		JnrTest testCase1 = new JnrTest("Test Class 1") {
 			@Override
 			protected void specify() {
 				test("test 1", () -> {
@@ -164,7 +164,7 @@ class JnrTestConsoleParallelExecutorTest {
 			}
 		};
 		
-		JnrTest testCase2 = new JnrTest("Test Case 2") {
+		JnrTest testCase2 = new JnrTest("Test Class 2") {
 			@Override
 			protected void specify() {
 				test("test 2", () -> {

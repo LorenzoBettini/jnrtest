@@ -38,7 +38,7 @@ class JnrTestThreadSafeConsoleReporterTest {
 		for (int i = 0; i < 10; i++) {
 			final int threadId = i;
 			executorService.submit(() -> {
-				String testCaseName = "TestCase-" + threadId;
+				String testCaseName = "TestClass-" + threadId;
 				JnrTestLifecycleEvent startEvent = new JnrTestLifecycleEvent(
 						testCaseName, JnrTestStatus.START);
 				JnrTestLifecycleEvent endEvent = new JnrTestLifecycleEvent(
@@ -62,7 +62,7 @@ class JnrTestThreadSafeConsoleReporterTest {
 		 // Normalize output to handle different EOL characters
 		String output = outputStream.toString().replace("\r\n", "\n");
 		for (int i = 0; i < 10; i++) {
-			String testCaseName = "TestCase-" + i;
+			String testCaseName = "TestClass-" + i;
 
 			// Generate the expected block for this test class
 			StringBuilder expectedBlock = new StringBuilder();
@@ -81,7 +81,7 @@ class JnrTestThreadSafeConsoleReporterTest {
 	void testSingleThreadCompleteOutputVerification() {
 		JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter();
 
-		String testCaseName = "TestCase-1";
+		String testCaseName = "TestClass-1";
 		JnrTestLifecycleEvent startEvent = new JnrTestLifecycleEvent(
 				testCaseName, JnrTestStatus.START);
 		JnrTestLifecycleEvent endEvent = new JnrTestLifecycleEvent(
@@ -99,10 +99,10 @@ class JnrTestThreadSafeConsoleReporterTest {
 
 		// Expected output using Java text blocks
 		String expectedOutput = """
-			[  START] TestCase-1
-			[SUCCESS] TestCase-1-Test-0
-			[SUCCESS] TestCase-1-Test-1
-			[SUCCESS] TestCase-1-Test-2
+			[  START] TestClass-1
+			[SUCCESS] TestClass-1-Test-0
+			[SUCCESS] TestClass-1-Test-1
+			[SUCCESS] TestClass-1-Test-2
 			Tests run: 3, Succeeded: 3, Failures: 0, Errors: 0
 			""";
 
