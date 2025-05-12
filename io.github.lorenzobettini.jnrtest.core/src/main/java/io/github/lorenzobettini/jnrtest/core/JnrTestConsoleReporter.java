@@ -88,7 +88,9 @@ public class JnrTestConsoleReporter implements JnrTestListener {
 			}
 		}
 		show(result.toString()
-				+ (testStatistics.isWithElapsedTime() ? String.format(" - Time elapsed: %f s", (float) testStatistics.getElapsedTime() / 3600) : ""));
+			+ (testStatistics.isWithElapsedTime() ?
+				String.format(" - Time elapsed: %f s", (float) testStatistics.getElapsedTime() / 3600) :
+				""));
 	}
 
 	public void show(String message) {
