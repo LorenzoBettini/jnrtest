@@ -123,6 +123,7 @@ class JnrTestRunnerTest {
 		runner.testListener(listenerAdapter);
 		runner.execute();
 		assertEquals("""
+				[  BEGIN] Starting...
 				[  START] a test class
 				[  START] BEFORE_ALL before all
 				[    END] BEFORE_ALL before all
@@ -151,6 +152,7 @@ class JnrTestRunnerTest {
 				[  START] AFTER_EACH after each
 				[    END] AFTER_EACH after each
 				[    END] another test class
+				[ FINISH] Finished
 				""", listener.results.toString());
 	}
 
@@ -202,6 +204,7 @@ class JnrTestRunnerTest {
 		runner.testListener(listener);
 		runner.execute();
 		assertEquals("""
+				[  BEGIN] Starting...
 				[  START] a test class with parameterized test (single)
 				[ FAILED] parameter should be positive 0
 				[SUCCESS] parameter should be positive 1
@@ -216,6 +219,7 @@ class JnrTestRunnerTest {
 				[SUCCESS] strings should be equal: is "foo".equals("foo")?
 				[ FAILED] strings should be equal: is "foo".equals("bar")?
 				[    END] a test class with parameterized test and description
+				[ FINISH] Finished
 				""", listener.results.toString());
 	}
 

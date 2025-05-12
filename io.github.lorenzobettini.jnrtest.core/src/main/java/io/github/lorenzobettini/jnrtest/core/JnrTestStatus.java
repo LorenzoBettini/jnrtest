@@ -1,13 +1,13 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 /**
- * The status of an executed test class.
+ * The status of executed test classes.
  * 
  * @author Lorenzo Bettini
  *
  */
 public enum JnrTestStatus {
 
-	START, END
+	BEGIN, START, END, FINISH
 
 }

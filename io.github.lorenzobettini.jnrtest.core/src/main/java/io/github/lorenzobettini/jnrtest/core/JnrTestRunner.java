@@ -28,7 +28,9 @@ public class JnrTestRunner {
 	}
 
 	public void execute() {
+		notifyTestLifecycleEvent(new JnrTestLifecycleEvent("Starting...", JnrTestStatus.BEGIN));
 		getTestClassesStream().forEach(this::executeTestClass);
+		notifyTestLifecycleEvent(new JnrTestLifecycleEvent("Finished", JnrTestStatus.FINISH));
 	}
 
 	/**
