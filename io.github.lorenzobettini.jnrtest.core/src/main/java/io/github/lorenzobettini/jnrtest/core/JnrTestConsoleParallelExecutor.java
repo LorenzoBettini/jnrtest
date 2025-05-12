@@ -29,11 +29,11 @@ public class JnrTestConsoleParallelExecutor {
 	/**
 	 * Adds a test class to be executed.
 	 *
-	 * @param testCase the test class to add
+	 * @param testClass the test class to add
 	 * @return this instance for method chaining
 	 */
-	public JnrTestConsoleParallelExecutor testCase(JnrTest testCase) {
-		runner.add(testCase);
+	public JnrTestConsoleParallelExecutor add(JnrTest testClass) {
+		runner.add(testClass);
 		return this;
 	}
 
@@ -55,7 +55,8 @@ public class JnrTestConsoleParallelExecutor {
 	 */
 	public boolean executeWithoutThrowing() {
 		runner.execute();
-		System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
+		System.out.println("\nResults:\n\n" + // NOSONAR
+				new JnrTestResultAggregator().aggregate(recorder));
 		return recorder.isSuccess();
 	}
 
@@ -65,7 +66,7 @@ public class JnrTestConsoleParallelExecutor {
 	 */
 	public void execute() {
 		if (!executeWithoutThrowing()) {
-			throw new RuntimeException("There are test failures");
+			throw new RuntimeException("There are test failures"); // NOSONAR
 		}
 	}
 }

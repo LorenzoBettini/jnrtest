@@ -50,7 +50,7 @@ class JnrTestConsoleExecutorTest {
 		
 		// Create executor and add test class
 		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
-		JnrTestConsoleExecutor result = executor.testCase(testCase);
+		JnrTestConsoleExecutor result = executor.add(testCase);
 		
 		// Verify the test class was added and the executor returned itself
 		assertThat(result).isSameAs(executor);
@@ -85,7 +85,7 @@ class JnrTestConsoleExecutorTest {
 		
 		// Create executor and add passing test
 		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
-		executor.testCase(passingTestCase);
+		executor.add(passingTestCase);
 		
 		// Execute without throwing
 		boolean result = executor.executeWithoutThrowing();
@@ -110,7 +110,7 @@ class JnrTestConsoleExecutorTest {
 		
 		// Create executor and add failing test
 		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
-		executor.testCase(failingTestCase);
+		executor.add(failingTestCase);
 		
 		// Execute and expect exception
 		Exception exception = assertThrows(RuntimeException.class, () -> {
@@ -137,7 +137,7 @@ class JnrTestConsoleExecutorTest {
 		
 		// Create executor and add failing test
 		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
-		executor.testCase(failingTestCase);
+		executor.add(failingTestCase);
 		
 		// Execute without throwing
 		boolean result = executor.executeWithoutThrowing();

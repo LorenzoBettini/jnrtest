@@ -50,7 +50,7 @@ class JnrTestConsoleParallelExecutorTest {
 		
 		// Create executor and add test class
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		JnrTestConsoleParallelExecutor result = executor.testCase(testCase);
+		JnrTestConsoleParallelExecutor result = executor.add(testCase);
 		
 		// Verify the test class was added and the executor returned itself
 		assertThat(result).isSameAs(executor);
@@ -85,7 +85,7 @@ class JnrTestConsoleParallelExecutorTest {
 		
 		// Create executor and add passing test
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		executor.testCase(passingTestCase);
+		executor.add(passingTestCase);
 		
 		// Execute without throwing
 		boolean result = executor.executeWithoutThrowing();
@@ -110,7 +110,7 @@ class JnrTestConsoleParallelExecutorTest {
 		
 		// Create executor and add failing test
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		executor.testCase(failingTestCase);
+		executor.add(failingTestCase);
 		
 		// Execute and expect exception
 		Exception exception = assertThrows(RuntimeException.class, () -> {
@@ -137,7 +137,7 @@ class JnrTestConsoleParallelExecutorTest {
 		
 		// Create executor and add failing test
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		executor.testCase(failingTestCase);
+		executor.add(failingTestCase);
 		
 		// Execute without throwing
 		boolean result = executor.executeWithoutThrowing();
@@ -180,7 +180,7 @@ class JnrTestConsoleParallelExecutorTest {
 		
 		// Create executor and add both test classes
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		executor.testCase(testCase1).testCase(testCase2);
+		executor.add(testCase1).add(testCase2);
 		
 		// Execute without throwing
 		boolean result = executor.executeWithoutThrowing();
