@@ -14,13 +14,13 @@ import io.github.lorenzobettini.jnrtest.core.JnrTest;
  * @author Lorenzo Bettini
  *
  */
-public class JnrTestTemporaryFolderAnotherExampleTestCase extends JnrTest {
+public class JnrTestTemporaryFolderAnotherExampleTest extends JnrTest {
 
 	private JnrTestTemporaryFolder testTemporaryFolder;
 
 	private File tempFile;
 
-	public JnrTestTemporaryFolderAnotherExampleTestCase() {
+	public JnrTestTemporaryFolderAnotherExampleTest() {
 		super("JnrTestTemporaryFolder another example");
 		this.testTemporaryFolder = new JnrTestTemporaryFolder(this);
 	}

@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class MyStringUtilsJnrTestCase extends JnrTest {
+public class MyStringUtilsJnrTest extends JnrTest {
 
 	private MyStringUtils stringUtils;
 
-	public MyStringUtilsJnrTestCase() {
+	public MyStringUtilsJnrTest() {
 		super("tests for leftTrim");
 	}
 

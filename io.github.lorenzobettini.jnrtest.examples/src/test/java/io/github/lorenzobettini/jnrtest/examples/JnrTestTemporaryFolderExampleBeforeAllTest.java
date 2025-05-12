@@ -5,14 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
+import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableKind;
 
-public class JnrTestTemporaryFolderExampleTestCase extends JnrTest {
+public class JnrTestTemporaryFolderExampleBeforeAllTest extends JnrTest {
 
 	private JnrTestTemporaryFolder testTemporaryFolder;
 
-	public JnrTestTemporaryFolderExampleTestCase() {
-		super("JnrTestTemporaryFolder example");
-		this.testTemporaryFolder = new JnrTestTemporaryFolder(this);
+	public JnrTestTemporaryFolderExampleBeforeAllTest() {
+		super("JnrTestTemporaryFolder BEFORE_ALL example");
+		this.testTemporaryFolder = new JnrTestTemporaryFolder(this, JnrTestRunnableKind.BEFORE_ALL);
 	}
 
 	@Override
@@ -30,11 +31,11 @@ public class JnrTestTemporaryFolderExampleTestCase extends JnrTest {
 					.exists();
 			}
 		);
-		test("temporary folder is empty",
+		test("temporary folder is NOT empty",
 			() -> {
-				// because the temporary folder is created before EACH test
+				// because the temporary folder is created once before ALL tests
 				assertThat(testTemporaryFolder.getTemporaryFolder())
-					.isEmptyDirectory();
+					.isNotEmptyDirectory();
 			}
 		);
 	}

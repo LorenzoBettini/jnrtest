@@ -8,7 +8,7 @@ import com.google.inject.Inject;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class StringServiceWithGuiceTestCase extends JnrTest {
+public class StringServiceWithGuiceTest extends JnrTest {
 
 	@Inject
 	private StringRepository repository;
@@ -16,7 +16,7 @@ public class StringServiceWithGuiceTestCase extends JnrTest {
 	@Inject
 	private StringService service;
 
-	public StringServiceWithGuiceTestCase() {
+	public StringServiceWithGuiceTest() {
 		super("Guice extension test class");
 	}
 

@@ -8,11 +8,11 @@ import java.util.List;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class MyStringUtilsJnrParameterizedTestCase extends JnrTest {
+public class MyStringUtilsJnrParameterizedTest extends JnrTest {
 
 	private MyStringUtils stringUtils;
 
-	public MyStringUtilsJnrParameterizedTestCase() {
+	public MyStringUtilsJnrParameterizedTest() {
 		super("tests for leftTrim (parameterized)");
 	}
 

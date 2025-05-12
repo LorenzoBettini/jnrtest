@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class FactorialJnrTestCase extends JnrTest {
+public class FactorialJnrTest extends JnrTest {
 
 	private Factorial factorial;
 
-	public FactorialJnrTestCase() {
+	public FactorialJnrTest() {
 		super("tests for factorial");
 	}
 

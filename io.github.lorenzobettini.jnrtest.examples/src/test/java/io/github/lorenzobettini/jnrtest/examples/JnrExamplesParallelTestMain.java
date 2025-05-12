@@ -8,19 +8,19 @@ public class JnrExamplesParallelTestMain {
 
 	public static void main(String[] args) {
 		new JnrTestConsoleParallelExecutor()
-				.add(new FactorialJnrTestCase())
-				.add(new FactorialJnrParameterizedTestCase())
-				.add(new FactorialJnrParameterizedWithDescriptionTestCase())
-				.add(new MyStringUtilsJnrTestCase())
-				.add(new MyStringUtilsJnrParameterizedTestCase())
-				.add(new JnrTestTemporaryFolderExampleTestCase())
-				.add(new JnrTestTemporaryFolderExampleBeforeAllTestCase())
-				.add(new JnrTestTemporaryFolderAnotherExampleTestCase())
+				.add(new FactorialJnrTest())
+				.add(new FactorialJnrParameterizedTest())
+				.add(new FactorialJnrParameterizedWithDescriptionTest())
+				.add(new MyStringUtilsJnrTest())
+				.add(new MyStringUtilsJnrParameterizedTest())
+				.add(new JnrTestTemporaryFolderExampleTest())
+				.add(new JnrTestTemporaryFolderExampleBeforeAllTest())
+				.add(new JnrTestTemporaryFolderAnotherExampleTest())
 				.add(new JnrTestCaseMockitoExtension()
-					.extendEach(new StringServiceWithMockTestCase()))
+					.extendEach(new StringServiceWithMockTest()))
 				.add(new JnrTestCaseGuiceExtension(
 						new StringRepositoryInMemoryGuiceModule())
-					.extendAll(new StringServiceWithGuiceTestCase()))
+					.extendAll(new StringServiceWithGuiceTest()))
 				.execute();
 	}
 }

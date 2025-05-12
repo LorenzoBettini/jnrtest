@@ -10,7 +10,7 @@ import org.mockito.Mock;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class StringServiceWithMockTestCase extends JnrTest {
+public class StringServiceWithMockTest extends JnrTest {
 
 	@Mock
 	private StringRepository repository;
@@ -18,7 +18,7 @@ public class StringServiceWithMockTestCase extends JnrTest {
 	@InjectMocks
 	private StringService service;
 
-	public StringServiceWithMockTestCase() {
+	public StringServiceWithMockTest() {
 		super("Mockito extension test class");
 	}
 

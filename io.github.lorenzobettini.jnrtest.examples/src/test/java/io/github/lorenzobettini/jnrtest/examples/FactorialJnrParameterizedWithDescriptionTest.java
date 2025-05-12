@@ -7,19 +7,19 @@ import java.util.List;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class FactorialJnrParameterizedTestCase extends JnrTest {
+public class FactorialJnrParameterizedWithDescriptionTest extends JnrTest {
 
 	private Factorial factorial;
 
-	public FactorialJnrParameterizedTestCase() {
-		super("tests for factorial (parameterized)");
+	public FactorialJnrParameterizedWithDescriptionTest() {
+		super("tests for factorial (parameterized with description)");
 	}
 
 	@Override
 	protected void specify() {
 		beforeAll("create factorial SUT", () -> factorial = new Factorial());
 		
-		testWithParameters("input,output",
+		testWithParameters("",
 			() -> List.of(
 				pair(0, 1),
 				pair(1, 1),
@@ -27,6 +27,8 @@ public class FactorialJnrParameterizedTestCase extends JnrTest {
 				pair(3, 6),
 				pair(4, 24)
 			),
+			p -> String.format("factorial(%d) -> %d",
+					p.first(), p.second()),
 			p -> assertEquals(p.second(), factorial.compute(p.first()))
 		);
 	}
