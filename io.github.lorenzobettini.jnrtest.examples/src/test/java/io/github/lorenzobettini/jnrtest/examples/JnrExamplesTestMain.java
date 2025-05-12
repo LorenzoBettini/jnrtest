@@ -1,8 +1,8 @@
 package io.github.lorenzobettini.jnrtest.examples;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTestConsoleExecutor;
-import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseGuiceExtension;
-import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseMockitoExtension;
+import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestGuiceExtension;
+import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestMockitoExtension;
 
 public class JnrExamplesTestMain {
 
@@ -16,9 +16,9 @@ public class JnrExamplesTestMain {
 				.add(new JnrTestTemporaryFolderExampleTest())
 				.add(new JnrTestTemporaryFolderExampleBeforeAllTest())
 				.add(new JnrTestTemporaryFolderAnotherExampleTest())
-				.add(new JnrTestCaseMockitoExtension()
+				.add(new JnrTestMockitoExtension()
 					.extendEach(new StringServiceWithMockTest()))
-				.add(new JnrTestCaseGuiceExtension(
+				.add(new JnrTestGuiceExtension(
 						new StringRepositoryInMemoryGuiceModule())
 					.extendAll(new StringServiceWithGuiceTest()))
 				.execute();

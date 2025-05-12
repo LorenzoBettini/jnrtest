@@ -10,23 +10,23 @@ import io.github.lorenzobettini.jnrtest.core.JnrTestExtension;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableSpecification;
 
 /**
- * A Guice extension for JnrTestCase.
+ * A Guice extension for {@link JnrTest}.
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestCaseGuiceExtension extends JnrTestExtension {
+public class JnrTestGuiceExtension extends JnrTestExtension {
 
 	private Module module;
 
-	public JnrTestCaseGuiceExtension(Module module) {
+	public JnrTestGuiceExtension(Module module) {
 		this.module = module;
 	}
 
 	@Override
-	protected <T extends JnrTest> void extend(T testCase, List<JnrTestRunnableSpecification> before,
+	protected <T extends JnrTest> void extend(T t, List<JnrTestRunnableSpecification> before,
 			List<JnrTestRunnableSpecification> after) {
 		before.add(new JnrTestRunnableSpecification("inject members", () ->
-			Guice.createInjector(module).injectMembers(testCase)));
+			Guice.createInjector(module).injectMembers(t)));
 	}
 
 }
