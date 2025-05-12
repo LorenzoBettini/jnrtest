@@ -4,7 +4,8 @@ import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
 
 /**
- * Thread-safe implementation of JnrTestListener for reporting on standard output.
+ * Thread-safe implementation of JnrTestListener for reporting on standard
+ * output.
  * 
  * @author Lorenzo Bettini
  */
@@ -13,12 +14,12 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestListener {
 	private final ThreadLocal<JnrTestConsoleReporter> currentReporter = new ThreadLocal<>();
 	private final ThreadLocal<ByteArrayOutputStream> currentOutputStream = new ThreadLocal<>();
 	private final ThreadLocal<String> currentKey = new ThreadLocal<>();
-    private boolean withElapsedTime = false;
+	private boolean withElapsedTime = false;
 
-    public JnrTestThreadSafeConsoleReporter withElapsedTime() {
-        this.withElapsedTime = true;
-        return this;
-    }
+	public JnrTestThreadSafeConsoleReporter withElapsedTime() {
+		this.withElapsedTime = true;
+		return this;
+	}
 
 	@Override
 	public void notify(JnrTestLifecycleEvent event) {
@@ -29,12 +30,12 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestListener {
 			PrintStream printStream = new PrintStream(outputStream);
 			currentOutputStream.set(outputStream);
 			currentReporter.set(new JnrTestConsoleReporter(printStream).withElapsedTime(withElapsedTime));
-            currentReporter.get().notify(event);
+			currentReporter.get().notify(event);
 		} else if (event.status() == JnrTestStatus.END) {
 			JnrTestConsoleReporter reporter = currentReporter.get();
-            reporter.notify(event);
+			reporter.notify(event);
 			ByteArrayOutputStream outputStream = currentOutputStream.get();
-			System.out.print(outputStream.toString());
+			System.out.print(outputStream.toString()); // NOSONAR
 		}
 	}
 
