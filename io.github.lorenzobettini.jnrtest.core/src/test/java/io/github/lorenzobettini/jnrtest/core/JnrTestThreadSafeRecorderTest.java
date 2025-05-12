@@ -11,10 +11,10 @@ import java.util.concurrent.Executors;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 
-public class JnrTestThreadSafeRecorderTest {
+class JnrTestThreadSafeRecorderTest {
 
 	@Test
-	public void testSingleThreadedRecording() {
+	void testSingleThreadedRecording() {
 		JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
 
 		JnrTestLifecycleEvent startEvent = new JnrTestLifecycleEvent("Test1", JnrTestStatus.START);
@@ -41,7 +41,7 @@ public class JnrTestThreadSafeRecorderTest {
 	}
 
 	@Test
-	public void testMultiThreadedRecording() throws InterruptedException {
+	void testMultiThreadedRecording() throws InterruptedException {
 		JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
 
 		int threadCount = 10;
@@ -97,7 +97,7 @@ public class JnrTestThreadSafeRecorderTest {
 	}
 
 	@Test
-	public void testMultiThreadedFailures() throws InterruptedException {
+	void testMultiThreadedFailures() throws InterruptedException {
 		// Notify multiple results between startEvent and endEvent
 		JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
 
