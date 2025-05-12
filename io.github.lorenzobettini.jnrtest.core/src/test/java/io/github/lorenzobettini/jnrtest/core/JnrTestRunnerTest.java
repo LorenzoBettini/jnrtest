@@ -82,7 +82,7 @@ class JnrTestRunnerTest {
 			}
 
 			@Override
-			public void notify(JnrTestCaseLifecycleEvent event) {
+			public void notify(JnrTestLifecycleEvent event) {
 				this.results.append(event.toString() + "\n");
 			}
 
@@ -166,7 +166,7 @@ class JnrTestRunnerTest {
 			}
 
 			@Override
-			public void notify(JnrTestCaseLifecycleEvent event) {
+			public void notify(JnrTestLifecycleEvent event) {
 				this.results.append(event.toString() + "\n");
 			}
 		};

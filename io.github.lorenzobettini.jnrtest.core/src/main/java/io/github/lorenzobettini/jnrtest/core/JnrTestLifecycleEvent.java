@@ -1,12 +1,12 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 /**
- * The lifecycle event of a test case.
+ * The lifecycle event of a test class.
  * 
  * @author Lorenzo Bettini
  *
  */
-public record JnrTestCaseLifecycleEvent(String description, JnrTestCaseStatus status) {
+public record JnrTestLifecycleEvent(String description, JnrTestCaseStatus status) {
 
 	@Override
 	public String toString() {

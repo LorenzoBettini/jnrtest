@@ -8,7 +8,7 @@ package io.github.lorenzobettini.jnrtest.core;
 public abstract class JnrTestListenerAdapter implements JnrTestListener {
 
 	@Override
-	public void notify(JnrTestCaseLifecycleEvent event) {
+	public void notify(JnrTestLifecycleEvent event) {
 
 	}
 

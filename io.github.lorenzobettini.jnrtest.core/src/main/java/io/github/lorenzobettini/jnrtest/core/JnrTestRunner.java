@@ -43,9 +43,9 @@ public class JnrTestRunner {
 
 	private void executeTestCase(JnrTest testCase) {
 		var description = testCase.getDescription();
-		notifyTestCaseLifecycleEvent(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.START));
+		notifyTestCaseLifecycleEvent(new JnrTestLifecycleEvent(description, JnrTestCaseStatus.START));
 		executeTestCase(testCase.getStore());
-		notifyTestCaseLifecycleEvent(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.END));
+		notifyTestCaseLifecycleEvent(new JnrTestLifecycleEvent(description, JnrTestCaseStatus.END));
 	}
 
 	private void executeTestCase(JnrTestStore store) {
@@ -107,7 +107,7 @@ public class JnrTestRunner {
 		}
 	}
 
-	private void notifyTestCaseLifecycleEvent(JnrTestCaseLifecycleEvent event) {
+	private void notifyTestCaseLifecycleEvent(JnrTestLifecycleEvent event) {
 		listeners.forEach(l -> l.notify(event));
 	}
 

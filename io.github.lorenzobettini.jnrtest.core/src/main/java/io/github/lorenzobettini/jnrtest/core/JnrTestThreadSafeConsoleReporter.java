@@ -21,7 +21,7 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestListener {
     }
 
 	@Override
-	public void notify(JnrTestCaseLifecycleEvent event) {
+	public void notify(JnrTestLifecycleEvent event) {
 		if (event.status() == JnrTestCaseStatus.START) {
 			String key = event.toString();
 			currentKey.set(key);

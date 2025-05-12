@@ -7,7 +7,7 @@ package io.github.lorenzobettini.jnrtest.core;
  */
 public interface JnrTestListener {
 
-	void notify(JnrTestCaseLifecycleEvent event);
+	void notify(JnrTestLifecycleEvent event);
 
 	void notify(JnrTestRunnableLifecycleEvent event);
 

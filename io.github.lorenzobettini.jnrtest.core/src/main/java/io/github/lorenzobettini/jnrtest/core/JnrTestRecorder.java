@@ -33,7 +33,7 @@ public class JnrTestRecorder extends JnrTestListenerAdapter implements JnrTestRe
 	}
 
 	@Override
-	public void notify(JnrTestCaseLifecycleEvent event) {
+	public void notify(JnrTestLifecycleEvent event) {
 		if (event.status() == JnrTestCaseStatus.START && withElapsedTime) {
 			startTime = System.currentTimeMillis();
 		}

@@ -40,7 +40,7 @@ public class JnrTestConsoleReporter implements JnrTestListener {
 	}
 
 	@Override
-	public void notify(JnrTestCaseLifecycleEvent event) {
+	public void notify(JnrTestLifecycleEvent event) {
 		if (event.status() == JnrTestCaseStatus.START) {
 			reset();
 			show(event.toString());
