@@ -34,9 +34,9 @@ public class JnrTestTemporaryFolder {
 	 * removed recursively after all tests.
 	 * 
 	 * In both cases, the "before" execution is ensured to be executed before
-	 * possible test class's "before" executions, since the latter can rely on the
+	 * possible test class "before" executions, since the latter can rely on the
 	 * temporary folder to be already created. Similarly, the "after" is executed
-	 * after possible test class's "after" executions, since the latter might still
+	 * after possible test class "after" executions, since the latter might still
 	 * need the temporary folder.
 	 * 
 	 * @param testCase
@@ -49,7 +49,7 @@ public class JnrTestTemporaryFolder {
 			before = testCase.getStore().getBeforeAllRunnables();
 			after = testCase.getStore().getAfterAllRunnables();
 		}
-		// add to the head of the list, i.e., before test class's "before" executions
+		// add to the head of the list, i.e., before test class "before" executions
 		before.add(0, new JnrTestRunnableSpecification("create temporary folder",
 			() ->
 				temporaryFolder = 
