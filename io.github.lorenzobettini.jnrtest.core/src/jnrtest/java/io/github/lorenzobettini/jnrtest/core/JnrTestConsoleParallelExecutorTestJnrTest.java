@@ -15,7 +15,7 @@ public class JnrTestConsoleParallelExecutorTestJnrTest extends JnrTest {
 		afterEach("call restoreStreams",
 			() -> originalTest.restoreStreams());
 		test("should add test classes correctly",
-			() -> originalTest.shouldAddTestCasesCorrectly());
+			() -> originalTest.shouldAddTestClassesCorrectly());
 		test("should add listeners correctly",
 			() -> originalTest.shouldAddListenersCorrectly());
 		test("should execute tests without throwing when all tests pass",
@@ -25,6 +25,6 @@ public class JnrTestConsoleParallelExecutorTestJnrTest extends JnrTest {
 		test("should return false when executeWithoutThrowing fails",
 			() -> originalTest.shouldReturnFalseWhenExecuteWithoutThrowingFails());
 		test("should handle multiple test classes in parallel",
-			() -> originalTest.shouldHandleMultipleTestCasesInParallel());
+			() -> originalTest.shouldHandleMultipleTestClassesInParallel());
 	}
 }

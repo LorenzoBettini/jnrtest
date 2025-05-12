@@ -43,7 +43,7 @@ class JnrTestConsoleExecutorTest {
 	
 	@Test
 	@DisplayName("should add test classes correctly")
-	void shouldAddTestCasesCorrectly() {
+	void shouldAddTestClassesCorrectly() {
 		// Create a mock test class
 		JnrTest testCase = mock(JnrTest.class);
 		when(testCase.getDescription()).thenReturn("Mock Test Case");

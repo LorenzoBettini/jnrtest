@@ -43,7 +43,7 @@ class JnrTestConsoleParallelExecutorTest {
 	
 	@Test
 	@DisplayName("should add test classes correctly")
-	void shouldAddTestCasesCorrectly() {
+	void shouldAddTestClassesCorrectly() {
 		// Create a mock test class
 		JnrTest testCase = mock(JnrTest.class);
 		when(testCase.getDescription()).thenReturn("Mock Test Case");
@@ -148,7 +148,7 @@ class JnrTestConsoleParallelExecutorTest {
 	
 	@Test
 	@DisplayName("should handle multiple test classes in parallel")
-	void shouldHandleMultipleTestCasesInParallel() {
+	void shouldHandleMultipleTestClassesInParallel() {
 		// Create multiple test classes
 		JnrTest testCase1 = new JnrTest("Test Case 1") {
 			@Override
