@@ -15,7 +15,7 @@ import java.util.List;
  * @author Lorenzo Bettini
  *
  */
-public abstract class JnrTestCaseExtension {
+public abstract class JnrTestExtension {
 
 	public <T extends JnrTest> T extendAll(T testCase) {
 		var store = testCase.getStore();

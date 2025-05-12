@@ -5,7 +5,7 @@ import java.util.List;
 import org.mockito.MockitoAnnotations;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
-import io.github.lorenzobettini.jnrtest.core.JnrTestCaseExtension;
+import io.github.lorenzobettini.jnrtest.core.JnrTestExtension;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableSpecification;
 
 /**
@@ -13,7 +13,7 @@ import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableSpecification;
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestCaseMockitoExtension extends JnrTestCaseExtension {
+public class JnrTestCaseMockitoExtension extends JnrTestExtension {
 
 	private AutoCloseable autoCloseable;
 

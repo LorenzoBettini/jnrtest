@@ -386,7 +386,7 @@ class JnrTestRunnerTest {
 				});
 			}
 		};
-		var extensionAll = new JnrTestCaseExtension() {
+		var extensionAll = new JnrTestExtension() {
 			@Override
 			protected <T extends JnrTest> void extend(T testCase, List<JnrTestRunnableSpecification> before,
 					List<JnrTestRunnableSpecification> after) {
@@ -396,7 +396,7 @@ class JnrTestRunnerTest {
 					() -> callable.afterAllMethod1()));
 			}
 		};
-		var extensionEach = new JnrTestCaseExtension() {
+		var extensionEach = new JnrTestExtension() {
 			@Override
 			protected <T extends JnrTest> void extend(T testCase, List<JnrTestRunnableSpecification> before,
 					List<JnrTestRunnableSpecification> after) {
