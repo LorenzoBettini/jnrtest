@@ -47,11 +47,14 @@ public class JnrTestConsoleReporter implements JnrTestListener {
 		}
 		if (event.status() == JnrTestStatus.END) {
 			show(String.format("Tests run: %d, Succeeded: %d, Failures: %d, Errors: %d",
-					testStatistics.getTotalTests(),
-					testStatistics.getSucceeded(),
-					testStatistics.getFailed(),
-					testStatistics.getErrors())
-					+ (testStatistics.isWithElapsedTime() ? String.format(" - Time elapsed: %f s", (float) testStatistics.getTotalTime() / 3600) : ""));
+				testStatistics.getTotalTests(),
+				testStatistics.getSucceeded(),
+				testStatistics.getFailed(),
+				testStatistics.getErrors())
+				+ (testStatistics.isWithElapsedTime() ?
+					String.format(" - Time elapsed: %f s",
+						(float) testStatistics.getTotalTime() / 3600) :
+					""));
 		}
 	}
 
