@@ -38,7 +38,7 @@ class JnrTestParallelRunnerTest {
 		var testReporter = new JnrTestThreadSafeConsoleReporter();
 		var testRecorderWithElapsed = new JnrTestThreadSafeRecorder().withElapsedTime();
 		JnrTestRunner runner = new JnrTestParallelRunner()
-			.testCase(new JnrTestCase("a test case with success") {
+			.add(new JnrTest("a test class with success") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
@@ -53,7 +53,7 @@ class JnrTestParallelRunnerTest {
 						throw new Exception("an exception");
 					});
 				}
-			}).testCase(new JnrTestCase("a test case with failure") {
+			}).add(new JnrTest("a test class with failure") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
@@ -68,7 +68,7 @@ class JnrTestParallelRunnerTest {
 			});
 		for (int i = 0; i < 10; i++) {
 			String index = "" + i;
-			runner.testCase(new JnrTestCase("a test case " + index) {
+			runner.add(new JnrTest("a test class " + index) {
 				@Override
 				protected void specify() {
 					beforeAll("before all " + index, () -> {});
@@ -87,13 +87,13 @@ class JnrTestParallelRunnerTest {
 		runner.execute();
 		String out = getOutContent();
 		assertThat(out).contains("""
-			[  START] a test case with success
+			[  START] a test class with success
 			[SUCCESS] success test
 			[  ERROR] error test
 			Tests run: 2, Succeeded: 1, Failures: 0, Errors: 1
 			""");
 		assertThat(out).contains("""
-			[  START] a test case with failure
+			[  START] a test class with failure
 			[ FAILED] failed test
 			[SUCCESS] success test
 			Tests run: 2, Succeeded: 1, Failures: 1, Errors: 0
@@ -101,7 +101,7 @@ class JnrTestParallelRunnerTest {
 		for (int i = 0; i < 10; i++) {
 			String index = "" + i;
 			var expected = String.format("""
-				[  START] a test case %s
+				[  START] a test class %s
 				[SUCCESS] success test %s
 				[  ERROR] error test %s
 				Tests run: 2, Succeeded: 1, Failures: 0, Errors: 1

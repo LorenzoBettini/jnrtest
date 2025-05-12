@@ -1,26 +1,26 @@
 package io.github.lorenzobettini.jnrtest.examples;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTestConsoleExecutor;
-import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseGuiceExtension;
-import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestCaseMockitoExtension;
+import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestGuiceExtension;
+import io.github.lorenzobettini.jnrtest.examples.extensions.JnrTestMockitoExtension;
 
 public class JnrExamplesTestMain {
 
 	public static void main(String[] args) {
 		new JnrTestConsoleExecutor()
-				.testCase(new FactorialJnrTestCase())
-				.testCase(new FactorialJnrParameterizedTestCase())
-				.testCase(new FactorialJnrParameterizedWithDescriptionTestCase())
-				.testCase(new MyStringUtilsJnrTestCase())
-				.testCase(new MyStringUtilsJnrParameterizedTestCase())
-				.testCase(new JnrTestTemporaryFolderExampleTestCase())
-				.testCase(new JnrTestTemporaryFolderExampleBeforeAllTestCase())
-				.testCase(new JnrTestTemporaryFolderAnotherExampleTestCase())
-				.testCase(new JnrTestCaseMockitoExtension()
-					.extendEach(new StringServiceWithMockTestCase()))
-				.testCase(new JnrTestCaseGuiceExtension(
+				.add(new FactorialJnrTest())
+				.add(new FactorialJnrParameterizedTest())
+				.add(new FactorialJnrParameterizedWithDescriptionTest())
+				.add(new MyStringUtilsJnrTest())
+				.add(new MyStringUtilsJnrParameterizedTest())
+				.add(new JnrTestTemporaryFolderExampleTest())
+				.add(new JnrTestTemporaryFolderExampleBeforeAllTest())
+				.add(new JnrTestTemporaryFolderAnotherExampleTest())
+				.add(new JnrTestMockitoExtension()
+					.extendEach(new StringServiceWithMockTest()))
+				.add(new JnrTestGuiceExtension(
 						new StringRepositoryInMemoryGuiceModule())
-					.extendAll(new StringServiceWithGuiceTestCase()))
+					.extendAll(new StringServiceWithGuiceTest()))
 				.execute();
 	}
 }

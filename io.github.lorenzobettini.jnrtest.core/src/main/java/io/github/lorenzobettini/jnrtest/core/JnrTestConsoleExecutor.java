@@ -1,7 +1,7 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 /**
- * A high-level class that provides a simplified API for setting up and executing test cases
+ * A high-level class that provides a simplified API for setting up and executing test classes
  * in a sequential environment.
  * It handles the creation of recorders and reporters, execution of tests, and reporting of results.
  * 
@@ -24,13 +24,13 @@ public class JnrTestConsoleExecutor {
 	}
 
 	/**
-	 * Adds a test case to be executed.
+	 * Adds a test class to be executed.
 	 *
-	 * @param testCase the test case to add
+	 * @param testClass the test class to add
 	 * @return this instance for method chaining
 	 */
-	public JnrTestConsoleExecutor testCase(JnrTestCase testCase) {
-		runner.testCase(testCase);
+	public JnrTestConsoleExecutor add(JnrTest testClass) {
+		runner.add(testClass);
 		return this;
 	}
 
@@ -46,22 +46,23 @@ public class JnrTestConsoleExecutor {
 	}
 
 	/**
-	 * Executes all test cases and prints the results.
+	 * Executes all test classes and prints the results.
 	 *
 	 * @return true if all tests passed, false otherwise
 	 */
 	public boolean executeWithoutThrowing() {
 		runner.execute();
-		System.out.println("\nResults:\n\n" + new JnrTestResultAggregator().aggregate(recorder));
+		System.out.println("\nResults:\n\n" + // NOSONAR
+				new JnrTestResultAggregator().aggregate(recorder));
 		return recorder.isSuccess();
 	}
 
 	/**
-	 * Executes all test cases, prints the results, and throws an exception if any tests fail.
+	 * Executes all test classes, prints the results, and throws an exception if any tests fail.
 	 */
 	public void execute() {
 		if (!executeWithoutThrowing()) {
-			throw new RuntimeException("There are test failures");
+			throw new RuntimeException("There are test failures"); // NOSONAR
 		}
 	}
 }

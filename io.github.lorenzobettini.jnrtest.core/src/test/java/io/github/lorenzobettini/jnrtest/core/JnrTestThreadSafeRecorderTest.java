@@ -17,8 +17,8 @@ public class JnrTestThreadSafeRecorderTest {
 	public void testSingleThreadedRecording() {
 		JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
 
-		JnrTestCaseLifecycleEvent startEvent = new JnrTestCaseLifecycleEvent("Test1", JnrTestCaseStatus.START);
-		JnrTestCaseLifecycleEvent endEvent = new JnrTestCaseLifecycleEvent("Test1", JnrTestCaseStatus.END);
+		JnrTestLifecycleEvent startEvent = new JnrTestLifecycleEvent("Test1", JnrTestStatus.START);
+		JnrTestLifecycleEvent endEvent = new JnrTestLifecycleEvent("Test1", JnrTestStatus.END);
 
 		recorder.notify(startEvent);
 
@@ -53,8 +53,8 @@ public class JnrTestThreadSafeRecorderTest {
 			executor.submit(() -> {
 				try {
 					String testName = "Test" + threadIndex;
-					JnrTestCaseLifecycleEvent startEvent = new JnrTestCaseLifecycleEvent(testName, JnrTestCaseStatus.START);
-					JnrTestCaseLifecycleEvent endEvent = new JnrTestCaseLifecycleEvent(testName, JnrTestCaseStatus.END);
+					JnrTestLifecycleEvent startEvent = new JnrTestLifecycleEvent(testName, JnrTestStatus.START);
+					JnrTestLifecycleEvent endEvent = new JnrTestLifecycleEvent(testName, JnrTestStatus.END);
 
 					recorder.notify(startEvent);
 
@@ -110,8 +110,8 @@ public class JnrTestThreadSafeRecorderTest {
 			executor.submit(() -> {
 				try {
 					String testName = "Test" + threadIndex;
-					JnrTestCaseLifecycleEvent startEvent = new JnrTestCaseLifecycleEvent(testName, JnrTestCaseStatus.START);
-					JnrTestCaseLifecycleEvent endEvent = new JnrTestCaseLifecycleEvent(testName, JnrTestCaseStatus.END);
+					JnrTestLifecycleEvent startEvent = new JnrTestLifecycleEvent(testName, JnrTestStatus.START);
+					JnrTestLifecycleEvent endEvent = new JnrTestLifecycleEvent(testName, JnrTestStatus.END);
 
 					recorder.notify(startEvent);
 

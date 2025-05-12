@@ -4,24 +4,24 @@ import java.util.List;
 
 import org.mockito.MockitoAnnotations;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
-import io.github.lorenzobettini.jnrtest.core.JnrTestCaseExtension;
+import io.github.lorenzobettini.jnrtest.core.JnrTest;
+import io.github.lorenzobettini.jnrtest.core.JnrTestExtension;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableSpecification;
 
 /**
- * A Mockito extension for JnrTestCase.
+ * A Mockito extension for {@link JnrTest}.
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestCaseMockitoExtension extends JnrTestCaseExtension {
+public class JnrTestMockitoExtension extends JnrTestExtension {
 
 	private AutoCloseable autoCloseable;
 
 	@Override
-	protected <T extends JnrTestCase> void extend(T testCase, List<JnrTestRunnableSpecification> before,
+	protected <T extends JnrTest> void extend(T t, List<JnrTestRunnableSpecification> before,
 			List<JnrTestRunnableSpecification> after) {
 		before.add(new JnrTestRunnableSpecification("open mocks", () ->
-			autoCloseable = MockitoAnnotations.openMocks(testCase)));
+			autoCloseable = MockitoAnnotations.openMocks(t)));
 		after.add(new JnrTestRunnableSpecification("release mocks", () ->
 			autoCloseable.close()));
 	}

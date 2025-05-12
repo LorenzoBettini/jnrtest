@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Thread-safe implementation of JnrTestRecorder.
  * 
- * Records test results for each test case in a multi-threaded context.
+ * Records test results for each test class in a multi-threaded context.
  * 
  * @author Lorenzo Bettini
  * 
@@ -37,11 +37,11 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements
 	}
 
 	@Override
-	public void notify(JnrTestCaseLifecycleEvent event) {
-		if (event.status() == JnrTestCaseStatus.START && withElapsedTime) {
+	public void notify(JnrTestLifecycleEvent event) {
+		if (event.status() == JnrTestStatus.START && withElapsedTime) {
 			startTime.set(System.currentTimeMillis());
 		}
-		if (event.status() != JnrTestCaseStatus.START) {
+		if (event.status() != JnrTestStatus.START) {
 			if (withElapsedTime) {
 				totalTime.addAndGet(System.currentTimeMillis() - startTime.get());
 			}

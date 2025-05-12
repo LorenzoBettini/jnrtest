@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
- * Runs the tests of {@link JnrTestCase}; the actual test execution is
+ * Runs the tests of {@link JnrTest}; the actual test execution is
  * performed by {@link #execute()}.
  * 
  * @author Lorenzo Bettini
@@ -14,11 +14,11 @@ import java.util.stream.Stream;
  */
 public class JnrTestRunner {
 
-	private final List<JnrTestCase> testCases = new ArrayList<>();
+	private final List<JnrTest> testClasses = new ArrayList<>();
 	private final List<JnrTestListener> listeners = new ArrayList<>();
 
-	public JnrTestRunner testCase(JnrTestCase testCase) {
-		testCases.add(testCase);
+	public JnrTestRunner add(JnrTest testClass) {
+		testClasses.add(testClass);
 		return this;
 	}
 
@@ -28,27 +28,25 @@ public class JnrTestRunner {
 	}
 
 	public void execute() {
-		getTestCasesStream().forEach(this::executeTestCase);
+		getTestClassesStream().forEach(this::executeTestClass);
 	}
 
 	/**
-	 * Returns a stream of test cases to be executed. Subclasses can override this
-	 * method to customize the stream of test cases.
-	 * 
-	 * @return a stream of test cases
+	 * Returns a stream of test classes to be executed. Subclasses can override this
+	 * method to customize the stream of test classes.
 	 */
-	protected Stream<JnrTestCase> getTestCasesStream() {
-		return testCases.stream();
+	protected Stream<JnrTest> getTestClassesStream() {
+		return testClasses.stream();
 	}
 
-	private void executeTestCase(JnrTestCase testCase) {
-		var description = testCase.getDescription();
-		notifyTestCaseLifecycleEvent(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.START));
-		executeTestCase(testCase.getStore());
-		notifyTestCaseLifecycleEvent(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.END));
+	private void executeTestClass(JnrTest testClass) {
+		var description = testClass.getDescription();
+		notifyTestLifecycleEvent(new JnrTestLifecycleEvent(description, JnrTestStatus.START));
+		executeTestClass(testClass.getStore());
+		notifyTestLifecycleEvent(new JnrTestLifecycleEvent(description, JnrTestStatus.END));
 	}
 
-	private void executeTestCase(JnrTestStore store) {
+	private void executeTestClass(JnrTestStore store) {
 		executeBeforeAll(store);
 		executeTestRunnables(store);
 		executeAfterAll(store);
@@ -107,7 +105,7 @@ public class JnrTestRunner {
 		}
 	}
 
-	private void notifyTestCaseLifecycleEvent(JnrTestCaseLifecycleEvent event) {
+	private void notifyTestLifecycleEvent(JnrTestLifecycleEvent event) {
 		listeners.forEach(l -> l.notify(event));
 	}
 

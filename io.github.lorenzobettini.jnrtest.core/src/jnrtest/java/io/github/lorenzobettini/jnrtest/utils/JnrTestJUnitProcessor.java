@@ -37,9 +37,9 @@ import javax.tools.JavaCompiler.CompilationTask;
 import java.util.Arrays;
 
 /**
- * A processor that generates JnrTestCase subclasses from JUnit
+ * A processor that generates JnrTest subclasses from JUnit
  * Jupiter test classes. For each Java file containing Jupiter @Test
- * annotations, it generates a corresponding JnrTestCase subclass with the same
+ * annotations, it generates a corresponding JnrTest subclass with the same
  * name plus the suffix "JnrTest". It also generates a main class for running
  * all the generated JnrTest classes.
  * 
@@ -370,7 +370,7 @@ public class JnrTestJUnitProcessor {
 		String classHeader = """
 			package %s;
 
-			public class %s extends JnrTestCase {
+			public class %s extends JnrTest {
 
 				private %s originalTest = new %s();
 
@@ -458,7 +458,7 @@ public class JnrTestJUnitProcessor {
 		StringBuilder contentBuilder = new StringBuilder(classHeader);
 
 		for (String testClass : generatedClasses) {
-			contentBuilder.append("\t\texecutor.testCase(new ")
+			contentBuilder.append("\t\texecutor.add(new ")
 					.append(testClass)
 					.append("());\n");
 		}

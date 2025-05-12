@@ -1,6 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
-public class JnrTestConsoleParallelExecutorTestJnrTest extends JnrTestCase {
+public class JnrTestConsoleParallelExecutorTestJnrTest extends JnrTest {
 
 	private JnrTestConsoleParallelExecutorTest originalTest = new JnrTestConsoleParallelExecutorTest();
 
@@ -14,8 +14,8 @@ public class JnrTestConsoleParallelExecutorTestJnrTest extends JnrTestCase {
 			() -> originalTest.setUpStreams());
 		afterEach("call restoreStreams",
 			() -> originalTest.restoreStreams());
-		test("should add test cases correctly",
-			() -> originalTest.shouldAddTestCasesCorrectly());
+		test("should add test classes correctly",
+			() -> originalTest.shouldAddTestClassesCorrectly());
 		test("should add listeners correctly",
 			() -> originalTest.shouldAddListenersCorrectly());
 		test("should execute tests without throwing when all tests pass",
@@ -24,7 +24,7 @@ public class JnrTestConsoleParallelExecutorTestJnrTest extends JnrTestCase {
 			() -> originalTest.shouldThrowExceptionWhenExecuteFails());
 		test("should return false when executeWithoutThrowing fails",
 			() -> originalTest.shouldReturnFalseWhenExecuteWithoutThrowingFails());
-		test("should handle multiple test cases in parallel",
-			() -> originalTest.shouldHandleMultipleTestCasesInParallel());
+		test("should handle multiple test classes in parallel",
+			() -> originalTest.shouldHandleMultipleTestClassesInParallel());
 	}
 }

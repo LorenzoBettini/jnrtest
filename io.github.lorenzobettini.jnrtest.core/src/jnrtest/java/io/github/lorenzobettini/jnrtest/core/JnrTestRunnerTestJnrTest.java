@@ -1,6 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
-public class JnrTestRunnerTestJnrTest extends JnrTestCase {
+public class JnrTestRunnerTestJnrTest extends JnrTest {
 
 	private JnrTestRunnerTest originalTest = new JnrTestRunnerTest();
 

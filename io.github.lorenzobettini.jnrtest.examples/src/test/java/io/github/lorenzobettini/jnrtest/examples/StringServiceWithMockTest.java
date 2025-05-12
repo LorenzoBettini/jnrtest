@@ -8,9 +8,9 @@ import java.util.List;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
+import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class StringServiceWithMockTestCase extends JnrTestCase {
+public class StringServiceWithMockTest extends JnrTest {
 
 	@Mock
 	private StringRepository repository;
@@ -18,8 +18,8 @@ public class StringServiceWithMockTestCase extends JnrTestCase {
 	@InjectMocks
 	private StringService service;
 
-	public StringServiceWithMockTestCase() {
-		super("Mockito extension test case");
+	public StringServiceWithMockTest() {
+		super("Mockito extension test class");
 	}
 
 	@Override

@@ -38,7 +38,7 @@ class JnrTestConsoleReporterTest {
 	void shouldReportResults() {
 		var testReporter = new JnrTestConsoleReporter();
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTestCase("a test case with success") {
+			.add(new JnrTest("a test class with success") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
@@ -50,7 +50,7 @@ class JnrTestConsoleReporterTest {
 						throw new Exception("an exception");
 					});
 				}
-			}).testCase(new JnrTestCase("a test case with failure") {
+			}).add(new JnrTest("a test class with failure") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
@@ -66,11 +66,11 @@ class JnrTestConsoleReporterTest {
 		runner.testListener(testReporter);
 		runner.execute();
 		assertEquals("""
-			[  START] a test case with success
+			[  START] a test class with success
 			[SUCCESS] success test
 			[  ERROR] error test
 			Tests run: 2, Succeeded: 1, Failures: 0, Errors: 1
-			[  START] a test case with failure
+			[  START] a test class with failure
 			[ FAILED] failed test
 			[SUCCESS] success test
 			Tests run: 2, Succeeded: 1, Failures: 1, Errors: 0
@@ -85,7 +85,7 @@ class JnrTestConsoleReporterTest {
 	void shouldReportResultsWithElapsedTime() {
 		var testReporter = new JnrTestConsoleReporter();
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTestCase("a test case with success") {
+			.add(new JnrTest("a test class with success") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
@@ -97,7 +97,7 @@ class JnrTestConsoleReporterTest {
 						throw new Exception("an exception");
 					});
 				}
-			}).testCase(new JnrTestCase("a test case with failure") {
+			}).add(new JnrTest("a test class with failure") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});

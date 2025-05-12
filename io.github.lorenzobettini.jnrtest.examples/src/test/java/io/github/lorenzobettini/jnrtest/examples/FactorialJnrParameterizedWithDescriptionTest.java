@@ -1,17 +1,17 @@
 package io.github.lorenzobettini.jnrtest.examples;
 
-import static io.github.lorenzobettini.jnrtest.core.JnrTestCase.Pair.pair;
+import static io.github.lorenzobettini.jnrtest.core.JnrTest.Pair.pair;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
+import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class FactorialJnrParameterizedWithDescriptionTestCase extends JnrTestCase {
+public class FactorialJnrParameterizedWithDescriptionTest extends JnrTest {
 
 	private Factorial factorial;
 
-	public FactorialJnrParameterizedWithDescriptionTestCase() {
+	public FactorialJnrParameterizedWithDescriptionTest() {
 		super("tests for factorial (parameterized with description)");
 	}
 

@@ -43,7 +43,7 @@ class JnrTestRunnerTest {
 	void shouldRunAllTheTests() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTestCase("a test case") {
+			.add(new JnrTest("a test class") {
 				@Override
 				protected void specify() {
 					test("first test", () -> {
@@ -53,7 +53,7 @@ class JnrTestRunnerTest {
 						throw new RuntimeException("exception");
 					});
 				}
-			}).testCase(new JnrTestCase("anoter test case") {
+			}).add(new JnrTest("anoter test class") {
 				@Override
 				protected void specify() {
 					test("test failing assertion", () -> {
@@ -82,7 +82,7 @@ class JnrTestRunnerTest {
 			}
 
 			@Override
-			public void notify(JnrTestCaseLifecycleEvent event) {
+			public void notify(JnrTestLifecycleEvent event) {
 				this.results.append(event.toString() + "\n");
 			}
 
@@ -94,7 +94,7 @@ class JnrTestRunnerTest {
 		var listenerAdapter = new JnrTestListenerAdapter() {
 		};
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTestCase("a test case") {
+			.add(new JnrTest("a test class") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
@@ -106,7 +106,7 @@ class JnrTestRunnerTest {
 						throw new RuntimeException("exception");
 					});
 				}
-			}).testCase(new JnrTestCase("another test case") {
+			}).add(new JnrTest("another test class") {
 				@Override
 				protected void specify() {
 					beforeEach("before each", () -> {});
@@ -123,7 +123,7 @@ class JnrTestRunnerTest {
 		runner.testListener(listenerAdapter);
 		runner.execute();
 		assertEquals("""
-				[  START] a test case
+				[  START] a test class
 				[  START] BEFORE_ALL before all
 				[    END] BEFORE_ALL before all
 				[  START] TEST first test
@@ -134,8 +134,8 @@ class JnrTestRunnerTest {
 				[    END] TEST test throwing exception
 				[  START] AFTER_ALL after all
 				[    END] AFTER_ALL after all
-				[    END] a test case
-				[  START] another test case
+				[    END] a test class
+				[  START] another test class
 				[  START] BEFORE_EACH before each
 				[    END] BEFORE_EACH before each
 				[  START] TEST test failing assertion
@@ -150,7 +150,7 @@ class JnrTestRunnerTest {
 				[    END] TEST second test
 				[  START] AFTER_EACH after each
 				[    END] AFTER_EACH after each
-				[    END] another test case
+				[    END] another test class
 				""", listener.results.toString());
 	}
 
@@ -166,12 +166,12 @@ class JnrTestRunnerTest {
 			}
 
 			@Override
-			public void notify(JnrTestCaseLifecycleEvent event) {
+			public void notify(JnrTestLifecycleEvent event) {
 				this.results.append(event.toString() + "\n");
 			}
 		};
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTestCase("a test case with parameterized test (single)") {
+			.add(new JnrTest("a test class with parameterized test (single)") {
 				@Override
 				protected void specify() {
 					testWithParameters("parameter should be positive ",
@@ -180,7 +180,7 @@ class JnrTestRunnerTest {
 					);
 				}
 			})
-			.testCase(new JnrTestCase("a test case with parameterized test (pair)") {
+			.add(new JnrTest("a test class with parameterized test (pair)") {
 				@Override
 				protected void specify() {
 					testWithParameters("strings should be equal ",
@@ -189,7 +189,7 @@ class JnrTestRunnerTest {
 					);
 				}
 			})
-			.testCase(new JnrTestCase("a test case with parameterized test and description") {
+			.add(new JnrTest("a test class with parameterized test and description") {
 				@Override
 				protected void specify() {
 					testWithParameters("strings should be equal: ",
@@ -202,20 +202,20 @@ class JnrTestRunnerTest {
 		runner.testListener(listener);
 		runner.execute();
 		assertEquals("""
-				[  START] a test case with parameterized test (single)
+				[  START] a test class with parameterized test (single)
 				[ FAILED] parameter should be positive 0
 				[SUCCESS] parameter should be positive 1
 				[SUCCESS] parameter should be positive 2
 				[SUCCESS] parameter should be positive 3
-				[    END] a test case with parameterized test (single)
-				[  START] a test case with parameterized test (pair)
+				[    END] a test class with parameterized test (single)
+				[  START] a test class with parameterized test (pair)
 				[SUCCESS] strings should be equal (foo,foo)
 				[ FAILED] strings should be equal (foo,bar)
-				[    END] a test case with parameterized test (pair)
-				[  START] a test case with parameterized test and description
+				[    END] a test class with parameterized test (pair)
+				[  START] a test class with parameterized test and description
 				[SUCCESS] strings should be equal: is "foo".equals("foo")?
 				[ FAILED] strings should be equal: is "foo".equals("bar")?
-				[    END] a test case with parameterized test and description
+				[    END] a test class with parameterized test and description
 				""", listener.results.toString());
 	}
 
@@ -225,7 +225,7 @@ class JnrTestRunnerTest {
 		var testRecorder = new JnrTestRecorder();
 		var testRecorderWithElapsed = new JnrTestRecorder().withElapsedTime();
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTestCase("a test case with success") {
+			.add(new JnrTest("a test class with success") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
@@ -242,7 +242,7 @@ class JnrTestRunnerTest {
 		runner.testListener(testRecorderWithElapsed);
 		runner.execute();
 		assertTrue(testRecorder.isSuccess());
-		runner.testCase(new JnrTestCase("a test case with failure") {
+		runner.add(new JnrTest("a test class with failure") {
 			@Override
 			protected void specify() {
 				beforeAll("before all", () -> {});
@@ -254,10 +254,10 @@ class JnrTestRunnerTest {
 		});
 		runner.execute();
 		assertFalse(testRecorder.isSuccess());
-		// the first test case is executed twice
-		assertEquals("{a test case with success="
+		// the first test class is executed twice
+		assertEquals("{a test class with success="
 			+ "[[SUCCESS] success test, [SUCCESS] success test],"
-			+ " a test case with failure="
+			+ " a test class with failure="
 			+ "[[ FAILED] failed test]}",
 			testRecorder.getResults().toString());
 		assertThat(testRecorderWithElapsed.getTotalTime())
@@ -283,7 +283,7 @@ class JnrTestRunnerTest {
 	void shouldSpecifyTestsOnlyOnce() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-				.testCase(new JnrTestCase("a test case") {
+				.add(new JnrTest("a test class") {
 			@Override
 			protected void specify() {
 				test("first test", () -> {
@@ -302,7 +302,7 @@ class JnrTestRunnerTest {
 	void shouldExecuteLifecycle() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-				.testCase(new JnrTestCase("a test case") {
+				.add(new JnrTest("a test class") {
 			@Override
 			protected void specify() {
 				beforeEach("", () -> {
@@ -375,7 +375,7 @@ class JnrTestRunnerTest {
 	@DisplayName("should run extensions")
 	void shouldRunExtensions() {
 		var callable = mock(Callable.class);
-		var testCase = new JnrTestCase("a test case") {
+		var testClass = new JnrTest("a test class") {
 			@Override
 			protected void specify() {
 				test("first test", () -> {
@@ -386,9 +386,9 @@ class JnrTestRunnerTest {
 				});
 			}
 		};
-		var extensionAll = new JnrTestCaseExtension() {
+		var extensionAll = new JnrTestExtension() {
 			@Override
-			protected <T extends JnrTestCase> void extend(T testCase, List<JnrTestRunnableSpecification> before,
+			protected <T extends JnrTest> void extend(T testClass, List<JnrTestRunnableSpecification> before,
 					List<JnrTestRunnableSpecification> after) {
 				before.add(new JnrTestRunnableSpecification("before all",
 					() -> callable.beforeAllMethod1()));
@@ -396,9 +396,9 @@ class JnrTestRunnerTest {
 					() -> callable.afterAllMethod1()));
 			}
 		};
-		var extensionEach = new JnrTestCaseExtension() {
+		var extensionEach = new JnrTestExtension() {
 			@Override
-			protected <T extends JnrTestCase> void extend(T testCase, List<JnrTestRunnableSpecification> before,
+			protected <T extends JnrTest> void extend(T testClass, List<JnrTestRunnableSpecification> before,
 					List<JnrTestRunnableSpecification> after) {
 				before.add(new JnrTestRunnableSpecification("before each",
 						() -> callable.beforeEachMethod1()));
@@ -406,10 +406,10 @@ class JnrTestRunnerTest {
 						() -> callable.afterEachMethod1()));
 			}
 		};
-		testCase = extensionAll.extendAll(testCase);
-		testCase = extensionEach.extendEach(testCase);
+		testClass = extensionAll.extendAll(testClass);
+		testClass = extensionEach.extendEach(testClass);
 		var runner = new JnrTestRunner()
-			.testCase(testCase);
+			.add(testClass);
 		runner.execute();
 		var inOrder = inOrder(callable);
 		// before all

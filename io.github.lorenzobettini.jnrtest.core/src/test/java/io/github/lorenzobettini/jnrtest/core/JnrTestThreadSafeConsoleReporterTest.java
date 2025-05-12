@@ -38,17 +38,17 @@ class JnrTestThreadSafeConsoleReporterTest {
 		for (int i = 0; i < 10; i++) {
 			final int threadId = i;
 			executorService.submit(() -> {
-				String testCaseName = "TestCase-" + threadId;
-				JnrTestCaseLifecycleEvent startEvent = new JnrTestCaseLifecycleEvent(
-						testCaseName, JnrTestCaseStatus.START);
-				JnrTestCaseLifecycleEvent endEvent = new JnrTestCaseLifecycleEvent(
-						testCaseName, JnrTestCaseStatus.END);
+				String testClassName = "TestClass-" + threadId;
+				JnrTestLifecycleEvent startEvent = new JnrTestLifecycleEvent(
+						testClassName, JnrTestStatus.START);
+				JnrTestLifecycleEvent endEvent = new JnrTestLifecycleEvent(
+						testClassName, JnrTestStatus.END);
 
 				reporter.notify(startEvent);
 
 				// Notify multiple results
 				for (int j = 0; j < 5; j++) {
-					JnrTestResult result = new JnrTestResult(testCaseName + "-Test-" + j, JnrTestResultStatus.SUCCESS, null);
+					JnrTestResult result = new JnrTestResult(testClassName + "-Test-" + j, JnrTestResultStatus.SUCCESS, null);
 					reporter.notify(result);
 				}
 
@@ -62,13 +62,13 @@ class JnrTestThreadSafeConsoleReporterTest {
 		 // Normalize output to handle different EOL characters
 		String output = outputStream.toString().replace("\r\n", "\n");
 		for (int i = 0; i < 10; i++) {
-			String testCaseName = "TestCase-" + i;
+			String testClassName = "TestClass-" + i;
 
-			// Generate the expected block for this test case
+			// Generate the expected block for this test class
 			StringBuilder expectedBlock = new StringBuilder();
-			expectedBlock.append("[  START] ").append(testCaseName).append("\n");
+			expectedBlock.append("[  START] ").append(testClassName).append("\n");
 			for (int j = 0; j < 5; j++) {
-				expectedBlock.append("[SUCCESS] ").append(testCaseName).append("-Test-").append(j).append("\n");
+				expectedBlock.append("[SUCCESS] ").append(testClassName).append("-Test-").append(j).append("\n");
 			}
 			expectedBlock.append("Tests run: 5, Succeeded: 5, Failures: 0, Errors: 0\n");
 
@@ -81,17 +81,17 @@ class JnrTestThreadSafeConsoleReporterTest {
 	void testSingleThreadCompleteOutputVerification() {
 		JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter();
 
-		String testCaseName = "TestCase-1";
-		JnrTestCaseLifecycleEvent startEvent = new JnrTestCaseLifecycleEvent(
-				testCaseName, JnrTestCaseStatus.START);
-		JnrTestCaseLifecycleEvent endEvent = new JnrTestCaseLifecycleEvent(
-				testCaseName, JnrTestCaseStatus.END);
+		String testClassName = "TestClass-1";
+		JnrTestLifecycleEvent startEvent = new JnrTestLifecycleEvent(
+				testClassName, JnrTestStatus.START);
+		JnrTestLifecycleEvent endEvent = new JnrTestLifecycleEvent(
+				testClassName, JnrTestStatus.END);
 
 		reporter.notify(startEvent);
 
 		// Notify multiple results
 		for (int i = 0; i < 3; i++) {
-			JnrTestResult result = new JnrTestResult(testCaseName + "-Test-" + i, JnrTestResultStatus.SUCCESS, null);
+			JnrTestResult result = new JnrTestResult(testClassName + "-Test-" + i, JnrTestResultStatus.SUCCESS, null);
 			reporter.notify(result);
 		}
 
@@ -99,10 +99,10 @@ class JnrTestThreadSafeConsoleReporterTest {
 
 		// Expected output using Java text blocks
 		String expectedOutput = """
-			[  START] TestCase-1
-			[SUCCESS] TestCase-1-Test-0
-			[SUCCESS] TestCase-1-Test-1
-			[SUCCESS] TestCase-1-Test-2
+			[  START] TestClass-1
+			[SUCCESS] TestClass-1-Test-0
+			[SUCCESS] TestClass-1-Test-1
+			[SUCCESS] TestClass-1-Test-2
 			Tests run: 3, Succeeded: 3, Failures: 0, Errors: 0
 			""";
 

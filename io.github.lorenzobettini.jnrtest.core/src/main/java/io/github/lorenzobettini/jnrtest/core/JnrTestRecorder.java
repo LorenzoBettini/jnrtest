@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Records test results for each test case.
+ * Records test results for each test class.
  * 
  * @author Lorenzo Bettini
  */
@@ -33,11 +33,11 @@ public class JnrTestRecorder extends JnrTestListenerAdapter implements JnrTestRe
 	}
 
 	@Override
-	public void notify(JnrTestCaseLifecycleEvent event) {
-		if (event.status() == JnrTestCaseStatus.START && withElapsedTime) {
+	public void notify(JnrTestLifecycleEvent event) {
+		if (event.status() == JnrTestStatus.START && withElapsedTime) {
 			startTime = System.currentTimeMillis();
 		}
-		if (event.status() != JnrTestCaseStatus.START) {
+		if (event.status() != JnrTestStatus.START) {
 			if (withElapsedTime) {
 				totalTime += (System.currentTimeMillis() - startTime);
 			}
