@@ -458,7 +458,7 @@ public class JnrTestJUnitProcessor {
 		StringBuilder contentBuilder = new StringBuilder(classHeader);
 
 		for (String testClass : generatedClasses) {
-			contentBuilder.append("\t\texecutor.testCase(new ")
+			contentBuilder.append("\t\texecutor.add(new ")
 					.append(testClass)
 					.append("());\n");
 		}
