@@ -113,9 +113,7 @@ class JnrTestConsoleParallelExecutorTest {
 		executor.add(failingTestClass);
 		
 		// Execute and expect exception
-		Exception exception = assertThrows(RuntimeException.class, () -> {
-			executor.execute();
-		});
+		Exception exception = assertThrows(RuntimeException.class, executor::execute);
 		
 		// Verify exception message
 		assertEquals("There are test failures", exception.getMessage());
@@ -156,7 +154,7 @@ class JnrTestConsoleParallelExecutorTest {
 				test("test 1", () -> {
 					// Simulate a short delay to ensure parallel execution
 					try {
-						Thread.sleep(50);
+						Thread.sleep(50); // NOSONAR
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
 					}
@@ -170,7 +168,7 @@ class JnrTestConsoleParallelExecutorTest {
 				test("test 2", () -> {
 					// Simulate a short delay to ensure parallel execution
 					try {
-						Thread.sleep(50);
+						Thread.sleep(50); // NOSONAR
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
 					}
