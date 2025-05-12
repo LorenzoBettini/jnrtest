@@ -17,7 +17,7 @@ public class StringServiceWithGuiceTestCase extends JnrTest {
 	private StringService service;
 
 	public StringServiceWithGuiceTestCase() {
-		super("Guice extension test case");
+		super("Guice extension test class");
 	}
 
 	@Override

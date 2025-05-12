@@ -44,15 +44,15 @@ class JnrTestConsoleExecutorTest {
 	@Test
 	@DisplayName("should add test classes correctly")
 	void shouldAddTestCasesCorrectly() {
-		// Create a mock test case
+		// Create a mock test class
 		JnrTest testCase = mock(JnrTest.class);
 		when(testCase.getDescription()).thenReturn("Mock Test Case");
 		
-		// Create executor and add test case
+		// Create executor and add test class
 		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
 		JnrTestConsoleExecutor result = executor.testCase(testCase);
 		
-		// Verify the test case was added and the executor returned itself
+		// Verify the test class was added and the executor returned itself
 		assertThat(result).isSameAs(executor);
 	}
 	
@@ -73,7 +73,7 @@ class JnrTestConsoleExecutorTest {
 	@Test
 	@DisplayName("should execute tests without throwing when all tests pass")
 	void shouldExecuteWithoutThrowingWhenAllTestsPass() {
-		// Create a test case that passes
+		// Create a test class that passes
 		JnrTest passingTestCase = new JnrTest("Passing Test Case") {
 			@Override
 			protected void specify() {
@@ -98,7 +98,7 @@ class JnrTestConsoleExecutorTest {
 	@Test
 	@DisplayName("should throw exception when execute fails")
 	void shouldThrowExceptionWhenExecuteFails() {
-		// Create a test case that fails
+		// Create a test class that fails
 		JnrTest failingTestCase = new JnrTest("Failing Test Case") {
 			@Override
 			protected void specify() {
@@ -125,7 +125,7 @@ class JnrTestConsoleExecutorTest {
 	@Test
 	@DisplayName("should return false when executeWithoutThrowing fails")
 	void shouldReturnFalseWhenExecuteWithoutThrowingFails() {
-		// Create a test case that fails
+		// Create a test class that fails
 		JnrTest failingTestCase = new JnrTest("Failing Test Case") {
 			@Override
 			protected void specify() {

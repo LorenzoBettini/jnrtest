@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Thread-safe implementation of JnrTestRecorder.
  * 
- * Records test results for each test case in a multi-threaded context.
+ * Records test results for each test class in a multi-threaded context.
  * 
  * @author Lorenzo Bettini
  * 

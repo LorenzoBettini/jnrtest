@@ -64,7 +64,7 @@ class JnrTestThreadSafeConsoleReporterTest {
 		for (int i = 0; i < 10; i++) {
 			String testCaseName = "TestCase-" + i;
 
-			// Generate the expected block for this test case
+			// Generate the expected block for this test class
 			StringBuilder expectedBlock = new StringBuilder();
 			expectedBlock.append("[  START] ").append(testCaseName).append("\n");
 			for (int j = 0; j < 5; j++) {

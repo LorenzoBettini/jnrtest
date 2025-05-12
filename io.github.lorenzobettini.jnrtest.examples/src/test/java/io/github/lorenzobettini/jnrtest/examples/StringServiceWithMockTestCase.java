@@ -19,7 +19,7 @@ public class StringServiceWithMockTestCase extends JnrTest {
 	private StringService service;
 
 	public StringServiceWithMockTestCase() {
-		super("Mockito extension test case");
+		super("Mockito extension test class");
 	}
 
 	@Override

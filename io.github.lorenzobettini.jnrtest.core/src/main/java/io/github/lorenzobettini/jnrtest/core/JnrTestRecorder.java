@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Records test results for each test case.
+ * Records test results for each test class.
  * 
  * @author Lorenzo Bettini
  */

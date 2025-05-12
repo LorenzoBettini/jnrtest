@@ -9,7 +9,7 @@ import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
 /**
  * This shows that the {@link JnrTestTemporaryFolder}'s temporary folder
- * can be used in a test case before and after execution.
+ * can be used in a test class before and after execution.
  * 
  * @author Lorenzo Bettini
  *

@@ -27,9 +27,9 @@ public class JnrTestConsoleParallelExecutor {
 	}
 
 	/**
-	 * Adds a test case to be executed.
+	 * Adds a test class to be executed.
 	 *
-	 * @param testCase the test case to add
+	 * @param testCase the test class to add
 	 * @return this instance for method chaining
 	 */
 	public JnrTestConsoleParallelExecutor testCase(JnrTest testCase) {
