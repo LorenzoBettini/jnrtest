@@ -40,9 +40,9 @@ class JnrTestThreadSafeConsoleReporterTest {
 			executorService.submit(() -> {
 				String testCaseName = "TestCase-" + threadId;
 				JnrTestLifecycleEvent startEvent = new JnrTestLifecycleEvent(
-						testCaseName, JnrTestCaseStatus.START);
+						testCaseName, JnrTestStatus.START);
 				JnrTestLifecycleEvent endEvent = new JnrTestLifecycleEvent(
-						testCaseName, JnrTestCaseStatus.END);
+						testCaseName, JnrTestStatus.END);
 
 				reporter.notify(startEvent);
 
@@ -83,9 +83,9 @@ class JnrTestThreadSafeConsoleReporterTest {
 
 		String testCaseName = "TestCase-1";
 		JnrTestLifecycleEvent startEvent = new JnrTestLifecycleEvent(
-				testCaseName, JnrTestCaseStatus.START);
+				testCaseName, JnrTestStatus.START);
 		JnrTestLifecycleEvent endEvent = new JnrTestLifecycleEvent(
-				testCaseName, JnrTestCaseStatus.END);
+				testCaseName, JnrTestStatus.END);
 
 		reporter.notify(startEvent);
 

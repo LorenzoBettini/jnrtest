@@ -6,7 +6,7 @@ package io.github.lorenzobettini.jnrtest.core;
  * @author Lorenzo Bettini
  *
  */
-public record JnrTestLifecycleEvent(String description, JnrTestCaseStatus status) {
+public record JnrTestLifecycleEvent(String description, JnrTestStatus status) {
 
 	@Override
 	public String toString() {

@@ -41,11 +41,11 @@ public class JnrTestConsoleReporter implements JnrTestListener {
 
 	@Override
 	public void notify(JnrTestLifecycleEvent event) {
-		if (event.status() == JnrTestCaseStatus.START) {
+		if (event.status() == JnrTestStatus.START) {
 			reset();
 			show(event.toString());
 		}
-		if (event.status() == JnrTestCaseStatus.END) {
+		if (event.status() == JnrTestStatus.END) {
 			show(String.format("Tests run: %d, Succeeded: %d, Failures: %d, Errors: %d",
 					testStatistics.getTotalTests(),
 					testStatistics.getSucceeded(),

@@ -22,7 +22,7 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestListener {
 
 	@Override
 	public void notify(JnrTestLifecycleEvent event) {
-		if (event.status() == JnrTestCaseStatus.START) {
+		if (event.status() == JnrTestStatus.START) {
 			String key = event.toString();
 			currentKey.set(key);
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -30,7 +30,7 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestListener {
 			currentOutputStream.set(outputStream);
 			currentReporter.set(new JnrTestConsoleReporter(printStream).withElapsedTime(withElapsedTime));
             currentReporter.get().notify(event);
-		} else if (event.status() == JnrTestCaseStatus.END) {
+		} else if (event.status() == JnrTestStatus.END) {
 			JnrTestConsoleReporter reporter = currentReporter.get();
             reporter.notify(event);
 			ByteArrayOutputStream outputStream = currentOutputStream.get();
