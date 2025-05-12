@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
+import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class JnrTestTemporaryFolderExampleTestCase extends JnrTestCase {
+public class JnrTestTemporaryFolderExampleTestCase extends JnrTest {
 
 	private JnrTestTemporaryFolder testTemporaryFolder;
 

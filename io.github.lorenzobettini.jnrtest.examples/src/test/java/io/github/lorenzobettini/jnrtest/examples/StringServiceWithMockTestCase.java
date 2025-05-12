@@ -8,9 +8,9 @@ import java.util.List;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
+import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class StringServiceWithMockTestCase extends JnrTestCase {
+public class StringServiceWithMockTestCase extends JnrTest {
 
 	@Mock
 	private StringRepository repository;

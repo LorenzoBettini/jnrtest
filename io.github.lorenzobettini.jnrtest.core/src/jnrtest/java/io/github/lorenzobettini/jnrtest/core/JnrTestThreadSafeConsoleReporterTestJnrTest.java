@@ -1,6 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
-public class JnrTestThreadSafeConsoleReporterTestJnrTest extends JnrTestCase {
+public class JnrTestThreadSafeConsoleReporterTestJnrTest extends JnrTest {
 
 	private JnrTestThreadSafeConsoleReporterTest originalTest = new JnrTestThreadSafeConsoleReporterTest();
 

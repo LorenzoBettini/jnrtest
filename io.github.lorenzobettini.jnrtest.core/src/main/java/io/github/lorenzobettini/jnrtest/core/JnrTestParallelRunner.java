@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 public class JnrTestParallelRunner extends JnrTestRunner {
 
 	@Override
-	protected Stream<JnrTestCase> getTestCasesStream() {
+	protected Stream<JnrTest> getTestCasesStream() {
 		return super.getTestCasesStream().parallel();
 	}
 }

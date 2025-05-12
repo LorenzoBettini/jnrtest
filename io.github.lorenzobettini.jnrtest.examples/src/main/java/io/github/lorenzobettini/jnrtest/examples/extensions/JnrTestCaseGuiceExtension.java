@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.inject.Guice;
 import com.google.inject.Module;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
+import io.github.lorenzobettini.jnrtest.core.JnrTest;
 import io.github.lorenzobettini.jnrtest.core.JnrTestCaseExtension;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableSpecification;
 
@@ -23,7 +23,7 @@ public class JnrTestCaseGuiceExtension extends JnrTestCaseExtension {
 	}
 
 	@Override
-	protected <T extends JnrTestCase> void extend(T testCase, List<JnrTestRunnableSpecification> before,
+	protected <T extends JnrTest> void extend(T testCase, List<JnrTestRunnableSpecification> before,
 			List<JnrTestRunnableSpecification> after) {
 		before.add(new JnrTestRunnableSpecification("inject members", () ->
 			Guice.createInjector(module).injectMembers(testCase)));

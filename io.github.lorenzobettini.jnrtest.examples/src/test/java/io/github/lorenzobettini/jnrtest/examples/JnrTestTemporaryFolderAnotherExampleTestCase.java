@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
+import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
 /**
  * This shows that the {@link JnrTestTemporaryFolder}'s temporary folder
@@ -14,7 +14,7 @@ import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
  * @author Lorenzo Bettini
  *
  */
-public class JnrTestTemporaryFolderAnotherExampleTestCase extends JnrTestCase {
+public class JnrTestTemporaryFolderAnotherExampleTestCase extends JnrTest {
 
 	private JnrTestTemporaryFolder testTemporaryFolder;
 

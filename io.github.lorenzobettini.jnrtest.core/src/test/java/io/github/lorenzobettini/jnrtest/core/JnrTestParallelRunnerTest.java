@@ -38,7 +38,7 @@ class JnrTestParallelRunnerTest {
 		var testReporter = new JnrTestThreadSafeConsoleReporter();
 		var testRecorderWithElapsed = new JnrTestThreadSafeRecorder().withElapsedTime();
 		JnrTestRunner runner = new JnrTestParallelRunner()
-			.testCase(new JnrTestCase("a test case with success") {
+			.testCase(new JnrTest("a test case with success") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
@@ -53,7 +53,7 @@ class JnrTestParallelRunnerTest {
 						throw new Exception("an exception");
 					});
 				}
-			}).testCase(new JnrTestCase("a test case with failure") {
+			}).testCase(new JnrTest("a test case with failure") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
@@ -68,7 +68,7 @@ class JnrTestParallelRunnerTest {
 			});
 		for (int i = 0; i < 10; i++) {
 			String index = "" + i;
-			runner.testCase(new JnrTestCase("a test case " + index) {
+			runner.testCase(new JnrTest("a test case " + index) {
 				@Override
 				protected void specify() {
 					beforeAll("before all " + index, () -> {});

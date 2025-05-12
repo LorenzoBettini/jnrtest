@@ -11,7 +11,7 @@ import java.util.function.Supplier;
  * @author Lorenzo Bettini
  *
  */
-public abstract class JnrTestCase {
+public abstract class JnrTest {
 
 	private String description;
 
@@ -52,7 +52,7 @@ public abstract class JnrTestCase {
 		}
 	}
 
-	protected JnrTestCase(String description) {
+	protected JnrTest(String description) {
 		this.description = description;
 	}
 

@@ -3,9 +3,9 @@ package io.github.lorenzobettini.jnrtest.examples;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
+import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class MyStringUtilsJnrTestCase extends JnrTestCase {
+public class MyStringUtilsJnrTestCase extends JnrTest {
 
 	private MyStringUtils stringUtils;
 

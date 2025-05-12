@@ -3,7 +3,7 @@ package io.github.lorenzobettini.jnrtest.examples;
 import java.io.File;
 import java.nio.file.Files;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
+import io.github.lorenzobettini.jnrtest.core.JnrTest;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableKind;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableSpecification;
 
@@ -23,7 +23,7 @@ public class JnrTestTemporaryFolder {
 	 * 
 	 * @param testCase
 	 */
-	public JnrTestTemporaryFolder(JnrTestCase testCase) {
+	public JnrTestTemporaryFolder(JnrTest testCase) {
 		this(testCase, JnrTestRunnableKind.TEST);
 	}
 
@@ -42,7 +42,7 @@ public class JnrTestTemporaryFolder {
 	 * @param testCase
 	 * @param kind
 	 */
-	public JnrTestTemporaryFolder(JnrTestCase testCase, JnrTestRunnableKind kind) {
+	public JnrTestTemporaryFolder(JnrTest testCase, JnrTestRunnableKind kind) {
 		var before = testCase.getStore().getBeforeEachRunnables();
 		var after = testCase.getStore().getAfterEachRunnables();
 		if (kind == JnrTestRunnableKind.BEFORE_ALL) {

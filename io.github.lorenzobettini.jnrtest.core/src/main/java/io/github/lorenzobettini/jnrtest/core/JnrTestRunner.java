@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
- * Runs the tests of {@link JnrTestCase}; the actual test execution is
+ * Runs the tests of {@link JnrTest}; the actual test execution is
  * performed by {@link #execute()}.
  * 
  * @author Lorenzo Bettini
@@ -14,10 +14,10 @@ import java.util.stream.Stream;
  */
 public class JnrTestRunner {
 
-	private final List<JnrTestCase> testCases = new ArrayList<>();
+	private final List<JnrTest> testCases = new ArrayList<>();
 	private final List<JnrTestListener> listeners = new ArrayList<>();
 
-	public JnrTestRunner testCase(JnrTestCase testCase) {
+	public JnrTestRunner testCase(JnrTest testCase) {
 		testCases.add(testCase);
 		return this;
 	}
@@ -37,11 +37,11 @@ public class JnrTestRunner {
 	 * 
 	 * @return a stream of test cases
 	 */
-	protected Stream<JnrTestCase> getTestCasesStream() {
+	protected Stream<JnrTest> getTestCasesStream() {
 		return testCases.stream();
 	}
 
-	private void executeTestCase(JnrTestCase testCase) {
+	private void executeTestCase(JnrTest testCase) {
 		var description = testCase.getDescription();
 		notifyTestCaseLifecycleEvent(new JnrTestCaseLifecycleEvent(description, JnrTestCaseStatus.START));
 		executeTestCase(testCase.getStore());

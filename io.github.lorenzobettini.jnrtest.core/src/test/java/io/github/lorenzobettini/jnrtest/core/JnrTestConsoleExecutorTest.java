@@ -45,7 +45,7 @@ class JnrTestConsoleExecutorTest {
 	@DisplayName("should add test cases correctly")
 	void shouldAddTestCasesCorrectly() {
 		// Create a mock test case
-		JnrTestCase testCase = mock(JnrTestCase.class);
+		JnrTest testCase = mock(JnrTest.class);
 		when(testCase.getDescription()).thenReturn("Mock Test Case");
 		
 		// Create executor and add test case
@@ -74,7 +74,7 @@ class JnrTestConsoleExecutorTest {
 	@DisplayName("should execute tests without throwing when all tests pass")
 	void shouldExecuteWithoutThrowingWhenAllTestsPass() {
 		// Create a test case that passes
-		JnrTestCase passingTestCase = new JnrTestCase("Passing Test Case") {
+		JnrTest passingTestCase = new JnrTest("Passing Test Case") {
 			@Override
 			protected void specify() {
 				test("passing test", () -> {
@@ -99,7 +99,7 @@ class JnrTestConsoleExecutorTest {
 	@DisplayName("should throw exception when execute fails")
 	void shouldThrowExceptionWhenExecuteFails() {
 		// Create a test case that fails
-		JnrTestCase failingTestCase = new JnrTestCase("Failing Test Case") {
+		JnrTest failingTestCase = new JnrTest("Failing Test Case") {
 			@Override
 			protected void specify() {
 				test("failing test", () -> {
@@ -126,7 +126,7 @@ class JnrTestConsoleExecutorTest {
 	@DisplayName("should return false when executeWithoutThrowing fails")
 	void shouldReturnFalseWhenExecuteWithoutThrowingFails() {
 		// Create a test case that fails
-		JnrTestCase failingTestCase = new JnrTestCase("Failing Test Case") {
+		JnrTest failingTestCase = new JnrTest("Failing Test Case") {
 			@Override
 			protected void specify() {
 				test("failing test", () -> {

@@ -29,7 +29,7 @@ public class JnrTestConsoleExecutor {
 	 * @param testCase the test case to add
 	 * @return this instance for method chaining
 	 */
-	public JnrTestConsoleExecutor testCase(JnrTestCase testCase) {
+	public JnrTestConsoleExecutor testCase(JnrTest testCase) {
 		runner.testCase(testCase);
 		return this;
 	}

@@ -2,9 +2,9 @@ package io.github.lorenzobettini.jnrtest.examples;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTestCase;
+import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class FactorialJnrTestCase extends JnrTestCase {
+public class FactorialJnrTestCase extends JnrTest {
 
 	private Factorial factorial;
 
