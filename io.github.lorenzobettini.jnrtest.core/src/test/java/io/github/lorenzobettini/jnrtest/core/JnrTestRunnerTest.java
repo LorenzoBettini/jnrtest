@@ -375,7 +375,7 @@ class JnrTestRunnerTest {
 	@DisplayName("should run extensions")
 	void shouldRunExtensions() {
 		var callable = mock(Callable.class);
-		var testCase = new JnrTest("a test class") {
+		var testClass = new JnrTest("a test class") {
 			@Override
 			protected void specify() {
 				test("first test", () -> {
@@ -388,7 +388,7 @@ class JnrTestRunnerTest {
 		};
 		var extensionAll = new JnrTestExtension() {
 			@Override
-			protected <T extends JnrTest> void extend(T testCase, List<JnrTestRunnableSpecification> before,
+			protected <T extends JnrTest> void extend(T testClass, List<JnrTestRunnableSpecification> before,
 					List<JnrTestRunnableSpecification> after) {
 				before.add(new JnrTestRunnableSpecification("before all",
 					() -> callable.beforeAllMethod1()));
@@ -398,7 +398,7 @@ class JnrTestRunnerTest {
 		};
 		var extensionEach = new JnrTestExtension() {
 			@Override
-			protected <T extends JnrTest> void extend(T testCase, List<JnrTestRunnableSpecification> before,
+			protected <T extends JnrTest> void extend(T testClass, List<JnrTestRunnableSpecification> before,
 					List<JnrTestRunnableSpecification> after) {
 				before.add(new JnrTestRunnableSpecification("before each",
 						() -> callable.beforeEachMethod1()));
@@ -406,10 +406,10 @@ class JnrTestRunnerTest {
 						() -> callable.afterEachMethod1()));
 			}
 		};
-		testCase = extensionAll.extendAll(testCase);
-		testCase = extensionEach.extendEach(testCase);
+		testClass = extensionAll.extendAll(testClass);
+		testClass = extensionEach.extendEach(testClass);
 		var runner = new JnrTestRunner()
-			.add(testCase);
+			.add(testClass);
 		runner.execute();
 		var inOrder = inOrder(callable);
 		// before all

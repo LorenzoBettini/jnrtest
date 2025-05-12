@@ -21,10 +21,10 @@ public class JnrTestTemporaryFolder {
 	 * The temporary folder will be created before each test and removed recursively
 	 * after each test.
 	 * 
-	 * @param testCase
+	 * @param testClass
 	 */
-	public JnrTestTemporaryFolder(JnrTest testCase) {
-		this(testCase, JnrTestRunnableKind.TEST);
+	public JnrTestTemporaryFolder(JnrTest testClass) {
+		this(testClass, JnrTestRunnableKind.TEST);
 	}
 
 	/**
@@ -39,15 +39,15 @@ public class JnrTestTemporaryFolder {
 	 * after possible test class "after" executions, since the latter might still
 	 * need the temporary folder.
 	 * 
-	 * @param testCase
+	 * @param testClass
 	 * @param kind
 	 */
-	public JnrTestTemporaryFolder(JnrTest testCase, JnrTestRunnableKind kind) {
-		var before = testCase.getStore().getBeforeEachRunnables();
-		var after = testCase.getStore().getAfterEachRunnables();
+	public JnrTestTemporaryFolder(JnrTest testClass, JnrTestRunnableKind kind) {
+		var before = testClass.getStore().getBeforeEachRunnables();
+		var after = testClass.getStore().getAfterEachRunnables();
 		if (kind == JnrTestRunnableKind.BEFORE_ALL) {
-			before = testCase.getStore().getBeforeAllRunnables();
-			after = testCase.getStore().getAfterAllRunnables();
+			before = testClass.getStore().getBeforeAllRunnables();
+			after = testClass.getStore().getAfterAllRunnables();
 		}
 		// add to the head of the list, i.e., before test class "before" executions
 		before.add(0, new JnrTestRunnableSpecification("create temporary folder",

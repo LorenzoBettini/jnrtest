@@ -45,12 +45,12 @@ class JnrTestConsoleExecutorTest {
 	@DisplayName("should add test classes correctly")
 	void shouldAddTestClassesCorrectly() {
 		// Create a mock test class
-		JnrTest testCase = mock(JnrTest.class);
-		when(testCase.getDescription()).thenReturn("Mock Test Class");
+		JnrTest testClass = mock(JnrTest.class);
+		when(testClass.getDescription()).thenReturn("Mock Test Class");
 		
 		// Create executor and add test class
 		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
-		JnrTestConsoleExecutor result = executor.add(testCase);
+		JnrTestConsoleExecutor result = executor.add(testClass);
 		
 		// Verify the test class was added and the executor returned itself
 		assertThat(result).isSameAs(executor);

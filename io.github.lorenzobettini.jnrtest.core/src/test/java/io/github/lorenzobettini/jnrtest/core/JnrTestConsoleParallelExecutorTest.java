@@ -45,12 +45,12 @@ class JnrTestConsoleParallelExecutorTest {
 	@DisplayName("should add test classes correctly")
 	void shouldAddTestClassesCorrectly() {
 		// Create a mock test class
-		JnrTest testCase = mock(JnrTest.class);
-		when(testCase.getDescription()).thenReturn("Mock Test Class");
+		JnrTest testClass = mock(JnrTest.class);
+		when(testClass.getDescription()).thenReturn("Mock Test Class");
 		
 		// Create executor and add test class
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		JnrTestConsoleParallelExecutor result = executor.add(testCase);
+		JnrTestConsoleParallelExecutor result = executor.add(testClass);
 		
 		// Verify the test class was added and the executor returned itself
 		assertThat(result).isSameAs(executor);
@@ -150,7 +150,7 @@ class JnrTestConsoleParallelExecutorTest {
 	@DisplayName("should handle multiple test classes in parallel")
 	void shouldHandleMultipleTestClassesInParallel() {
 		// Create multiple test classes
-		JnrTest testCase1 = new JnrTest("Test Class 1") {
+		JnrTest testClass1 = new JnrTest("Test Class 1") {
 			@Override
 			protected void specify() {
 				test("test 1", () -> {
@@ -164,7 +164,7 @@ class JnrTestConsoleParallelExecutorTest {
 			}
 		};
 		
-		JnrTest testCase2 = new JnrTest("Test Class 2") {
+		JnrTest testClass2 = new JnrTest("Test Class 2") {
 			@Override
 			protected void specify() {
 				test("test 2", () -> {
@@ -180,7 +180,7 @@ class JnrTestConsoleParallelExecutorTest {
 		
 		// Create executor and add both test classes
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		executor.add(testCase1).add(testCase2);
+		executor.add(testClass1).add(testClass2);
 		
 		// Execute without throwing
 		boolean result = executor.executeWithoutThrowing();

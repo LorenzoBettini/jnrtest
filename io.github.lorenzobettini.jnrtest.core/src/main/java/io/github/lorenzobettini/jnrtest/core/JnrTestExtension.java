@@ -17,19 +17,19 @@ import java.util.List;
  */
 public abstract class JnrTestExtension {
 
-	public <T extends JnrTest> T extendAll(T testCase) {
-		var store = testCase.getStore();
-		extend(testCase, store.getBeforeAllRunnables(), store.getAfterAllRunnables());
-		return testCase;
+	public <T extends JnrTest> T extendAll(T testClass) {
+		var store = testClass.getStore();
+		extend(testClass, store.getBeforeAllRunnables(), store.getAfterAllRunnables());
+		return testClass;
 	}
 
-	public <T extends JnrTest> T extendEach(T testCase) {
-		var store = testCase.getStore();
-		extend(testCase, store.getBeforeEachRunnables(), store.getAfterEachRunnables());
-		return testCase;
+	public <T extends JnrTest> T extendEach(T testClass) {
+		var store = testClass.getStore();
+		extend(testClass, store.getBeforeEachRunnables(), store.getAfterEachRunnables());
+		return testClass;
 	}
 
-	protected abstract <T extends JnrTest> void extend(T testCase, List<JnrTestRunnableSpecification> before,
+	protected abstract <T extends JnrTest> void extend(T testClass, List<JnrTestRunnableSpecification> before,
 			List<JnrTestRunnableSpecification> after);
 
 }
