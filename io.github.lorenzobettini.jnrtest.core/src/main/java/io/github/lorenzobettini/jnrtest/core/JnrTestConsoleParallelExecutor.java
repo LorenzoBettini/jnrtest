@@ -33,7 +33,7 @@ public class JnrTestConsoleParallelExecutor {
 	 * @return this instance for method chaining
 	 */
 	public JnrTestConsoleParallelExecutor testCase(JnrTest testCase) {
-		runner.testCase(testCase);
+		runner.add(testCase);
 		return this;
 	}
 

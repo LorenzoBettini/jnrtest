@@ -43,7 +43,7 @@ class JnrTestRunnerTest {
 	void shouldRunAllTheTests() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTest("a test case") {
+			.add(new JnrTest("a test case") {
 				@Override
 				protected void specify() {
 					test("first test", () -> {
@@ -53,7 +53,7 @@ class JnrTestRunnerTest {
 						throw new RuntimeException("exception");
 					});
 				}
-			}).testCase(new JnrTest("anoter test case") {
+			}).add(new JnrTest("anoter test case") {
 				@Override
 				protected void specify() {
 					test("test failing assertion", () -> {
@@ -94,7 +94,7 @@ class JnrTestRunnerTest {
 		var listenerAdapter = new JnrTestListenerAdapter() {
 		};
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTest("a test case") {
+			.add(new JnrTest("a test case") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
@@ -106,7 +106,7 @@ class JnrTestRunnerTest {
 						throw new RuntimeException("exception");
 					});
 				}
-			}).testCase(new JnrTest("another test case") {
+			}).add(new JnrTest("another test case") {
 				@Override
 				protected void specify() {
 					beforeEach("before each", () -> {});
@@ -171,7 +171,7 @@ class JnrTestRunnerTest {
 			}
 		};
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTest("a test case with parameterized test (single)") {
+			.add(new JnrTest("a test case with parameterized test (single)") {
 				@Override
 				protected void specify() {
 					testWithParameters("parameter should be positive ",
@@ -180,7 +180,7 @@ class JnrTestRunnerTest {
 					);
 				}
 			})
-			.testCase(new JnrTest("a test case with parameterized test (pair)") {
+			.add(new JnrTest("a test case with parameterized test (pair)") {
 				@Override
 				protected void specify() {
 					testWithParameters("strings should be equal ",
@@ -189,7 +189,7 @@ class JnrTestRunnerTest {
 					);
 				}
 			})
-			.testCase(new JnrTest("a test case with parameterized test and description") {
+			.add(new JnrTest("a test case with parameterized test and description") {
 				@Override
 				protected void specify() {
 					testWithParameters("strings should be equal: ",
@@ -225,7 +225,7 @@ class JnrTestRunnerTest {
 		var testRecorder = new JnrTestRecorder();
 		var testRecorderWithElapsed = new JnrTestRecorder().withElapsedTime();
 		JnrTestRunner runner = new JnrTestRunner()
-			.testCase(new JnrTest("a test case with success") {
+			.add(new JnrTest("a test case with success") {
 				@Override
 				protected void specify() {
 					beforeAll("before all", () -> {});
@@ -242,7 +242,7 @@ class JnrTestRunnerTest {
 		runner.testListener(testRecorderWithElapsed);
 		runner.execute();
 		assertTrue(testRecorder.isSuccess());
-		runner.testCase(new JnrTest("a test case with failure") {
+		runner.add(new JnrTest("a test case with failure") {
 			@Override
 			protected void specify() {
 				beforeAll("before all", () -> {});
@@ -283,7 +283,7 @@ class JnrTestRunnerTest {
 	void shouldSpecifyTestsOnlyOnce() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-				.testCase(new JnrTest("a test case") {
+				.add(new JnrTest("a test case") {
 			@Override
 			protected void specify() {
 				test("first test", () -> {
@@ -302,7 +302,7 @@ class JnrTestRunnerTest {
 	void shouldExecuteLifecycle() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
-				.testCase(new JnrTest("a test case") {
+				.add(new JnrTest("a test case") {
 			@Override
 			protected void specify() {
 				beforeEach("", () -> {
@@ -409,7 +409,7 @@ class JnrTestRunnerTest {
 		testCase = extensionAll.extendAll(testCase);
 		testCase = extensionEach.extendEach(testCase);
 		var runner = new JnrTestRunner()
-			.testCase(testCase);
+			.add(testCase);
 		runner.execute();
 		var inOrder = inOrder(callable);
 		// before all

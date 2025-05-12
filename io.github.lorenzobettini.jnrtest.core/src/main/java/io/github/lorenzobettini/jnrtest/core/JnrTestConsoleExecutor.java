@@ -30,7 +30,7 @@ public class JnrTestConsoleExecutor {
 	 * @return this instance for method chaining
 	 */
 	public JnrTestConsoleExecutor testCase(JnrTest testCase) {
-		runner.testCase(testCase);
+		runner.add(testCase);
 		return this;
 	}
 
