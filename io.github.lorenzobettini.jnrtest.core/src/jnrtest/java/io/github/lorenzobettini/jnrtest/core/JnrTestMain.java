@@ -16,6 +16,7 @@ public class JnrTestMain {
 		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestRunnerTestJnrTest());
 		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeConsoleReporterTestJnrTest());
 		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeRecorderTestJnrTest());
+		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestTotalExecutionTimeRecorderTestJnrTest());
 
 		executor.execute();
 	}
