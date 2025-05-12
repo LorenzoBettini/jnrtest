@@ -60,8 +60,9 @@ public class JnrTestConsoleParallelExecutor {
 		runner.execute();
 		System.out.println("\nResults:\n\n" + // NOSONAR
 				new JnrTestResultAggregator().aggregate(recorder));
-		System.out.println("\nTotal execution time: %f s" + // NOSONAR
-				totalExecutionTimeRecorder.getTotalTime()/3600);
+		long totalTime = totalExecutionTimeRecorder.getTotalTime();
+		System.out.println("\nTotal execution time: " + // NOSONAR
+				(float) totalTime/3600 + " s");
 		return recorder.isSuccess();
 	}
 

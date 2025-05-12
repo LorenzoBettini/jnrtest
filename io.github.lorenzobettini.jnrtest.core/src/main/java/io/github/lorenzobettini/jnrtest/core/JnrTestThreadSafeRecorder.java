@@ -38,7 +38,11 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements
 
 	@Override
 	public void notify(JnrTestLifecycleEvent event) {
-		if (event.status() == JnrTestStatus.START && withElapsedTime) {
+		var status = event.status();
+		if (status == JnrTestStatus.BEGIN || status == JnrTestStatus.FINISH) {
+			return;
+		}
+		if (status == JnrTestStatus.START && withElapsedTime) {
 			startTime.set(System.currentTimeMillis());
 		}
 		if (event.status() != JnrTestStatus.START) {
