@@ -42,7 +42,7 @@ class JnrTestConsoleParallelExecutorTest {
 	}
 	
 	@Test
-	@DisplayName("should add test cases correctly")
+	@DisplayName("should add test classes correctly")
 	void shouldAddTestCasesCorrectly() {
 		// Create a mock test case
 		JnrTest testCase = mock(JnrTest.class);
@@ -147,9 +147,9 @@ class JnrTestConsoleParallelExecutorTest {
 	}
 	
 	@Test
-	@DisplayName("should handle multiple test cases in parallel")
+	@DisplayName("should handle multiple test classes in parallel")
 	void shouldHandleMultipleTestCasesInParallel() {
-		// Create multiple test cases
+		// Create multiple test classes
 		JnrTest testCase1 = new JnrTest("Test Case 1") {
 			@Override
 			protected void specify() {
@@ -178,7 +178,7 @@ class JnrTestConsoleParallelExecutorTest {
 			}
 		};
 		
-		// Create executor and add both test cases
+		// Create executor and add both test classes
 		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
 		executor.testCase(testCase1).testCase(testCase2);
 		

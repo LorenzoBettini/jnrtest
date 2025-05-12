@@ -42,7 +42,7 @@ class JnrTestConsoleExecutorTest {
 	}
 	
 	@Test
-	@DisplayName("should add test cases correctly")
+	@DisplayName("should add test classes correctly")
 	void shouldAddTestCasesCorrectly() {
 		// Create a mock test case
 		JnrTest testCase = mock(JnrTest.class);

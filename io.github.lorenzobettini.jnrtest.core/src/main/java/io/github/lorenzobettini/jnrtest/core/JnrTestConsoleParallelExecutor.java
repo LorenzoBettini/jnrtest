@@ -2,7 +2,7 @@ package io.github.lorenzobettini.jnrtest.core;
 
 /**
  * A high-level class that provides a simplified API for setting up and
- * executing test cases
+ * executing test classes
  * in a parallel environment.
  * It handles the creation of thread-safe recorders and reporters, execution of
  * tests, and reporting of results.
@@ -49,7 +49,7 @@ public class JnrTestConsoleParallelExecutor {
 	}
 
 	/**
-	 * Executes all test cases and prints the results.
+	 * Executes all test classes and prints the results.
 	 *
 	 * @return true if all tests passed, false otherwise
 	 */
@@ -60,7 +60,7 @@ public class JnrTestConsoleParallelExecutor {
 	}
 
 	/**
-	 * Executes all test cases, prints the results, and throws an exception if any
+	 * Executes all test classes, prints the results, and throws an exception if any
 	 * tests fail.
 	 */
 	public void execute() {

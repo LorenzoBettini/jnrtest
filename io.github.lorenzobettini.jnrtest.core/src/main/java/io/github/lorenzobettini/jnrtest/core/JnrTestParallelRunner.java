@@ -3,7 +3,7 @@ package io.github.lorenzobettini.jnrtest.core;
 import java.util.stream.Stream;
 
 /**
- * A specialized {@link JnrTestRunner} that executes test cases in parallel.
+ * A specialized {@link JnrTestRunner} that executes test classes in parallel.
  * 
  * @author Lorenzo Bettini
  */

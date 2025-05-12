@@ -14,7 +14,7 @@ public class JnrTestConsoleExecutorTestJnrTest extends JnrTest {
 			() -> originalTest.setUpStreams());
 		afterEach("call restoreStreams",
 			() -> originalTest.restoreStreams());
-		test("should add test cases correctly",
+		test("should add test classes correctly",
 			() -> originalTest.shouldAddTestCasesCorrectly());
 		test("should add listeners correctly",
 			() -> originalTest.shouldAddListenersCorrectly());
