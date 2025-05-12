@@ -40,7 +40,7 @@ class JnrTestConsoleExecutorTest {
 		System.setOut(originalOut);
 		System.setErr(originalErr);
 	}
-	
+
 	@Test
 	@DisplayName("should add test classes correctly")
 	void shouldAddTestClassesCorrectly() {
@@ -55,7 +55,7 @@ class JnrTestConsoleExecutorTest {
 		// Verify the test class was added and the executor returned itself
 		assertThat(result).isSameAs(executor);
 	}
-	
+
 	@Test
 	@DisplayName("should add listeners correctly")
 	void shouldAddListenersCorrectly() {
@@ -69,7 +69,7 @@ class JnrTestConsoleExecutorTest {
 		// Verify the listener was added and the executor returned itself
 		assertThat(result).isSameAs(executor);
 	}
-	
+
 	@Test
 	@DisplayName("should execute tests without throwing when all tests pass")
 	void shouldExecuteWithoutThrowingWhenAllTestsPass() {
@@ -94,7 +94,7 @@ class JnrTestConsoleExecutorTest {
 		assertTrue(result);
 		assertThat(outContent.toString()).contains("Results:");
 	}
-	
+
 	@Test
 	@DisplayName("should throw exception when execute fails")
 	void shouldThrowExceptionWhenExecuteFails() {
@@ -121,7 +121,7 @@ class JnrTestConsoleExecutorTest {
 		assertEquals("There are test failures", exception.getMessage());
 		assertThat(outContent.toString()).contains("Results:");
 	}
-	
+
 	@Test
 	@DisplayName("should return false when executeWithoutThrowing fails")
 	void shouldReturnFalseWhenExecuteWithoutThrowingFails() {

@@ -185,6 +185,7 @@ class JnrTestConsoleParallelExecutorTest {
 		
 		// Verify result
 		assertTrue(result);
-		assertThat(outContent.toString()).contains("Results:");
+		String oContent = outContent.toString();
+		assertThat(oContent).contains("Results:").contains("Total execution time");
 	}
 }

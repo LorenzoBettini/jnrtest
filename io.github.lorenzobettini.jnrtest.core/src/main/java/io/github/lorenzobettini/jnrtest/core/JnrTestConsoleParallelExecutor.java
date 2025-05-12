@@ -13,6 +13,7 @@ public class JnrTestConsoleParallelExecutor {
 	private final JnrTestParallelRunner runner;
 	private final JnrTestThreadSafeRecorder recorder;
 	private final JnrTestThreadSafeConsoleReporter reporter;
+	private final JnrTestTotalExecutionTimeRecorder totalExecutionTimeRecorder;
 
 	/**
 	 * Creates a new JnrTestConsoleParallelExecutor with default thread-safe
@@ -21,9 +22,11 @@ public class JnrTestConsoleParallelExecutor {
 	public JnrTestConsoleParallelExecutor() {
 		this.recorder = new JnrTestThreadSafeRecorder().withElapsedTime();
 		this.reporter = new JnrTestThreadSafeConsoleReporter().withElapsedTime();
+		this.totalExecutionTimeRecorder = new JnrTestTotalExecutionTimeRecorder();
 		this.runner = new JnrTestParallelRunner();
 		this.runner.testListener(recorder);
 		this.runner.testListener(reporter);
+		this.runner.testListener(totalExecutionTimeRecorder);
 	}
 
 	/**
@@ -57,6 +60,8 @@ public class JnrTestConsoleParallelExecutor {
 		runner.execute();
 		System.out.println("\nResults:\n\n" + // NOSONAR
 				new JnrTestResultAggregator().aggregate(recorder));
+		System.out.println("\nTotal execution time: %f s" + // NOSONAR
+				totalExecutionTimeRecorder.getTotalTime()/3600);
 		return recorder.isSuccess();
 	}
 
