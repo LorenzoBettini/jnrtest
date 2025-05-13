@@ -18,7 +18,7 @@ public class JnrTestConsoleReporter implements JnrTestListener {
 	private JnrTestStatistics testStatistics = new JnrTestStatistics();
 
 	public JnrTestConsoleReporter() {
-		this(System.out);
+		this(System.out); // NOSONAR
 	}
 
 	public JnrTestConsoleReporter(PrintStream printStream) {
