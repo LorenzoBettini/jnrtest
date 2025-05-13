@@ -88,7 +88,7 @@
 						<configuration>
 							<executable>bash</executable>
 							<arguments>
-								<argument>report-total-time.sh</argument>
+								<argument>../scripts/report-total-time.sh</argument>
 							</arguments>
 						</configuration>
 					</execution>
