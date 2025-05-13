@@ -53,7 +53,7 @@ public class JnrTestConsoleReporter implements JnrTestListener {
 				testStatistics.getErrors())
 				+ (testStatistics.isWithElapsedTime() ?
 					String.format(" - Time elapsed: %f s",
-						(float) testStatistics.getTotalTime() / 3600) :
+						(float) testStatistics.getTotalTime() / 1000) :
 					""));
 		}
 	}
@@ -89,7 +89,7 @@ public class JnrTestConsoleReporter implements JnrTestListener {
 		}
 		show(result.toString()
 			+ (testStatistics.isWithElapsedTime() ?
-				String.format(" - Time elapsed: %f s", (float) testStatistics.getElapsedTime() / 3600) :
+				String.format(" - Time elapsed: %f s", (float) testStatistics.getElapsedTime() / 1000) :
 				""));
 	}
 

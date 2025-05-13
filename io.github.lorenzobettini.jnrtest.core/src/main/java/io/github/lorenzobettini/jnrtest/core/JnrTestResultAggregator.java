@@ -55,6 +55,6 @@ public class JnrTestResultAggregator {
 		return String.format("Tests run: %d, Succeeded: %d, Failures: %d, Errors: %d",
 				succeeded + failed + errors,
 				succeeded, failed, errors) + (
-					totalTime > 0 ? String.format(" - Time elapsed: %f s", (float) totalTime/3600) : "");
+					totalTime > 0 ? String.format(" - Time elapsed: %f s", (float) totalTime/1000) : "");
 	}
 }
