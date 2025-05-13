@@ -89,9 +89,7 @@ public class JnrTestRunner {
 		var description = testRunnableSpecification.description();
 		var testRunnable = testRunnableSpecification.testRunnable();
 		try {
-			notifyTestRunnableLifecycleEvent(
-					new JnrTestRunnableLifecycleEvent(description, kind, JnrTestRunnableStatus.START));
-			testRunnable.runTest();
+			executeSafely(testRunnable, kind, description);
 			if (successConsumer != null) {
 				successConsumer.accept(description);
 			}
@@ -99,6 +97,14 @@ public class JnrTestRunner {
 			notifyTestResult(new JnrTestResult(description, JnrTestResultStatus.ERROR, e));
 		} catch (AssertionError assertionError) {
 			notifyTestResult(new JnrTestResult(description, JnrTestResultStatus.FAILED, assertionError));
+		}
+	}
+
+	private void executeSafely(JnrTestRunnable testRunnable, JnrTestRunnableKind kind, String description) throws Exception {
+		try {
+			notifyTestRunnableLifecycleEvent(
+					new JnrTestRunnableLifecycleEvent(description, kind, JnrTestRunnableStatus.START));
+			testRunnable.runTest();
 		} finally {
 			notifyTestRunnableLifecycleEvent(
 					new JnrTestRunnableLifecycleEvent(description, kind, JnrTestRunnableStatus.END));

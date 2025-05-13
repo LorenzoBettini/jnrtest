@@ -34,18 +34,24 @@ public class JnrTestRecorder extends JnrTestListenerAdapter implements JnrTestRe
 
 	@Override
 	public void notify(JnrTestLifecycleEvent event) {
-		if (event.status() == JnrTestStatus.START && withElapsedTime) {
-			startTime = System.currentTimeMillis();
-		}
 		if (event.status() != JnrTestStatus.START) {
-			if (withElapsedTime) {
-				totalTime += (System.currentTimeMillis() - startTime);
-			}
 			return;
 		}
 		currentKey = event.description();
 		results.computeIfAbsent(currentKey,
 			desc -> new ArrayList<>());
+	}
+
+	@Override
+	public void notify(JnrTestRunnableLifecycleEvent event) {
+		if (!withElapsedTime || event.kind() != JnrTestRunnableKind.TEST) {
+			return;
+		}
+		if (event.status() == JnrTestRunnableStatus.START) {
+			startTime = System.currentTimeMillis();
+		} else {
+			totalTime += (System.currentTimeMillis() - startTime);
+		}
 	}
 
 	@Override

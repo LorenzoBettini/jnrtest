@@ -38,18 +38,24 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements
 
 	@Override
 	public void notify(JnrTestLifecycleEvent event) {
-		if (event.status() == JnrTestStatus.START && withElapsedTime) {
-			startTime.set(System.currentTimeMillis());
-		}
 		if (event.status() != JnrTestStatus.START) {
-			if (withElapsedTime) {
-				totalTime.addAndGet(System.currentTimeMillis() - startTime.get());
-			}
 			return;
 		}
 		String key = event.description();
 		currentKey.set(key);
 		results.computeIfAbsent(key, desc -> new ArrayList<>());
+	}
+
+	@Override
+	public void notify(JnrTestRunnableLifecycleEvent event) {
+		if (!withElapsedTime || event.kind() != JnrTestRunnableKind.TEST) {
+			return;
+		}
+		if (event.status() == JnrTestRunnableStatus.START) {
+			startTime.set(System.currentTimeMillis());
+		} else {
+			totalTime.addAndGet(System.currentTimeMillis() - startTime.get());
+		}
 	}
 
 	@Override

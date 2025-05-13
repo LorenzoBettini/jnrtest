@@ -127,11 +127,11 @@ class JnrTestRunnerTest {
 				[  START] BEFORE_ALL before all
 				[    END] BEFORE_ALL before all
 				[  START] TEST first test
-				[SUCCESS] first test
 				[    END] TEST first test
+				[SUCCESS] first test
 				[  START] TEST test throwing exception
-				[  ERROR] test throwing exception
 				[    END] TEST test throwing exception
+				[  ERROR] test throwing exception
 				[  START] AFTER_ALL after all
 				[    END] AFTER_ALL after all
 				[    END] a test class
@@ -139,15 +139,15 @@ class JnrTestRunnerTest {
 				[  START] BEFORE_EACH before each
 				[    END] BEFORE_EACH before each
 				[  START] TEST test failing assertion
-				[ FAILED] test failing assertion
 				[    END] TEST test failing assertion
+				[ FAILED] test failing assertion
 				[  START] AFTER_EACH after each
 				[    END] AFTER_EACH after each
 				[  START] BEFORE_EACH before each
 				[    END] BEFORE_EACH before each
 				[  START] TEST second test
-				[SUCCESS] second test
 				[    END] TEST second test
+				[SUCCESS] second test
 				[  START] AFTER_EACH after each
 				[    END] AFTER_EACH after each
 				[    END] another test class
