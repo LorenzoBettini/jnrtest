@@ -15,9 +15,15 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestListener {
 	private final ThreadLocal<ByteArrayOutputStream> currentOutputStream = new ThreadLocal<>();
 	private final ThreadLocal<String> currentKey = new ThreadLocal<>();
 	private boolean withElapsedTime = false;
+	private boolean onlySummaries = false;
 
 	public JnrTestThreadSafeConsoleReporter withElapsedTime() {
 		this.withElapsedTime = true;
+		return this;
+	}
+
+	public JnrTestThreadSafeConsoleReporter withOnlySummaries(boolean onlySummaries) {
+		this.onlySummaries = onlySummaries;
 		return this;
 	}
 
@@ -29,7 +35,9 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestListener {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			PrintStream printStream = new PrintStream(outputStream);
 			currentOutputStream.set(outputStream);
-			currentReporter.set(new JnrTestConsoleReporter(printStream).withElapsedTime(withElapsedTime));
+			currentReporter.set(new JnrTestConsoleReporter(printStream)
+					.withElapsedTime(withElapsedTime)
+					.withOnlySummaries(onlySummaries));
 			currentReporter.get().notify(event);
 		} else if (event.status() == JnrTestStatus.END) {
 			JnrTestConsoleReporter reporter = currentReporter.get();

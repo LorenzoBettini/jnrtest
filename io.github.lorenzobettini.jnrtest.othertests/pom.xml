@@ -7,31 +7,17 @@
 		<artifactId>io.github.lorenzobettini.jnrtest.parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>io.github.lorenzobettini.jnrtest.core</artifactId>
-
-	<properties>
-		<argLine></argLine>
-	</properties>
+	<artifactId>io.github.lorenzobettini.jnrtest.othertests</artifactId>
 
 	<dependencies>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>io.github.lorenzobettini.jnrtest.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-junit-jupiter</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
+			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -40,45 +26,48 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>properties</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.6.0</version>
-				<executions>
-					<execution>
-						<id>add-test-source</id>
-						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>add-test-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>src/jnrtest/java</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<executions>
+					<execution>
+						<id>generate-junit-tests</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>generate-test-sources</phase>
+						<configuration>
+							<executable>java</executable>
+							<forceJava>true</forceJava>
+							<classpathScope>test</classpathScope>
+							<arguments>
+								<argument>-classpath</argument>
+								<classpath />
+								<argument>
+									io.github.lorenzobettini.jnrtest.othertests.GenerateJUnitTests</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-jnr-tests</id>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<phase>generate-test-sources</phase>
+						<configuration>
+							<executable>java</executable>
+							<forceJava>true</forceJava>
+							<classpathScope>test</classpathScope>
+							<arguments>
+								<argument>-classpath</argument>
+								<classpath />
+								<argument>
+									io.github.lorenzobettini.jnrtest.othertests.GenerateJnrTests</argument>
+							</arguments>
+						</configuration>
+					</execution>
 					<execution>
 						<id>extract-total-test-time</id>
 						<phase>test</phase>
@@ -103,11 +92,10 @@
 							<forceJava>true</forceJava>
 							<classpathScope>test</classpathScope>
 							<arguments>
-								<argument>-javaagent:${org.mockito:mockito-core:jar}</argument>
 								<argument>-classpath</argument>
 								<classpath />
 								<argument>
-									io.github.lorenzobettini.jnrtest.core.JnrTestMain</argument>
+									com.example.demos.jnrtest.MyJnrTestMain</argument>
 							</arguments>
 						</configuration>
 					</execution>

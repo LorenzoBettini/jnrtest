@@ -16,6 +16,8 @@ public class JnrTestConsoleReporterTestJnrTest extends JnrTest {
 			() -> originalTest.restoreStreams());
 		test("should report results",
 			() -> originalTest.shouldReportResults());
+		test("should report only summary",
+			() -> originalTest.shouldReportOnlySummary());
 		test("should report results with elapsed time",
 			() -> originalTest.shouldReportResultsWithElapsedTime());
 	}

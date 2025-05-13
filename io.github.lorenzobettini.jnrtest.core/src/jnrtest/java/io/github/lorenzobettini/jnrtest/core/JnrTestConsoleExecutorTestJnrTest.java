@@ -20,6 +20,10 @@ public class JnrTestConsoleExecutorTestJnrTest extends JnrTest {
 			() -> originalTest.shouldAddListenersCorrectly());
 		test("should execute tests without throwing when all tests pass",
 			() -> originalTest.shouldExecuteWithoutThrowingWhenAllTestsPass());
+		test("should show detailed reports",
+			() -> originalTest.shouldShowDetailedReports());
+		test("should show only reports",
+			() -> originalTest.shouldShowOnlyReports());
 		test("should throw exception when execute fails",
 			() -> originalTest.shouldThrowExceptionWhenExecuteFails());
 		test("should return false when executeWithoutThrowing fails",
