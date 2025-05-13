@@ -81,6 +81,49 @@ class JnrTestConsoleReporterTest {
 	}
 
 	@Test
+	@DisplayName("should report only summary")
+	void shouldReportOnlySummary() {
+		var testReporter = new JnrTestConsoleReporter().withOnlySummaries(true);
+		JnrTestRunner runner = new JnrTestRunner()
+			.add(new JnrTest("a test class with success") {
+				@Override
+				protected void specify() {
+					beforeAll("before all", () -> {});
+					afterAll("after all", () -> {});
+					test("success test", () -> {
+						// success
+					});
+					test("error test", () -> {
+						throw new Exception("an exception");
+					});
+				}
+			}).add(new JnrTest("a test class with failure") {
+				@Override
+				protected void specify() {
+					beforeAll("before all", () -> {});
+					afterAll("after all", () -> {});
+					test("failed test", () -> {
+						assertTrue(false);
+					});
+					test("success test", () -> {
+						// success
+					});
+				}
+			});
+		runner.testListener(testReporter);
+		runner.execute();
+		assertEquals("""
+			[  START] a test class with success
+			Tests run: 2, Succeeded: 1, Failures: 0, Errors: 1
+			[  START] a test class with failure
+			Tests run: 2, Succeeded: 1, Failures: 1, Errors: 0
+			""",
+			getOutContent());
+		assertThat(getErrContent())
+			.contains("an exception", "expected: <true> but was: <false>");
+	}
+
+	@Test
 	@DisplayName("should report results with elapsed time")
 	void shouldReportResultsWithElapsedTime() {
 		var testReporter = new JnrTestConsoleReporter();

@@ -78,6 +78,52 @@ class JnrTestThreadSafeConsoleReporterTest {
 	}
 
 	@Test
+	void testThreadSafetyWithResultsAndVerificationWithOnlySummaries() throws InterruptedException {
+		JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter()
+				.withOnlySummaries(true);
+
+		ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+		for (int i = 0; i < 10; i++) {
+			final int threadId = i;
+			executorService.submit(() -> {
+				String testClassName = "TestClass-" + threadId;
+				JnrTestLifecycleEvent startEvent = new JnrTestLifecycleEvent(
+						testClassName, JnrTestStatus.START);
+				JnrTestLifecycleEvent endEvent = new JnrTestLifecycleEvent(
+						testClassName, JnrTestStatus.END);
+
+				reporter.notify(startEvent);
+
+				// Notify multiple results
+				for (int j = 0; j < 5; j++) {
+					JnrTestResult result = new JnrTestResult(testClassName + "-Test-" + j, JnrTestResultStatus.SUCCESS, null);
+					reporter.notify(result);
+				}
+
+				reporter.notify(endEvent);
+			});
+		}
+
+		executorService.shutdown();
+		assertThat(executorService.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
+
+		 // Normalize output to handle different EOL characters
+		String output = outputStream.toString().replace("\r\n", "\n");
+		for (int i = 0; i < 10; i++) {
+			String testClassName = "TestClass-" + i;
+
+			// Generate the expected block for this test class
+			StringBuilder expectedBlock = new StringBuilder();
+			expectedBlock.append("[  START] ").append(testClassName).append("\n");
+			expectedBlock.append("Tests run: 5, Succeeded: 5, Failures: 0, Errors: 0\n");
+
+			// Verify the output contains the expected block
+			assertThat(output).contains(expectedBlock.toString().replace("\r\n", "\n"));
+		}
+	}
+
+	@Test
 	void testSingleThreadCompleteOutputVerification() {
 		JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter();
 

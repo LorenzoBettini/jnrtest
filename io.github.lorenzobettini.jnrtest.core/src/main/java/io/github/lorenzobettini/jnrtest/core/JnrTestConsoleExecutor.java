@@ -45,6 +45,14 @@ public class JnrTestConsoleExecutor {
 		return this;
 	}
 
+	public JnrTestRecorder getRecorder() {
+		return recorder;
+	}
+
+	public JnrTestConsoleReporter getReporter() {
+		return reporter;
+	}
+
 	/**
 	 * Executes all test classes and prints the results.
 	 *

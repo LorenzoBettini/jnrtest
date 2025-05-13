@@ -37,6 +37,14 @@ public class JnrTestConsoleParallelExecutor {
 		return this;
 	}
 
+	public JnrTestThreadSafeRecorder getRecorder() {
+		return recorder;
+	}
+
+	public JnrTestThreadSafeConsoleReporter getReporter() {
+		return reporter;
+	}
+
 	/**
 	 * Adds a listener to the test execution.
 	 *

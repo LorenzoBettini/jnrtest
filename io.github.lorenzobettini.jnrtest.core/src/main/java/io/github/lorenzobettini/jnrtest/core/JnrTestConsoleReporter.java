@@ -15,6 +15,7 @@ import java.io.PrintStream;
 public class JnrTestConsoleReporter implements JnrTestListener {
 
 	private final PrintStream printStream;
+	private boolean onlySummaries = false;
 	private JnrTestStatistics testStatistics = new JnrTestStatistics();
 
 	public JnrTestConsoleReporter() {
@@ -27,6 +28,11 @@ public class JnrTestConsoleReporter implements JnrTestListener {
 
 	public JnrTestConsoleReporter withElapsedTime() {
 		testStatistics.setWithElapsedTime(true);
+		return this;
+	}
+
+	public JnrTestConsoleReporter withOnlySummaries(boolean onlySummaries) {
+		this.onlySummaries = onlySummaries;
 		return this;
 	}
 
@@ -87,10 +93,12 @@ public class JnrTestConsoleReporter implements JnrTestListener {
 				result.throwable().printStackTrace();
 			}
 		}
-		show(result.toString()
-			+ (testStatistics.isWithElapsedTime() ?
-				String.format(" - Time elapsed: %f s", (float) testStatistics.getElapsedTime() / 1000) :
-				""));
+		if (!onlySummaries) {
+			show(result.toString()
+				+ (testStatistics.isWithElapsedTime() ?
+						String.format(" - Time elapsed: %f s", (float) testStatistics.getElapsedTime() / 1000) :
+						""));
+		}
 	}
 
 	public void show(String message) {
