@@ -54,9 +54,13 @@ public class JnrTestConsoleParallelExecutor {
 	 * @return true if all tests passed, false otherwise
 	 */
 	public boolean executeWithoutThrowing() {
+		var startTime = System.currentTimeMillis();
 		runner.execute();
+		var totalTime = System.currentTimeMillis() - startTime;
 		System.out.println("\nResults:\n\n" + // NOSONAR
 				new JnrTestResultAggregator().aggregate(recorder));
+		System.out.println("\nTotal Execution Time: " + // NOSONAR
+				(float) totalTime / 1000 + " s");
 		return recorder.isSuccess();
 	}
 
