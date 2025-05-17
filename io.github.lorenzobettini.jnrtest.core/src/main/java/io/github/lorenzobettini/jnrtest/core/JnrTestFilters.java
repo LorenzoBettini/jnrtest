@@ -6,7 +6,11 @@ package io.github.lorenzobettini.jnrtest.core;
  * @author Lorenzo Bettini
  */
 public class JnrTestFilters {
-	
+
+	private JnrTestFilters() {
+		// Utility class should not be instantiated
+	}
+
 	/**
 	 * Creates a filter that accepts test classes whose description matches 
 	 * the specified pattern.
@@ -17,7 +21,7 @@ public class JnrTestFilters {
 	public static JnrTestClassFilter byClassDescription(String pattern) {
 		return (testClass) -> testClass.getDescription().matches(pattern);
 	}
-	
+
 	/**
 	 * Creates a filter that accepts test specifications whose description matches 
 	 * the specified pattern.
@@ -29,7 +33,7 @@ public class JnrTestFilters {
 		return (runnableSpecification) -> 
 			runnableSpecification.description().matches(pattern);
 	}
-	
+
 	/**
 	 * Combines multiple class filters with a logical AND.
 	 * 
@@ -46,7 +50,7 @@ public class JnrTestFilters {
 			return true;
 		};
 	}
-	
+
 	/**
 	 * Combines multiple specification filters with a logical AND.
 	 * 
@@ -63,7 +67,7 @@ public class JnrTestFilters {
 			return true;
 		};
 	}
-	
+
 	/**
 	 * Combines multiple class filters with a logical OR.
 	 * 
@@ -80,7 +84,7 @@ public class JnrTestFilters {
 			return filters.length == 0;
 		};
 	}
-	
+
 	/**
 	 * Combines multiple specification filters with a logical OR.
 	 * 
@@ -97,7 +101,7 @@ public class JnrTestFilters {
 			return filters.length == 0;
 		};
 	}
-	
+
 	/**
 	 * Creates a filter that negates the result of the specified class filter.
 	 * 
@@ -107,7 +111,7 @@ public class JnrTestFilters {
 	public static JnrTestClassFilter notClass(JnrTestClassFilter filter) {
 		return (testClass) -> !filter.include(testClass);
 	}
-	
+
 	/**
 	 * Creates a filter that negates the result of the specified specification filter.
 	 * 
