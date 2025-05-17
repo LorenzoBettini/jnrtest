@@ -18,7 +18,6 @@ public class JnrTestRunner {
 	private final List<JnrTestListener> listeners = new ArrayList<>();
 	private JnrTestClassFilter classFilter = JnrTestFilters.ACCEPT_ALL_CLASSES;
 	private JnrTestSpecificationFilter specificationFilter = JnrTestFilters.ACCEPT_ALL_SPECIFICATIONS;
-	private JnrTest currentTestClass;
 
 	public JnrTestRunner add(JnrTest testClass) {
 		testClasses.add(testClass);
@@ -75,20 +74,9 @@ public class JnrTestRunner {
 
 	private void executeTestClass(JnrTest testClass) {
 		var description = testClass.getDescription();
-		this.currentTestClass = testClass;
 		notifyTestLifecycleEvent(new JnrTestLifecycleEvent(description, JnrTestStatus.START));
 		executeTestClass(testClass.getStore());
 		notifyTestLifecycleEvent(new JnrTestLifecycleEvent(description, JnrTestStatus.END));
-		this.currentTestClass = null;
-	}
-	
-	/**
-	 * Returns the current test class being executed.
-	 * 
-	 * @return the current test class
-	 */
-	protected JnrTest getCurrentTestClass() {
-		return currentTestClass;
 	}
 
 	private void executeTestClass(JnrTestStore store) {
