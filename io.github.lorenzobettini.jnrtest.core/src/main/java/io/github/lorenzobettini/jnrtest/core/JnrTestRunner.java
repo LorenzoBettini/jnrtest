@@ -16,7 +16,8 @@ public class JnrTestRunner {
 
 	private final List<JnrTest> testClasses = new ArrayList<>();
 	private final List<JnrTestListener> listeners = new ArrayList<>();
-	private JnrTestFilter filter = JnrTestFilters.ACCEPT_ALL;
+	private JnrTestClassFilter classFilter = JnrTestFilters.ACCEPT_ALL_CLASSES;
+	private JnrTestSpecificationFilter specificationFilter = JnrTestFilters.ACCEPT_ALL_SPECIFICATIONS;
 	private JnrTest currentTestClass;
 
 	public JnrTestRunner add(JnrTest testClass) {
@@ -29,29 +30,34 @@ public class JnrTestRunner {
 		return this;
 	}
 
-	public JnrTestRunner filter(JnrTestFilter filter) {
-		this.filter = filter;
+	public JnrTestRunner classFilter(JnrTestClassFilter filter) {
+		this.classFilter = filter;
+		return this;
+	}
+	
+	public JnrTestRunner specificationFilter(JnrTestSpecificationFilter filter) {
+		this.specificationFilter = filter;
 		return this;
 	}
 
 	/**
-	 * Set a filter that only includes tests whose test class description matches the given pattern.
+	 * Set a filter that only includes test classes whose description matches the given pattern.
 	 * 
 	 * @param pattern the regex pattern to match against test class descriptions
 	 * @return this runner for method chaining
 	 */
-	public JnrTestRunner filterByTestClassDescription(String pattern) {
-		return filter(JnrTestFilters.byTestClassDescription(pattern));
+	public JnrTestRunner filterByClassDescription(String pattern) {
+		return classFilter(JnrTestFilters.byClassDescription(pattern));
 	}
 	
 	/**
-	 * Set a filter that only includes tests whose test specification description matches the given pattern.
+	 * Set a filter that only includes test specifications whose description matches the given pattern.
 	 * 
 	 * @param pattern the regex pattern to match against test specification descriptions
 	 * @return this runner for method chaining
 	 */
-	public JnrTestRunner filterByTestSpecificationDescription(String pattern) {
-		return filter(JnrTestFilters.byTestSpecificationDescription(pattern));
+	public JnrTestRunner filterBySpecificationDescription(String pattern) {
+		return specificationFilter(JnrTestFilters.bySpecificationDescription(pattern));
 	}
 
 	public void execute() {
@@ -63,7 +69,8 @@ public class JnrTestRunner {
 	 * method to customize the stream of test classes.
 	 */
 	protected Stream<JnrTest> getTestClassesStream() {
-		return testClasses.stream();
+		return testClasses.stream()
+				.filter(testClass -> classFilter.include(testClass));
 	}
 
 	private void executeTestClass(JnrTest testClass) {
@@ -114,7 +121,7 @@ public class JnrTestRunner {
 
 	private void executeTestRunnables(JnrTestStore store) {
 		for (var runnableSpecification : store.getRunnableSpecifications()) {
-			if (filter.include(getCurrentTestClass(), runnableSpecification)) {
+			if (specificationFilter.include(runnableSpecification)) {
 				executeBeforeEach(store);
 				executeSafely(runnableSpecification, JnrTestRunnableKind.TEST,
 						d -> notifyTestResult(new JnrTestResult(d, JnrTestResultStatus.SUCCESS, null)));

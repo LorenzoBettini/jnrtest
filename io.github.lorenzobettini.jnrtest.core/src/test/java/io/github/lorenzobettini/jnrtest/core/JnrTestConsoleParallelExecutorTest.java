@@ -287,7 +287,7 @@ class JnrTestConsoleParallelExecutorTest {
 		});
 		
 		// Apply a filter for important tests
-		executor.filterByTestSpecificationDescription(".*important.*");
+		executor.filterBySpecificationDescription(".*important.*");
 		
 		// Execute tests
 		executor.executeWithoutThrowing();

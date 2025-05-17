@@ -10,15 +10,17 @@ public class JnrTestFilterTestJnrTest extends JnrTest {
 
 	@Override
 	protected void specify() {
-		test("should filter by test class description",
-			() -> originalTest.shouldFilterByTestClassDescription());
+		test("should filter using class filter methods",
+			() -> originalTest.shouldFilterUsingClassFilterMethods());
 		test("should filter by test specification description",
 			() -> originalTest.shouldFilterByTestSpecificationDescription());
 		test("should combine multiple filters with AND logic",
 			() -> originalTest.shouldCombineFiltersWithAnd());
-		test("should combine multiple filters with OR logic",
-			() -> originalTest.shouldCombineFiltersWithOr());
 		test("should negate filter",
 			() -> originalTest.shouldNegateFilter());
+		test("should combine class filters with AND logic",
+			() -> originalTest.shouldCombineClassFiltersWithAnd());
+		test("should combine specification filters with OR logic",
+			() -> originalTest.shouldCombineSpecificationFiltersWithOr());
 	}
 }

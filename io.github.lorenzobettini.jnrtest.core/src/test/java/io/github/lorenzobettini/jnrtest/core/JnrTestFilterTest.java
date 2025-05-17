@@ -17,8 +17,8 @@ class JnrTestFilterTest {
 	}
 
 	@Test
-	@DisplayName("should filter by test class description")
-	void shouldFilterByTestClassDescription() {
+	@DisplayName("should filter using class filter methods")
+	void shouldFilterUsingClassFilterMethods() {
 		var callable = mock(Callable.class);
 		JnrTestRunner runner = new JnrTestRunner()
 				.add(new JnrTest("FirstTestClass") {
@@ -42,8 +42,10 @@ class JnrTestFilterTest {
 							callable.testMethod4();
 						});
 					}
-				})
-				.filterByTestClassDescription("First.*");
+				});
+				
+		// Use filterByClassDescription which is a convenience method
+		runner.filterByClassDescription("First.*");
 		
 		runner.execute();
 		
@@ -80,8 +82,10 @@ class JnrTestFilterTest {
 							callable.testMethod4();
 						});
 					}
-				})
-				.filterByTestSpecificationDescription(".*important.*");
+				});
+				
+		// Use convenience method for specification filtering
+		runner.filterBySpecificationDescription(".*important.*");
 		
 		runner.execute();
 		
@@ -118,11 +122,11 @@ class JnrTestFilterTest {
 							callable.testMethod4();
 						});
 					}
-				})
-				.filter(JnrTestFilters.all(
-						JnrTestFilters.byTestClassDescription("First.*"),
-						JnrTestFilters.byTestSpecificationDescription(".*important.*")
-				));
+				});
+		
+		// Apply both filters - class filter first, then specification filter
+		runner.classFilter(JnrTestFilters.byClassDescription("First.*"));
+		runner.specificationFilter(JnrTestFilters.bySpecificationDescription(".*important.*"));
 		
 		runner.execute();
 		
@@ -131,47 +135,6 @@ class JnrTestFilterTest {
 		verify(callable).testMethod2();
 		verify(callable, never()).testMethod3();
 		verify(callable, never()).testMethod4();
-	}
-	
-	@Test
-	@DisplayName("should combine multiple filters with OR logic")
-	void shouldCombineFiltersWithOr() {
-		var callable = mock(Callable.class);
-		JnrTestRunner runner = new JnrTestRunner()
-				.add(new JnrTest("FirstTestClass") {
-					@Override
-					protected void specify() {
-						test("test 1", () -> {
-							callable.testMethod1();
-						});
-						test("special test", () -> {
-							callable.testMethod2();
-						});
-					}
-				})
-				.add(new JnrTest("SecondTestClass") {
-					@Override
-					protected void specify() {
-						test("test 3", () -> {
-							callable.testMethod3();
-						});
-						test("important test", () -> {
-							callable.testMethod4();
-						});
-					}
-				})
-				.filter(JnrTestFilters.any(
-						JnrTestFilters.byTestClassDescription("First.*"),
-						JnrTestFilters.byTestSpecificationDescription(".*important.*")
-				));
-		
-		runner.execute();
-		
-		// Methods from FirstTestClass and those with "important" in description should be executed
-		verify(callable).testMethod1();
-		verify(callable).testMethod2();
-		verify(callable, never()).testMethod3();
-		verify(callable).testMethod4();
 	}
 	
 	@Test
@@ -200,16 +163,100 @@ class JnrTestFilterTest {
 							callable.testMethod4();
 						});
 					}
-				})
-				.filter(JnrTestFilters.not(
-						JnrTestFilters.byTestSpecificationDescription(".*important.*")
-				));
+				});
+		
+		// Apply negation to the specification filter
+		runner.specificationFilter(JnrTestFilters.notSpecification(
+				JnrTestFilters.bySpecificationDescription(".*important.*")
+		));
 		
 		runner.execute();
 		
 		// Only methods without "important" in their description should be executed
 		verify(callable).testMethod1();
 		verify(callable, never()).testMethod2();
+		verify(callable).testMethod3();
+		verify(callable, never()).testMethod4();
+	}
+	
+	@Test
+	@DisplayName("should combine class filters with AND logic")
+	void shouldCombineClassFiltersWithAnd() {
+		var callable = mock(Callable.class);
+		JnrTestRunner runner = new JnrTestRunner()
+				.add(new JnrTest("FirstTestClass") {
+					@Override
+					protected void specify() {
+						test("test 1", () -> {
+							callable.testMethod1();
+						});
+					}
+				})
+				.add(new JnrTest("FirstImportantTestClass") {
+					@Override
+					protected void specify() {
+						test("test 2", () -> {
+							callable.testMethod2();
+						});
+					}
+				})
+				.add(new JnrTest("SecondTestClass") {
+					@Override
+					protected void specify() {
+						test("test 3", () -> {
+							callable.testMethod3();
+						});
+					}
+				});
+		
+		// Apply AND logic to multiple class filters
+		runner.classFilter(JnrTestFilters.allClasses(
+				JnrTestFilters.byClassDescription("First.*"),
+				JnrTestFilters.byClassDescription(".*Important.*")
+		));
+		
+		runner.execute();
+		
+		// Only methods from classes matching both patterns should be executed
+		verify(callable, never()).testMethod1();
+		verify(callable).testMethod2();
+		verify(callable, never()).testMethod3();
+	}
+	
+	@Test
+	@DisplayName("should combine specification filters with OR logic")
+	void shouldCombineSpecificationFiltersWithOr() {
+		var callable = mock(Callable.class);
+		JnrTestRunner runner = new JnrTestRunner()
+				.add(new JnrTest("TestClass") {
+					@Override
+					protected void specify() {
+						test("simple test", () -> {
+							callable.testMethod1();
+						});
+						test("important test", () -> {
+							callable.testMethod2();
+						});
+						test("critical test", () -> {
+							callable.testMethod3();
+						});
+						test("normal test", () -> {
+							callable.testMethod4();
+						});
+					}
+				});
+		
+		// Apply OR logic to multiple specification filters
+		runner.specificationFilter(JnrTestFilters.anySpecification(
+				JnrTestFilters.bySpecificationDescription(".*important.*"),
+				JnrTestFilters.bySpecificationDescription(".*critical.*")
+		));
+		
+		runner.execute();
+		
+		// Only methods with "important" or "critical" in their description should be executed
+		verify(callable, never()).testMethod1();
+		verify(callable).testMethod2();
 		verify(callable).testMethod3();
 		verify(callable, never()).testMethod4();
 	}

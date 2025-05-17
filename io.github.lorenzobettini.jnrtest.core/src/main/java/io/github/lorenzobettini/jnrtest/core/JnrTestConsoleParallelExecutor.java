@@ -57,13 +57,24 @@ public class JnrTestConsoleParallelExecutor {
 	}
 
 	/**
-	 * Sets a filter for the test execution.
+	 * Sets a class filter for the test execution.
 	 *
 	 * @param filter the filter to apply
 	 * @return this instance for method chaining
 	 */
-	public JnrTestConsoleParallelExecutor filter(JnrTestFilter filter) {
-		runner.filter(filter);
+	public JnrTestConsoleParallelExecutor classFilter(JnrTestClassFilter filter) {
+		runner.classFilter(filter);
+		return this;
+	}
+
+	/**
+	 * Sets a specification filter for the test execution.
+	 *
+	 * @param filter the filter to apply
+	 * @return this instance for method chaining
+	 */
+	public JnrTestConsoleParallelExecutor specificationFilter(JnrTestSpecificationFilter filter) {
+		runner.specificationFilter(filter);
 		return this;
 	}
 	
@@ -73,8 +84,8 @@ public class JnrTestConsoleParallelExecutor {
 	 * @param pattern the regex pattern to match against test class descriptions
 	 * @return this instance for method chaining
 	 */
-	public JnrTestConsoleParallelExecutor filterByTestClassDescription(String pattern) {
-		runner.filterByTestClassDescription(pattern);
+	public JnrTestConsoleParallelExecutor filterByClassDescription(String pattern) {
+		runner.filterByClassDescription(pattern);
 		return this;
 	}
 	
@@ -84,8 +95,8 @@ public class JnrTestConsoleParallelExecutor {
 	 * @param pattern the regex pattern to match against test specification descriptions
 	 * @return this instance for method chaining
 	 */
-	public JnrTestConsoleParallelExecutor filterByTestSpecificationDescription(String pattern) {
-		runner.filterByTestSpecificationDescription(pattern);
+	public JnrTestConsoleParallelExecutor filterBySpecificationDescription(String pattern) {
+		runner.filterBySpecificationDescription(pattern);
 		return this;
 	}
 

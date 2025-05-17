@@ -21,13 +21,13 @@ public final class JnrTestFilterExamples {
 	 * JnrTestRunner runner = new JnrTestRunner()
 	 *     .add(new JnrTest("UserTests") { ... })
 	 *     .add(new JnrTest("ProductTests") { ... })
-	 *     .filterByTestClassDescription("UserTests.*");
+	 *     .filterByClassDescription("UserTests.*");
 	 * 
 	 * runner.execute(); // Only tests in "UserTests" will be executed
 	 * }
 	 * </pre>
 	 */
-	public static void filterByTestClassDescription() {
+	public static void filterByClassDescription() {
 		// Documentation only
 	}
 
@@ -45,13 +45,13 @@ public final class JnrTestFilterExamples {
 	 *             test("important test", () -> { ... });
 	 *         }
 	 *     })
-	 *     .filterByTestSpecificationDescription(".*important.*");
+	 *     .filterBySpecificationDescription(".*important.*");
 	 * 
 	 * runner.execute(); // Only "important test" will be executed
 	 * }
 	 * </pre>
 	 */
-	public static void filterByTestSpecificationDescription() {
+	public static void filterBySpecificationDescription() {
 		// Documentation only
 	}
 
@@ -63,11 +63,10 @@ public final class JnrTestFilterExamples {
 	 * // Only run tests that satisfy all conditions
 	 * JnrTestRunner runner = new JnrTestRunner()
 	 *     .add(new JnrTest("UserTests") { ... })
-	 *     .add(new JnrTest("ProductTests") { ... })
-	 *     .filter(JnrTestFilters.all(
-	 *         JnrTestFilters.byTestClassDescription("User.*"),
-	 *         JnrTestFilters.byTestSpecificationDescription(".*important.*")
-	 *     ));
+	 *     .add(new JnrTest("ProductTests") { ... });
+	 *     
+	 * runner.classFilter(JnrTestFilters.byClassDescription("User.*"));
+	 * runner.specificationFilter(JnrTestFilters.bySpecificationDescription(".*important.*"));
 	 * 
 	 * // Only tests from "UserTests" with "important" in their description will be executed
 	 * runner.execute();
@@ -83,16 +82,23 @@ public final class JnrTestFilterExamples {
 	 * 
 	 * <pre>
 	 * {@code
-	 * // Run tests that satisfy any of the conditions
+	 * // Run tests that satisfy any of the conditions (OR logic)
 	 * JnrTestRunner runner = new JnrTestRunner()
 	 *     .add(new JnrTest("UserTests") { ... })
-	 *     .add(new JnrTest("ProductTests") { ... })
-	 *     .filter(JnrTestFilters.any(
-	 *         JnrTestFilters.byTestClassDescription("User.*"),
-	 *         JnrTestFilters.byTestSpecificationDescription(".*critical.*")
-	 *     ));
+	 *     .add(new JnrTest("ProductTests") { ... });
+	 *     
+	 * // For OR logic between class filters
+	 * runner.classFilter(JnrTestFilters.anyClass(
+	 *     JnrTestFilters.byClassDescription("User.*"),
+	 *     JnrTestFilters.byClassDescription("Product.*")
+	 * ));
 	 * 
-	 * // Tests from "UserTests" OR tests with "critical" in their description will be executed
+	 * // For OR logic between specification filters
+	 * runner.specificationFilter(JnrTestFilters.anySpecification(
+	 *     JnrTestFilters.bySpecificationDescription(".*important.*"),
+	 *     JnrTestFilters.bySpecificationDescription(".*critical.*")
+	 * ));
+	 * 
 	 * runner.execute();
 	 * }
 	 * </pre>
@@ -108,10 +114,11 @@ public final class JnrTestFilterExamples {
 	 * {@code
 	 * // Run all tests except those matching the negated filter
 	 * JnrTestRunner runner = new JnrTestRunner()
-	 *     .add(new JnrTest("Tests") { ... })
-	 *     .filter(JnrTestFilters.not(
-	 *         JnrTestFilters.byTestSpecificationDescription(".*slow.*")
-	 *     ));
+	 *     .add(new JnrTest("Tests") { ... });
+	 *     
+	 * runner.specificationFilter(JnrTestFilters.notSpecification(
+	 *     JnrTestFilters.bySpecificationDescription(".*slow.*")
+	 * ));
 	 * 
 	 * // All tests except those with "slow" in their description will be executed
 	 * runner.execute();
@@ -127,13 +134,18 @@ public final class JnrTestFilterExamples {
 	 * 
 	 * <pre>
 	 * {@code
-	 * // Create a custom filter that only runs tests with short descriptions
-	 * JnrTestFilter shortDescriptionFilter = (testClass, runnableSpecification) -> 
-	 *     runnableSpecification.description().length() < 20;
+	 * // Create a custom class filter that only runs tests with short descriptions
+	 * JnrTestClassFilter shortClassDescriptionFilter = testClass -> 
+	 *     testClass.getDescription().length() < 20;
 	 * 
+	 * // Create a custom specification filter that only runs tests with short descriptions
+	 * JnrTestSpecificationFilter shortSpecDescriptionFilter = runnableSpecification -> 
+	 *     runnableSpecification.description().length() < 20;
+	 *     
 	 * JnrTestRunner runner = new JnrTestRunner()
 	 *     .add(new JnrTest("Tests") { ... })
-	 *     .filter(shortDescriptionFilter);
+	 *     .classFilter(shortClassDescriptionFilter)
+	 *     .specificationFilter(shortSpecDescriptionFilter);
 	 * 
 	 * // Only tests with short descriptions will be executed
 	 * runner.execute();
