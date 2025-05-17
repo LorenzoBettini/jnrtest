@@ -30,22 +30,12 @@ public class JnrTestRunner {
 	}
 
 	public JnrTestRunner classFilter(JnrTestClassFilter filter) {
-		// Only set the filter if it's not the ACCEPT_ALL_CLASSES filter
-		if (filter == JnrTestFilters.ACCEPT_ALL_CLASSES) {
-			this.classFilter = null;
-		} else {
-			this.classFilter = filter;
-		}
+		this.classFilter = filter;
 		return this;
 	}
 	
 	public JnrTestRunner specificationFilter(JnrTestSpecificationFilter filter) {
-		// Only set the filter if it's not the ACCEPT_ALL_SPECIFICATIONS filter
-		if (filter == JnrTestFilters.ACCEPT_ALL_SPECIFICATIONS) {
-			this.specificationFilter = null;
-		} else {
-			this.specificationFilter = filter;
-		}
+		this.specificationFilter = filter;
 		return this;
 	}
 

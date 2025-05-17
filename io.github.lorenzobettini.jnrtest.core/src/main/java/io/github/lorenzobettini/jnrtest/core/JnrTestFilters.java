@@ -8,16 +8,6 @@ package io.github.lorenzobettini.jnrtest.core;
 public class JnrTestFilters {
 	
 	/**
-	 * Filter that accepts all test classes.
-	 */
-	public static final JnrTestClassFilter ACCEPT_ALL_CLASSES = (testClass) -> true;
-	
-	/**
-	 * Filter that accepts all test specifications.
-	 */
-	public static final JnrTestSpecificationFilter ACCEPT_ALL_SPECIFICATIONS = (runnableSpecification) -> true;
-	
-	/**
 	 * Creates a filter that accepts test classes whose description matches 
 	 * the specified pattern.
 	 * 
