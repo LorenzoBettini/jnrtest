@@ -16,8 +16,8 @@ public class JnrTestRunner {
 
 	private final List<JnrTest> testClasses = new ArrayList<>();
 	private final List<JnrTestListener> listeners = new ArrayList<>();
-	private JnrTestClassFilter classFilter = JnrTestFilters.ACCEPT_ALL_CLASSES;
-	private JnrTestSpecificationFilter specificationFilter = JnrTestFilters.ACCEPT_ALL_SPECIFICATIONS;
+	private JnrTestClassFilter classFilter = null;
+	private JnrTestSpecificationFilter specificationFilter = null;
 
 	public JnrTestRunner add(JnrTest testClass) {
 		testClasses.add(testClass);
@@ -30,12 +30,22 @@ public class JnrTestRunner {
 	}
 
 	public JnrTestRunner classFilter(JnrTestClassFilter filter) {
-		this.classFilter = filter;
+		// Only set the filter if it's not the ACCEPT_ALL_CLASSES filter
+		if (filter == JnrTestFilters.ACCEPT_ALL_CLASSES) {
+			this.classFilter = null;
+		} else {
+			this.classFilter = filter;
+		}
 		return this;
 	}
 	
 	public JnrTestRunner specificationFilter(JnrTestSpecificationFilter filter) {
-		this.specificationFilter = filter;
+		// Only set the filter if it's not the ACCEPT_ALL_SPECIFICATIONS filter
+		if (filter == JnrTestFilters.ACCEPT_ALL_SPECIFICATIONS) {
+			this.specificationFilter = null;
+		} else {
+			this.specificationFilter = filter;
+		}
 		return this;
 	}
 
@@ -68,6 +78,11 @@ public class JnrTestRunner {
 	 * method to customize the stream of test classes.
 	 */
 	protected Stream<JnrTest> getTestClassesStream() {
+		if (classFilter == null) {
+			// No filtering needed
+			return testClasses.stream();
+		}
+		// Apply the class filter
 		return testClasses.stream()
 				.filter(testClass -> classFilter.include(testClass));
 	}
@@ -108,13 +123,24 @@ public class JnrTestRunner {
 	}
 
 	private void executeTestRunnables(JnrTestStore store) {
-		for (var runnableSpecification : store.getRunnableSpecifications()) {
-			if (specificationFilter.include(runnableSpecification)) {
-				executeBeforeEach(store);
-				executeSafely(runnableSpecification, JnrTestRunnableKind.TEST,
-						d -> notifyTestResult(new JnrTestResult(d, JnrTestResultStatus.SUCCESS, null)));
-				executeAfterEach(store);
-			}
+		List<JnrTestRunnableSpecification> runnablesToExecute;
+		
+		if (specificationFilter == null) {
+			// No specification filtering needed, execute all test runnables
+			runnablesToExecute = store.getRunnableSpecifications();
+		} else {
+			// Apply specification filter
+			runnablesToExecute = store.getRunnableSpecifications().stream()
+					.filter(specificationFilter::include)
+					.toList();
+		}
+		
+		// Execute the filtered (or all) specifications
+		for (var runnableSpecification : runnablesToExecute) {
+			executeBeforeEach(store);
+			executeSafely(runnableSpecification, JnrTestRunnableKind.TEST,
+					d -> notifyTestResult(new JnrTestResult(d, JnrTestResultStatus.SUCCESS, null)));
+			executeAfterEach(store);
 		}
 	}
 
