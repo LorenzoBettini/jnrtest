@@ -1,5 +1,7 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import java.util.Arrays;
+
 /**
  * Standard implementations of filters for test classes and test specifications.
  * 
@@ -38,16 +40,17 @@ public class JnrTestFilters {
 	 * Combines multiple class filters with a logical AND.
 	 * 
 	 * @param filters the filters to combine
-	 * @return a filter that accepts a test class only if all the specified filters accept it
+	 * @return a filter that accepts a test class only if all the specified filters accept it.
+	 *         When the array of filters is empty, this returns a filter that always accepts
+	 *         (returns true for) every test class.
 	 */
 	public static JnrTestClassFilter allClasses(JnrTestClassFilter... filters) {
 		return (testClass) -> {
-			for (JnrTestClassFilter filter : filters) {
-				if (!filter.include(testClass)) {
-					return false;
-				}
+			if (filters.length == 0) {
+				return true;
 			}
-			return true;
+			return Arrays.stream(filters)
+					.allMatch(filter -> filter.include(testClass));
 		};
 	}
 
@@ -55,16 +58,17 @@ public class JnrTestFilters {
 	 * Combines multiple specification filters with a logical AND.
 	 * 
 	 * @param filters the filters to combine
-	 * @return a filter that accepts a test specification only if all the specified filters accept it
+	 * @return a filter that accepts a test specification only if all the specified filters accept it.
+	 *         When the array of filters is empty, this returns a filter that always accepts
+	 *         (returns true for) every specification.
 	 */
 	public static JnrTestSpecificationFilter allSpecifications(JnrTestSpecificationFilter... filters) {
 		return (runnableSpecification) -> {
-			for (JnrTestSpecificationFilter filter : filters) {
-				if (!filter.include(runnableSpecification)) {
-					return false;
-				}
+			if (filters.length == 0) {
+				return true;
 			}
-			return true;
+			return Arrays.stream(filters)
+					.allMatch(filter -> filter.include(runnableSpecification));
 		};
 	}
 
@@ -72,16 +76,17 @@ public class JnrTestFilters {
 	 * Combines multiple class filters with a logical OR.
 	 * 
 	 * @param filters the filters to combine
-	 * @return a filter that accepts a test class if any of the specified filters accept it
+	 * @return a filter that accepts a test class if any of the specified filters accept it.
+	 *         When the array of filters is empty, this returns a filter that always accepts
+	 *         (returns true for) every test class.
 	 */
 	public static JnrTestClassFilter anyClass(JnrTestClassFilter... filters) {
 		return (testClass) -> {
-			for (JnrTestClassFilter filter : filters) {
-				if (filter.include(testClass)) {
-					return true;
-				}
+			if (filters.length == 0) {
+				return true;
 			}
-			return filters.length == 0;
+			return Arrays.stream(filters)
+					.anyMatch(filter -> filter.include(testClass));
 		};
 	}
 
@@ -89,16 +94,17 @@ public class JnrTestFilters {
 	 * Combines multiple specification filters with a logical OR.
 	 * 
 	 * @param filters the filters to combine
-	 * @return a filter that accepts a test specification if any of the specified filters accept it
+	 * @return a filter that accepts a test specification if any of the specified filters accept it.
+	 *         When the array of filters is empty, this returns a filter that always accepts
+	 *         (returns true for) every specification.
 	 */
 	public static JnrTestSpecificationFilter anySpecification(JnrTestSpecificationFilter... filters) {
 		return (runnableSpecification) -> {
-			for (JnrTestSpecificationFilter filter : filters) {
-				if (filter.include(runnableSpecification)) {
-					return true;
-				}
+			if (filters.length == 0) {
+				return true;
 			}
-			return filters.length == 0;
+			return Arrays.stream(filters)
+					.anyMatch(filter -> filter.include(runnableSpecification));
 		};
 	}
 

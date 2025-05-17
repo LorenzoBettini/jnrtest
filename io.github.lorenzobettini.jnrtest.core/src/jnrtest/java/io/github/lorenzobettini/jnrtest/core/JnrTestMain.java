@@ -13,6 +13,7 @@ public class JnrTestMain {
 		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleParallelExecutorTestJnrTest());
 		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleReporterTestJnrTest());
 		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestFilterTestJnrTest());
+		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestFiltersTestJnrTest());
 		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestParallelRunnerTestJnrTest());
 		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestRunnerTestJnrTest());
 		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeConsoleReporterTestJnrTest());
