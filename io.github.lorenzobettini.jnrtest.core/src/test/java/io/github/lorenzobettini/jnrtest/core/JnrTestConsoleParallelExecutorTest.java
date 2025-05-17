@@ -243,4 +243,59 @@ class JnrTestConsoleParallelExecutorTest {
 		assertTrue(result);
 		assertThat(outContent.toString()).contains("Results:");
 	}
+
+	@Test
+	@DisplayName("should filter tests correctly in parallel mode")
+	void shouldFilterTestsCorrectlyInParallelMode() {
+		// Create test classes with different tests
+		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
+		
+		// Use a thread-safe collection for test results
+		boolean[] methodsCalled = new boolean[4];
+		
+		// Add a simple test class
+		executor.add(new JnrTest("FirstTestClass") {
+			@Override
+			protected void specify() {
+				test("regular test", () -> {
+					synchronized (methodsCalled) {
+						methodsCalled[0] = true;
+					}
+				});
+				test("important test", () -> {
+					synchronized (methodsCalled) {
+						methodsCalled[1] = true;
+					}
+				});
+			}
+		});
+		
+		executor.add(new JnrTest("SecondTestClass") {
+			@Override
+			protected void specify() {
+				test("another test", () -> {
+					synchronized (methodsCalled) {
+						methodsCalled[2] = true;
+					}
+				});
+				test("important test 2", () -> {
+					synchronized (methodsCalled) {
+						methodsCalled[3] = true;
+					}
+				});
+			}
+		});
+		
+		// Apply a filter for important tests
+		executor.filterByTestSpecificationDescription(".*important.*");
+		
+		// Execute tests
+		executor.executeWithoutThrowing();
+		
+		// Verify only important tests were executed
+		assertThat(methodsCalled[0]).isFalse();
+		assertThat(methodsCalled[1]).isTrue();
+		assertThat(methodsCalled[2]).isFalse();
+		assertThat(methodsCalled[3]).isTrue();
+	}
 }

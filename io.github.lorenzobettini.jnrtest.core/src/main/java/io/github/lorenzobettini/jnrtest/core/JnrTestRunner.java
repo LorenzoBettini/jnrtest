@@ -16,6 +16,8 @@ public class JnrTestRunner {
 
 	private final List<JnrTest> testClasses = new ArrayList<>();
 	private final List<JnrTestListener> listeners = new ArrayList<>();
+	private JnrTestFilter filter = JnrTestFilters.ACCEPT_ALL;
+	private JnrTest currentTestClass;
 
 	public JnrTestRunner add(JnrTest testClass) {
 		testClasses.add(testClass);
@@ -25,6 +27,31 @@ public class JnrTestRunner {
 	public JnrTestRunner testListener(JnrTestListener listener) {
 		listeners.add(listener);
 		return this;
+	}
+
+	public JnrTestRunner filter(JnrTestFilter filter) {
+		this.filter = filter;
+		return this;
+	}
+
+	/**
+	 * Set a filter that only includes tests whose test class description matches the given pattern.
+	 * 
+	 * @param pattern the regex pattern to match against test class descriptions
+	 * @return this runner for method chaining
+	 */
+	public JnrTestRunner filterByTestClassDescription(String pattern) {
+		return filter(JnrTestFilters.byTestClassDescription(pattern));
+	}
+	
+	/**
+	 * Set a filter that only includes tests whose test specification description matches the given pattern.
+	 * 
+	 * @param pattern the regex pattern to match against test specification descriptions
+	 * @return this runner for method chaining
+	 */
+	public JnrTestRunner filterByTestSpecificationDescription(String pattern) {
+		return filter(JnrTestFilters.byTestSpecificationDescription(pattern));
 	}
 
 	public void execute() {
@@ -41,9 +68,20 @@ public class JnrTestRunner {
 
 	private void executeTestClass(JnrTest testClass) {
 		var description = testClass.getDescription();
+		this.currentTestClass = testClass;
 		notifyTestLifecycleEvent(new JnrTestLifecycleEvent(description, JnrTestStatus.START));
 		executeTestClass(testClass.getStore());
 		notifyTestLifecycleEvent(new JnrTestLifecycleEvent(description, JnrTestStatus.END));
+		this.currentTestClass = null;
+	}
+	
+	/**
+	 * Returns the current test class being executed.
+	 * 
+	 * @return the current test class
+	 */
+	protected JnrTest getCurrentTestClass() {
+		return currentTestClass;
 	}
 
 	private void executeTestClass(JnrTestStore store) {
@@ -76,10 +114,12 @@ public class JnrTestRunner {
 
 	private void executeTestRunnables(JnrTestStore store) {
 		for (var runnableSpecification : store.getRunnableSpecifications()) {
-			executeBeforeEach(store);
-			executeSafely(runnableSpecification, JnrTestRunnableKind.TEST,
-					d -> notifyTestResult(new JnrTestResult(d, JnrTestResultStatus.SUCCESS, null)));
-			executeAfterEach(store);
+			if (filter.include(getCurrentTestClass(), runnableSpecification)) {
+				executeBeforeEach(store);
+				executeSafely(runnableSpecification, JnrTestRunnableKind.TEST,
+						d -> notifyTestResult(new JnrTestResult(d, JnrTestResultStatus.SUCCESS, null)));
+				executeAfterEach(store);
+			}
 		}
 	}
 
