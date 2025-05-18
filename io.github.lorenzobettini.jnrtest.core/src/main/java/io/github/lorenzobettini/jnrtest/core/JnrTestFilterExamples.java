@@ -56,7 +56,7 @@ public final class JnrTestFilterExamples {
 	}
 
 	/**
-	 * Example of combining multiple filters with AND logic.
+	 * Example of combining test class and test specification filters.
 	 * 
 	 * <pre>
 	 * {@code
@@ -73,37 +73,7 @@ public final class JnrTestFilterExamples {
 	 * }
 	 * </pre>
 	 */
-	public static void combineFiltersWithAnd() {
-		// Documentation only
-	}
-
-	/**
-	 * Example of combining multiple filters with OR logic.
-	 * 
-	 * <pre>
-	 * {@code
-	 * // Run tests that satisfy any of the conditions (OR logic)
-	 * JnrTestRunner runner = new JnrTestRunner()
-	 *     .add(new JnrTest("UserTests") { ... })
-	 *     .add(new JnrTest("ProductTests") { ... });
-	 *     
-	 * // For OR logic between class filters
-	 * runner.classFilter(JnrTestFilters.anyClass(
-	 *     JnrTestFilters.byClassDescription("User.*"),
-	 *     JnrTestFilters.byClassDescription("Product.*")
-	 * ));
-	 * 
-	 * // For OR logic between specification filters
-	 * runner.specificationFilter(JnrTestFilters.anySpecification(
-	 *     JnrTestFilters.bySpecificationDescription(".*important.*"),
-	 *     JnrTestFilters.bySpecificationDescription(".*critical.*")
-	 * ));
-	 * 
-	 * runner.execute();
-	 * }
-	 * </pre>
-	 */
-	public static void combineFiltersWithOr() {
+	public static void combineFilters() {
 		// Documentation only
 	}
 
