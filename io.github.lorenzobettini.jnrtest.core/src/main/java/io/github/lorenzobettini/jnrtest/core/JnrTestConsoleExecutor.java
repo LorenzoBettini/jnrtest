@@ -9,18 +9,42 @@ package io.github.lorenzobettini.jnrtest.core;
  */
 public class JnrTestConsoleExecutor {
 	private final JnrTestRunner runner;
-	private final JnrTestRecorderInterface<JnrTestRecorder> recorder;
-	private final JnrTestReporterInterface<JnrTestConsoleReporter> reporter;
+	private final JnrTestRecorderInterface<? extends JnrTestRecorderInterface<?>> recorder;
+	private final JnrTestReporterInterface<? extends JnrTestReporterInterface<?>> reporter;
 
 	/**
 	 * Creates a new JnrTestConsoleExecutor with default recorder and reporter configured with elapsed time.
 	 */
 	public JnrTestConsoleExecutor() {
-		this.recorder = new JnrTestRecorder().withElapsedTime();
-		this.reporter = new JnrTestConsoleReporter().withElapsedTime();
-		this.runner = new JnrTestRunner();
+		this.recorder = createRecorder().withElapsedTime();
+		this.reporter = createReporter().withElapsedTime();
+		this.runner = createTestRunner();
 		this.runner.testListener(recorder);
 		this.runner.testListener(reporter);
+	}
+
+	/**
+	 * Factory method to create a recorder.
+	 * @return a new instance of JnrTestRecorderInterface
+	 */
+	protected JnrTestRecorderInterface<? extends JnrTestRecorderInterface<?>> createRecorder() {
+		return new JnrTestRecorder();
+	}
+
+	/**
+	 * Factory method to create a reporter.
+	 * @return a new instance of JnrTestReporterInterface
+	 */
+	protected JnrTestReporterInterface<? extends JnrTestReporterInterface<?>> createReporter() {
+		return new JnrTestConsoleReporter();
+	}
+
+	/**
+	 * Factory method to create a test runner.
+	 * @return a new instance of JnrTestRunner
+	 */
+	protected JnrTestRunner createTestRunner() {
+		return new JnrTestRunner();
 	}
 
 	/**
@@ -89,11 +113,11 @@ public class JnrTestConsoleExecutor {
 		return this;
 	}
 
-	public JnrTestRecorderInterface<JnrTestRecorder> getRecorder() {
+	public JnrTestRecorderInterface<? extends JnrTestRecorderInterface<?>> getRecorder() {
 		return recorder;
 	}
 
-	public JnrTestReporterInterface<JnrTestConsoleReporter> getReporter() {
+	public JnrTestReporterInterface<? extends JnrTestReporterInterface<?>> getReporter() {
 		return reporter;
 	}
 

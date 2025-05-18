@@ -49,8 +49,8 @@ class JnrTestConsoleParallelExecutorTest {
 		when(testClass.getDescription()).thenReturn("Mock Test Class");
 		
 		// Create executor and add test class
-		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		JnrTestConsoleParallelExecutor result = executor.add(testClass);
+		var executor = new JnrTestConsoleParallelExecutor();
+		var result = executor.add(testClass);
 		
 		// Verify the test class was added and the executor returned itself
 		assertThat(result).isSameAs(executor);
@@ -63,8 +63,8 @@ class JnrTestConsoleParallelExecutorTest {
 		JnrTestListener listener = mock(JnrTestListener.class);
 		
 		// Create executor and add listener
-		JnrTestConsoleParallelExecutor executor = new JnrTestConsoleParallelExecutor();
-		JnrTestConsoleParallelExecutor result = executor.testListener(listener);
+		var executor = new JnrTestConsoleParallelExecutor();
+		var result = executor.testListener(listener);
 		
 		// Verify the listener was added and the executor returned itself
 		assertThat(result).isSameAs(executor);

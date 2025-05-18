@@ -2,127 +2,51 @@ package io.github.lorenzobettini.jnrtest.core;
 
 /**
  * A high-level class that provides a simplified API for setting up and
- * executing test classes
- * in a parallel environment.
+ * executing test classes in a parallel environment.
  * It handles the creation of thread-safe recorders and reporters, execution of
  * tests, and reporting of results.
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestConsoleParallelExecutor {
-	private final JnrTestParallelRunner runner;
-	private final JnrTestThreadSafeRecorder recorder;
-	private final JnrTestThreadSafeConsoleReporter reporter;
+public class JnrTestConsoleParallelExecutor extends JnrTestConsoleExecutor {
 
 	/**
-	 * Creates a new JnrTestConsoleParallelExecutor with default thread-safe
-	 * recorder and reporter configured with elapsed time.
+	 * Overrides the default recorder with a thread-safe recorder.
 	 */
-	public JnrTestConsoleParallelExecutor() {
-		this.recorder = new JnrTestThreadSafeRecorder().withElapsedTime();
-		this.reporter = new JnrTestThreadSafeConsoleReporter().withElapsedTime();
-		this.runner = new JnrTestParallelRunner();
-		this.runner.testListener(recorder);
-		this.runner.testListener(reporter);
+	@Override
+	protected JnrTestRecorderInterface<? extends JnrTestRecorderInterface<?>> createRecorder() {
+		return new JnrTestThreadSafeRecorder();
 	}
 
 	/**
-	 * Adds a test class to be executed.
-	 *
-	 * @param testClass the test class to add
-	 * @return this instance for method chaining
+	 * Overrides the default reporter with a thread-safe reporter.
 	 */
-	public JnrTestConsoleParallelExecutor add(JnrTest testClass) {
-		runner.add(testClass);
-		return this;
-	}
-
-	public JnrTestThreadSafeRecorder getRecorder() {
-		return recorder;
-	}
-
-	public JnrTestThreadSafeConsoleReporter getReporter() {
-		return reporter;
+	@Override
+	protected JnrTestReporterInterface<? extends JnrTestReporterInterface<?>> createReporter() {
+		return new JnrTestThreadSafeConsoleReporter();
 	}
 
 	/**
-	 * Adds a listener to the test execution.
-	 *
-	 * @param listener the listener to add
-	 * @return this instance for method chaining
+	 * Overrides the default test runner with a parallel test runner.
 	 */
-	public JnrTestConsoleParallelExecutor testListener(JnrTestListener listener) {
-		runner.testListener(listener);
-		return this;
+	@Override
+	protected JnrTestRunner createTestRunner() {
+		return new JnrTestParallelRunner();
 	}
 
 	/**
-	 * Sets a class filter for the test execution.
-	 *
-	 * @param filter the filter to apply
-	 * @return this instance for method chaining
-	 */
-	public JnrTestConsoleParallelExecutor classFilter(JnrTestClassFilter filter) {
-		runner.classFilter(filter);
-		return this;
-	}
-
-	/**
-	 * Sets a specification filter for the test execution.
-	 *
-	 * @param filter the filter to apply
-	 * @return this instance for method chaining
-	 */
-	public JnrTestConsoleParallelExecutor specificationFilter(JnrTestSpecificationFilter filter) {
-		runner.specificationFilter(filter);
-		return this;
-	}
-	
-	/**
-	 * Sets a filter that only includes tests whose test class description matches the given pattern.
-	 * 
-	 * @param pattern the regex pattern to match against test class descriptions
-	 * @return this instance for method chaining
-	 */
-	public JnrTestConsoleParallelExecutor filterByClassDescription(String pattern) {
-		runner.filterByClassDescription(pattern);
-		return this;
-	}
-	
-	/**
-	 * Sets a filter that only includes tests whose test specification description matches the given pattern.
-	 * 
-	 * @param pattern the regex pattern to match against test specification descriptions
-	 * @return this instance for method chaining
-	 */
-	public JnrTestConsoleParallelExecutor filterBySpecificationDescription(String pattern) {
-		runner.filterBySpecificationDescription(pattern);
-		return this;
-	}
-
-	/**
-	 * Executes all test classes and prints the results.
+	 * Executes all test classes and prints the results; it also measures the
+	 * total execution time.
 	 *
 	 * @return true if all tests passed, false otherwise
 	 */
 	public boolean executeWithoutThrowing() {
 		var startTime = System.currentTimeMillis();
-		runner.execute();
+		var result = super.executeWithoutThrowing();
 		var totalTime = System.currentTimeMillis() - startTime;
-		System.out.println("\nResults:\n\n" + // NOSONAR
-				new JnrTestResultAggregator().aggregate(recorder));
 		System.out.println("\nTotal Execution Time: " + // NOSONAR
 				(float) totalTime / 1000 + " s");
-		return recorder.isSuccess();
+		return result;
 	}
 
-	/**
-	 * Executes all test classes, prints the results, and throws an exception if any
-	 * tests fail.
-	 */
-	public void execute() {
-		if (!executeWithoutThrowing()) {
-			throw new RuntimeException("There are test failures"); // NOSONAR
-		}
-	}
 }
