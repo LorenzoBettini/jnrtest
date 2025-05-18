@@ -2,8 +2,6 @@ package io.github.lorenzobettini.jnrtest.core;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,44 +11,64 @@ import org.junit.jupiter.api.Test;
  */
 class JnrTestFiltersTest {
     
+    // Simple fake test class implementation
+    private static class FakeTest extends JnrTest {
+        
+        public FakeTest(String description) {
+            super(description);
+        }
+        
+        @Override
+        protected void specify() {
+            // Empty implementation for testing
+        }
+    }
+    
+    // Empty runnable for testing
+    private static final JnrTestRunnable EMPTY_RUNNABLE = () -> {};
+    
+    // Reusable test instances
+    private final JnrTest calculatorTest = new FakeTest("Calculator");
+    private final JnrTest stringTest = new FakeTest("String");
+    private final JnrTestRunnableSpecification additionSpec = 
+            new JnrTestRunnableSpecification("Addition", EMPTY_RUNNABLE);
+    private final JnrTestRunnableSpecification subtractionSpec = 
+            new JnrTestRunnableSpecification("Subtraction", EMPTY_RUNNABLE);
+    
     @Test
     void testEmptyArrayWithAllClassesReturnsTrue() {
         // When we have an empty array of class filters
         JnrTestClassFilter filter = JnrTestFilters.allClasses();
-        JnrTest testClass = mock(JnrTest.class);
         
         // Then the filter should accept any test class (return true)
-        assertTrue(filter.include(testClass));
+        assertTrue(filter.include(calculatorTest));
     }
     
     @Test
     void testEmptyArrayWithAllSpecificationsReturnsTrue() {
         // When we have an empty array of specification filters
         JnrTestSpecificationFilter filter = JnrTestFilters.allSpecifications();
-        JnrTestRunnableSpecification specification = mock(JnrTestRunnableSpecification.class);
         
         // Then the filter should accept any specification (return true)
-        assertTrue(filter.include(specification));
+        assertTrue(filter.include(additionSpec));
     }
     
     @Test
     void testEmptyArrayWithAnyClassReturnsTrue() {
         // When we have an empty array of class filters
         JnrTestClassFilter filter = JnrTestFilters.anyClass();
-        JnrTest testClass = mock(JnrTest.class);
         
         // Then the filter should accept any test class (return true)
-        assertTrue(filter.include(testClass));
+        assertTrue(filter.include(calculatorTest));
     }
     
     @Test
     void testEmptyArrayWithAnySpecificationReturnsTrue() {
         // When we have an empty array of specification filters
         JnrTestSpecificationFilter filter = JnrTestFilters.anySpecification();
-        JnrTestRunnableSpecification specification = mock(JnrTestRunnableSpecification.class);
         
         // Then the filter should accept any specification (return true)
-        assertTrue(filter.include(specification));
+        assertTrue(filter.include(additionSpec));
     }
     
     @Test
@@ -61,10 +79,9 @@ class JnrTestFiltersTest {
         
         // When we combine them with allClasses
         JnrTestClassFilter combined = JnrTestFilters.allClasses(filter1, filter2);
-        JnrTest testClass = mock(JnrTest.class);
         
         // Then the combined filter should accept (return true)
-        assertTrue(combined.include(testClass));
+        assertTrue(combined.include(calculatorTest));
     }
     
     @Test
@@ -75,10 +92,9 @@ class JnrTestFiltersTest {
         
         // When we combine them with allClasses
         JnrTestClassFilter combined = JnrTestFilters.allClasses(filter1, filter2);
-        JnrTest testClass = mock(JnrTest.class);
         
         // Then the combined filter should reject (return false)
-        assertFalse(combined.include(testClass));
+        assertFalse(combined.include(calculatorTest));
     }
     
     @Test
@@ -89,10 +105,9 @@ class JnrTestFiltersTest {
         
         // When we combine them with anyClass
         JnrTestClassFilter combined = JnrTestFilters.anyClass(filter1, filter2);
-        JnrTest testClass = mock(JnrTest.class);
         
         // Then the combined filter should accept (return true)
-        assertTrue(combined.include(testClass));
+        assertTrue(combined.include(calculatorTest));
     }
     
     @Test
@@ -103,52 +118,38 @@ class JnrTestFiltersTest {
         
         // When we combine them with anyClass
         JnrTestClassFilter combined = JnrTestFilters.anyClass(filter1, filter2);
-        JnrTest testClass = mock(JnrTest.class);
         
         // Then the combined filter should reject (return false)
-        assertFalse(combined.include(testClass));
+        assertFalse(combined.include(calculatorTest));
     }
     
     @Test
     void testByClassDescriptionFilterMatchesCorrectPattern() {
-        // Given a test class with a specific description
-        JnrTest testClass = mock(JnrTest.class);
-        when(testClass.getDescription()).thenReturn("Calculator Test");
-        
-        // When we create a filter for that pattern
+        // When we create a filter for a specific pattern
         JnrTestClassFilter filter = JnrTestFilters.byClassDescription("Calculator.*");
         
-        // Then the filter should accept the matching class
-        assertTrue(filter.include(testClass));
+        // Then the filter should accept a matching class
+        assertTrue(filter.include(new FakeTest("Calculator Test")));
         
         // And reject a non-matching class
-        when(testClass.getDescription()).thenReturn("String Utils");
-        assertFalse(filter.include(testClass));
+        assertFalse(filter.include(new FakeTest("String Utils")));
     }
     
     @Test
     void testBySpecificationDescriptionFilterMatchesCorrectPattern() {
-        // Given a test specification with a specific description
-        JnrTestRunnableSpecification specification = mock(JnrTestRunnableSpecification.class);
-        when(specification.description()).thenReturn("Addition Test");
-        
-        // When we create a filter for that pattern
+        // When we create a filter for a specific pattern
         JnrTestSpecificationFilter filter = JnrTestFilters.bySpecificationDescription("Addition.*");
         
-        // Then the filter should accept the matching specification
-        assertTrue(filter.include(specification));
+        // Then the filter should accept a matching specification
+        assertTrue(filter.include(new JnrTestRunnableSpecification("Addition Test", EMPTY_RUNNABLE)));
         
         // And reject a non-matching specification
-        when(specification.description()).thenReturn("Subtraction Test");
-        assertFalse(filter.include(specification));
+        assertFalse(filter.include(new JnrTestRunnableSpecification("Subtraction Test", EMPTY_RUNNABLE)));
     }
     
     @Test
     void testNotClassNegatesResult() {
         // Given a filter that accepts a specific class
-        JnrTest calculatorTest = mock(JnrTest.class);
-        when(calculatorTest.getDescription()).thenReturn("Calculator");
-        
         JnrTestClassFilter originalFilter = testClass -> 
             testClass.getDescription().equals("Calculator");
         
@@ -159,9 +160,6 @@ class JnrTestFiltersTest {
         assertTrue(originalFilter.include(calculatorTest));
         assertFalse(negatedFilter.include(calculatorTest));
         
-        JnrTest stringTest = mock(JnrTest.class);
-        when(stringTest.getDescription()).thenReturn("String");
-        
         assertFalse(originalFilter.include(stringTest));
         assertTrue(negatedFilter.include(stringTest));
     }
@@ -169,9 +167,6 @@ class JnrTestFiltersTest {
     @Test
     void testNotSpecificationNegatesResult() {
         // Given a filter that accepts a specific specification
-        JnrTestRunnableSpecification additionSpec = mock(JnrTestRunnableSpecification.class);
-        when(additionSpec.description()).thenReturn("Addition");
-        
         JnrTestSpecificationFilter originalFilter = spec -> 
             spec.description().equals("Addition");
         
@@ -181,9 +176,6 @@ class JnrTestFiltersTest {
         // Then the results should be inverted
         assertTrue(originalFilter.include(additionSpec));
         assertFalse(negatedFilter.include(additionSpec));
-        
-        JnrTestRunnableSpecification subtractionSpec = mock(JnrTestRunnableSpecification.class);
-        when(subtractionSpec.description()).thenReturn("Subtraction");
         
         assertFalse(originalFilter.include(subtractionSpec));
         assertTrue(negatedFilter.include(subtractionSpec));
