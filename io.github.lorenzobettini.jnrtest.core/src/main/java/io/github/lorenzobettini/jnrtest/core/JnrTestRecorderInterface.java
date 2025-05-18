@@ -18,7 +18,17 @@ public interface JnrTestRecorderInterface<T extends JnrTestRecorderInterface<T>>
 	 * 
 	 * @return this recorder for method chaining
 	 */
-	T withElapsedTime();
+	default T withElapsedTime() {
+		return withElapsedTime(true);
+	}
+
+	/**
+	 * Enables or disables elapsed time tracking for the recorder.
+	 * 
+	 * @param withElapsedTime true to enable elapsed time tracking, false to disable
+	 * @return this recorder for method chaining
+	 */
+	T withElapsedTime(boolean withElapsedTime);
 
 	/**
 	 * Gets the total elapsed time for all executed tests.

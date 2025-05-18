@@ -23,8 +23,8 @@ public class JnrTestRecorder extends JnrTestListenerAdapter implements JnrTestRe
 	private long totalTime = 0;
 
 	@Override
-	public JnrTestRecorder withElapsedTime() {
-		withElapsedTime = true;
+	public JnrTestRecorder withElapsedTime(boolean withElapsedTime) {
+		this.withElapsedTime = withElapsedTime;
 		return this;
 	}
 
