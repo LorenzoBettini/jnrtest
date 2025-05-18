@@ -10,7 +10,7 @@ import java.util.Map;
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestRecorder extends JnrTestListenerAdapter implements JnrTestRecorderInterface {
+public class JnrTestRecorder extends JnrTestListenerAdapter implements JnrTestRecorderInterface<JnrTestRecorder> {
 
 	private Map<String, List<JnrTestResult>> results = new LinkedHashMap<>();
 
@@ -22,6 +22,7 @@ public class JnrTestRecorder extends JnrTestListenerAdapter implements JnrTestRe
 	private long startTime;
 	private long totalTime = 0;
 
+	@Override
 	public JnrTestRecorder withElapsedTime() {
 		withElapsedTime = true;
 		return this;
