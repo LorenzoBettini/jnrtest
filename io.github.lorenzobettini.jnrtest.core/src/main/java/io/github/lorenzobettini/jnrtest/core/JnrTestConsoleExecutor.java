@@ -10,7 +10,7 @@ package io.github.lorenzobettini.jnrtest.core;
 public class JnrTestConsoleExecutor {
 	private final JnrTestRunner runner;
 	private final JnrTestRecorderInterface<JnrTestRecorder> recorder;
-	private final JnrTestConsoleReporter reporter;
+	private final JnrTestReporterInterface<JnrTestConsoleReporter> reporter;
 
 	/**
 	 * Creates a new JnrTestConsoleExecutor with default recorder and reporter configured with elapsed time.
@@ -93,7 +93,7 @@ public class JnrTestConsoleExecutor {
 		return recorder;
 	}
 
-	public JnrTestConsoleReporter getReporter() {
+	public JnrTestReporterInterface<JnrTestConsoleReporter> getReporter() {
 		return reporter;
 	}
 
