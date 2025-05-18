@@ -101,7 +101,7 @@ public class JnrTestConsoleReporter implements JnrTestListener {
 		}
 	}
 
-	public void show(String message) {
+	private void show(String message) {
 		printStream.println(message);
 	}
 
