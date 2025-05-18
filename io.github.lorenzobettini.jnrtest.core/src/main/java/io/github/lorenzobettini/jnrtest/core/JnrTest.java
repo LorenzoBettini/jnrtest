@@ -58,7 +58,7 @@ public abstract class JnrTest {
 
 	/**
 	 * Returns the {@link JnrTestStore}, created, the first time,
-	 * by callying {@link #specify()}.
+	 * by calling {@link #specify()}.
 	 * 
 	 * @return
 	 */
