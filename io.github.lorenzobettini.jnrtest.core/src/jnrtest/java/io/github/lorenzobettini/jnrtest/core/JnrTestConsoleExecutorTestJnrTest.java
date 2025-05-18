@@ -28,5 +28,7 @@ public class JnrTestConsoleExecutorTestJnrTest extends JnrTest {
 			() -> originalTest.shouldThrowExceptionWhenExecuteFails());
 		test("should return false when executeWithoutThrowing fails",
 			() -> originalTest.shouldReturnFalseWhenExecuteWithoutThrowingFails());
+		test("should filter tests correctly",
+			() -> originalTest.shouldFilterTestsCorrectly());
 	}
 }

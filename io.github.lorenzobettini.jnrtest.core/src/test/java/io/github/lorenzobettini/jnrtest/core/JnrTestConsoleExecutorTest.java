@@ -199,4 +199,49 @@ class JnrTestConsoleExecutorTest {
 		// Verify result
 		assertThat(result).isFalse();
 	}
+
+	@Test
+	@DisplayName("should filter tests correctly")
+	void shouldFilterTestsCorrectly() {
+		// Create test classes with different tests
+		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
+		
+		// Add a simple test class
+		boolean[] methodsCalled = new boolean[4];
+		executor.add(new JnrTest("FirstTestClass") {
+			@Override
+			protected void specify() {
+				test("regular test", () -> {
+					methodsCalled[0] = true;
+				});
+				test("important test", () -> {
+					methodsCalled[1] = true;
+				});
+			}
+		});
+		
+		executor.add(new JnrTest("SecondTestClass") {
+			@Override
+			protected void specify() {
+				test("another test", () -> {
+					methodsCalled[2] = true;
+				});
+				test("important test 2", () -> {
+					methodsCalled[3] = true;
+				});
+			}
+		});
+		
+		// Apply a filter for important tests
+		executor.filterBySpecificationDescription(".*important.*");
+		
+		// Execute tests
+		executor.executeWithoutThrowing();
+		
+		// Verify only important tests were executed
+		assertThat(methodsCalled[0]).isFalse();
+		assertThat(methodsCalled[1]).isTrue();
+		assertThat(methodsCalled[2]).isFalse();
+		assertThat(methodsCalled[3]).isTrue();
+	}
 }

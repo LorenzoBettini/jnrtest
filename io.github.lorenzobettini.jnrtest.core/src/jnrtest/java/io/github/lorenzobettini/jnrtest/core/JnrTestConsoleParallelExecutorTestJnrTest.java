@@ -30,5 +30,7 @@ public class JnrTestConsoleParallelExecutorTestJnrTest extends JnrTest {
 			() -> originalTest.shouldReturnFalseWhenExecuteWithoutThrowingFails());
 		test("should handle multiple test classes in parallel",
 			() -> originalTest.shouldHandleMultipleTestClassesInParallel());
+		test("should filter tests correctly in parallel mode",
+			() -> originalTest.shouldFilterTestsCorrectlyInParallelMode());
 	}
 }

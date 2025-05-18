@@ -1,0 +1,15 @@
+{
+    "java.compile.nullAnalysis.mode": "disabled",
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.format.settings.url": ".vscode/java-formatter.xml",
+    "[java]": {
+        "editor.insertSpaces": false,
+        "editor.detectIndentation": false
+    },
+    "cSpell.words": [
+        "Bettini",
+        "factorypath",
+        "jnrtest",
+        "lorenzobettini"
+    ]
+}
