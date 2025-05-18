@@ -125,4 +125,57 @@ public final class JnrTestFilterExamples {
 	public static void customFilter() {
 		// Documentation only
 	}
+
+	/**
+	 * Example of using allClasses to combine multiple class filters with logical AND.
+	 * Similar patterns can be applied to specifications using the allSpecifications method.
+	 * 
+	 * <pre>
+	 * {@code
+	 * // Run only tests that satisfy ALL class filters
+	 * JnrTestRunner runner = new JnrTestRunner()
+	 *     .add(new JnrTest("UserAcceptanceTests") { ... })
+	 *     .add(new JnrTest("UserIntegrationTests") { ... })
+	 *     .add(new JnrTest("ProductTests") { ... });
+	 *     
+	 * runner.classFilter(JnrTestFilters.allClasses(
+	 *     JnrTestFilters.byClassDescription("User.*"), // Must be a user test
+	 *     testClass -> !testClass.getDescription().contains("Integration") // Must not be an integration test
+	 * ));
+	 * 
+	 * // Only "UserAcceptanceTests" will be executed, as it satisfies both conditions
+	 * runner.execute();
+	 * }
+	 * </pre>
+	 */
+	public static void useAllClassesFilter() {
+		// Documentation only
+	}
+	
+	/**
+	 * Example of using anyClass to combine multiple class filters with logical OR.
+	 * Similar patterns can be applied to specifications using the anySpecification method.
+	 * 
+	 * <pre>
+	 * {@code
+	 * // Run tests that satisfy ANY of the class filters
+	 * JnrTestRunner runner = new JnrTestRunner()
+	 *     .add(new JnrTest("UserTests") { ... })
+	 *     .add(new JnrTest("ProductTests") { ... })
+	 *     .add(new JnrTest("InventoryTests") { ... });
+	 *     
+	 * runner.classFilter(JnrTestFilters.anyClass(
+	 *     JnrTestFilters.byClassDescription("User.*"),
+	 *     JnrTestFilters.byClassDescription("Product.*")
+	 * ));
+	 * 
+	 * // Both "UserTests" and "ProductTests" will be executed, but not "InventoryTests"
+	 * runner.execute();
+	 * }
+	 * </pre>
+	 */
+	public static void useAnyClassFilter() {
+		// Documentation only
+	}
+
 }
