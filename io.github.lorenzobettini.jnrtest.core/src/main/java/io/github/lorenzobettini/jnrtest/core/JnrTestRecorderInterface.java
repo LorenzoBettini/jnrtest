@@ -11,7 +11,7 @@ import java.util.Map;
  * @author Lorenzo Bettini
  * @param <T> the concrete type of the recorder for method chaining
  */
-public interface JnrTestRecorderInterface<T extends JnrTestRecorderInterface<T>> {
+public interface JnrTestRecorderInterface<T extends JnrTestRecorderInterface<T>> extends JnrTestListener {
 
 	/**
 	 * Enables elapsed time tracking for the recorder.

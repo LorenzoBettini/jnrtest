@@ -9,7 +9,7 @@ package io.github.lorenzobettini.jnrtest.core;
  */
 public class JnrTestConsoleExecutor {
 	private final JnrTestRunner runner;
-	private final JnrTestRecorder recorder;
+	private final JnrTestRecorderInterface<JnrTestRecorder> recorder;
 	private final JnrTestConsoleReporter reporter;
 
 	/**
@@ -89,7 +89,7 @@ public class JnrTestConsoleExecutor {
 		return this;
 	}
 
-	public JnrTestRecorder getRecorder() {
+	public JnrTestRecorderInterface<JnrTestRecorder> getRecorder() {
 		return recorder;
 	}
 
