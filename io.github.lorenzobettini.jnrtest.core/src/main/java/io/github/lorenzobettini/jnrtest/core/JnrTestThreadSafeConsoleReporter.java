@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream;
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestThreadSafeConsoleReporter implements JnrTestReporterInterface<JnrTestThreadSafeConsoleReporter> {
+public class JnrTestThreadSafeConsoleReporter implements JnrTestReporterInterface {
 
 	private final ThreadLocal<JnrTestConsoleReporter> currentReporter = new ThreadLocal<>();
 	private final ThreadLocal<ByteArrayOutputStream> currentOutputStream = new ThreadLocal<>();

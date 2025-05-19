@@ -12,7 +12,7 @@ import java.io.PrintStream;
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestConsoleReporter implements JnrTestReporterInterface<JnrTestConsoleReporter> {
+public class JnrTestConsoleReporter implements JnrTestReporterInterface {
 
 	private final PrintStream printStream;
 	private boolean onlySummaries = false;

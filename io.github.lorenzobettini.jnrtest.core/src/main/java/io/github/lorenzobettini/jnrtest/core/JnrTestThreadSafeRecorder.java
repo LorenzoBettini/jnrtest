@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Lorenzo Bettini
  * 
  */
-public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements JnrTestRecorderInterface<JnrTestThreadSafeRecorder> {
+public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements JnrTestRecorderInterface {
 
 	private Map<String, List<JnrTestResult>> results = new ConcurrentHashMap<>();
 

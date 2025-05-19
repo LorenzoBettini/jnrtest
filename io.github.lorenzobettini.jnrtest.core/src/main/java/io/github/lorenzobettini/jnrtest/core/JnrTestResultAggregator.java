@@ -12,7 +12,7 @@ public class JnrTestResultAggregator {
 	private int errors;
 	private long totalTime;
 
-	public JnrTestResultAggregator aggregate(JnrTestRecorderInterface<?> testRecorder) {
+	public JnrTestResultAggregator aggregate(JnrTestRecorderInterface testRecorder) {
 		testRecorder.getResults().values().stream()
 			.flatMap(l -> l.stream())
 			.forEach(result -> {

@@ -10,7 +10,7 @@ import java.util.Map;
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestRecorder extends JnrTestListenerAdapter implements JnrTestRecorderInterface<JnrTestRecorder> {
+public class JnrTestRecorder extends JnrTestListenerAdapter implements JnrTestRecorderInterface {
 
 	private Map<String, List<JnrTestResult>> results = new LinkedHashMap<>();
 
