@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream;
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestThreadSafeConsoleReporter implements JnrTestListener {
+public class JnrTestThreadSafeConsoleReporter implements JnrTestReporterInterface<JnrTestThreadSafeConsoleReporter> {
 
 	private final ThreadLocal<JnrTestConsoleReporter> currentReporter = new ThreadLocal<>();
 	private final ThreadLocal<ByteArrayOutputStream> currentOutputStream = new ThreadLocal<>();
@@ -17,11 +17,13 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestListener {
 	private boolean withElapsedTime = false;
 	private boolean onlySummaries = false;
 
-	public JnrTestThreadSafeConsoleReporter withElapsedTime() {
-		this.withElapsedTime = true;
+	@Override
+	public JnrTestThreadSafeConsoleReporter withElapsedTime(boolean withElapsedTime) {
+		this.withElapsedTime = withElapsedTime;
 		return this;
 	}
 
+	@Override
 	public JnrTestThreadSafeConsoleReporter withOnlySummaries(boolean onlySummaries) {
 		this.onlySummaries = onlySummaries;
 		return this;
