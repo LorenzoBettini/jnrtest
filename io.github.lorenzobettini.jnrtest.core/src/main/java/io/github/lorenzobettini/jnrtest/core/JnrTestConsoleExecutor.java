@@ -9,8 +9,8 @@ package io.github.lorenzobettini.jnrtest.core;
  */
 public class JnrTestConsoleExecutor {
 	private final JnrTestRunner runner;
-	private final JnrTestRecorderInterface<? extends JnrTestRecorderInterface<?>> recorder;
-	private final JnrTestReporterInterface<? extends JnrTestReporterInterface<?>> reporter;
+	private final JnrTestRecorderInterface recorder;
+	private final JnrTestReporterInterface reporter;
 
 	/**
 	 * Creates a new JnrTestConsoleExecutor with default recorder and reporter configured with elapsed time.
@@ -27,7 +27,7 @@ public class JnrTestConsoleExecutor {
 	 * Factory method to create a recorder.
 	 * @return a new instance of JnrTestRecorderInterface
 	 */
-	protected JnrTestRecorderInterface<? extends JnrTestRecorderInterface<?>> createRecorder() {
+	protected JnrTestRecorderInterface createRecorder() {
 		return new JnrTestRecorder();
 	}
 
@@ -35,7 +35,7 @@ public class JnrTestConsoleExecutor {
 	 * Factory method to create a reporter.
 	 * @return a new instance of JnrTestReporterInterface
 	 */
-	protected JnrTestReporterInterface<? extends JnrTestReporterInterface<?>> createReporter() {
+	protected JnrTestReporterInterface createReporter() {
 		return new JnrTestConsoleReporter();
 	}
 
@@ -113,11 +113,11 @@ public class JnrTestConsoleExecutor {
 		return this;
 	}
 
-	public JnrTestRecorderInterface<? extends JnrTestRecorderInterface<?>> getRecorder() {
+	public JnrTestRecorderInterface getRecorder() {
 		return recorder;
 	}
 
-	public JnrTestReporterInterface<? extends JnrTestReporterInterface<?>> getReporter() {
+	public JnrTestReporterInterface getReporter() {
 		return reporter;
 	}
 

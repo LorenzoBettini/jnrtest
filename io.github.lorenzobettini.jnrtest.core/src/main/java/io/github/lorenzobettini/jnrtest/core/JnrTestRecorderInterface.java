@@ -9,16 +9,15 @@ import java.util.Map;
  * Provides methods for managing test results and elapsed time.
  * 
  * @author Lorenzo Bettini
- * @param <T> the concrete type of the recorder for method chaining
  */
-public interface JnrTestRecorderInterface<T extends JnrTestRecorderInterface<T>> extends JnrTestListener {
+public interface JnrTestRecorderInterface extends JnrTestListener {
 
 	/**
 	 * Enables elapsed time tracking for the recorder.
 	 * 
 	 * @return this recorder for method chaining
 	 */
-	default T withElapsedTime() {
+	default JnrTestRecorderInterface withElapsedTime() {
 		return withElapsedTime(true);
 	}
 
@@ -28,7 +27,7 @@ public interface JnrTestRecorderInterface<T extends JnrTestRecorderInterface<T>>
 	 * @param withElapsedTime true to enable elapsed time tracking, false to disable
 	 * @return this recorder for method chaining
 	 */
-	T withElapsedTime(boolean withElapsedTime);
+	JnrTestRecorderInterface withElapsedTime(boolean withElapsedTime);
 
 	/**
 	 * Gets the total elapsed time for all executed tests.

@@ -12,7 +12,7 @@ import java.io.PrintStream;
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestConsoleReporter implements JnrTestReporterInterface<JnrTestConsoleReporter> {
+public class JnrTestConsoleReporter implements JnrTestReporterInterface {
 
 	private final PrintStream printStream;
 	private boolean onlySummaries = false;
@@ -27,13 +27,13 @@ public class JnrTestConsoleReporter implements JnrTestReporterInterface<JnrTestC
 	}
 
 	@Override
-	public JnrTestConsoleReporter withOnlySummaries(boolean onlySummaries) {
+	public JnrTestReporterInterface withOnlySummaries(boolean onlySummaries) {
 		this.onlySummaries = onlySummaries;
 		return this;
 	}
 
 	@Override
-	public JnrTestConsoleReporter withElapsedTime(boolean withElapsedTime) {
+	public JnrTestReporterInterface withElapsedTime(boolean withElapsedTime) {
 		testStatistics.setWithElapsedTime(withElapsedTime);
 		return this;
 	}

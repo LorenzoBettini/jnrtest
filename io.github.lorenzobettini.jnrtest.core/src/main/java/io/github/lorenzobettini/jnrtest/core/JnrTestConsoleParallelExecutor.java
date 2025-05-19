@@ -14,7 +14,7 @@ public class JnrTestConsoleParallelExecutor extends JnrTestConsoleExecutor {
 	 * Overrides the default recorder with a thread-safe recorder.
 	 */
 	@Override
-	protected JnrTestRecorderInterface<? extends JnrTestRecorderInterface<?>> createRecorder() {
+	protected JnrTestRecorderInterface createRecorder() {
 		return new JnrTestThreadSafeRecorder();
 	}
 
@@ -22,7 +22,7 @@ public class JnrTestConsoleParallelExecutor extends JnrTestConsoleExecutor {
 	 * Overrides the default reporter with a thread-safe reporter.
 	 */
 	@Override
-	protected JnrTestReporterInterface<? extends JnrTestReporterInterface<?>> createReporter() {
+	protected JnrTestReporterInterface createReporter() {
 		return new JnrTestThreadSafeConsoleReporter();
 	}
 

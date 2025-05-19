@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream;
  * 
  * @author Lorenzo Bettini
  */
-public class JnrTestThreadSafeConsoleReporter implements JnrTestReporterInterface<JnrTestThreadSafeConsoleReporter> {
+public class JnrTestThreadSafeConsoleReporter implements JnrTestReporterInterface {
 
 	private final ThreadLocal<JnrTestConsoleReporter> currentReporter = new ThreadLocal<>();
 	private final ThreadLocal<ByteArrayOutputStream> currentOutputStream = new ThreadLocal<>();
@@ -18,13 +18,13 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestReporterInterfac
 	private boolean onlySummaries = false;
 
 	@Override
-	public JnrTestThreadSafeConsoleReporter withElapsedTime(boolean withElapsedTime) {
+	public JnrTestReporterInterface withElapsedTime(boolean withElapsedTime) {
 		this.withElapsedTime = withElapsedTime;
 		return this;
 	}
 
 	@Override
-	public JnrTestThreadSafeConsoleReporter withOnlySummaries(boolean onlySummaries) {
+	public JnrTestReporterInterface withOnlySummaries(boolean onlySummaries) {
 		this.onlySummaries = onlySummaries;
 		return this;
 	}
@@ -36,10 +36,11 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestReporterInterfac
 			currentKey.set(key);
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			PrintStream printStream = new PrintStream(outputStream);
+			JnrTestConsoleReporter reporter = new JnrTestConsoleReporter(printStream);
+			reporter.withElapsedTime(withElapsedTime);
+			reporter.withOnlySummaries(onlySummaries);
 			currentOutputStream.set(outputStream);
-			currentReporter.set(new JnrTestConsoleReporter(printStream)
-					.withElapsedTime(withElapsedTime)
-					.withOnlySummaries(onlySummaries));
+			currentReporter.set(reporter);
 			currentReporter.get().notify(event);
 		} else if (event.status() == JnrTestStatus.END) {
 			JnrTestConsoleReporter reporter = currentReporter.get();

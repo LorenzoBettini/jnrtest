@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Lorenzo Bettini
  * 
  */
-public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements JnrTestRecorderInterface<JnrTestThreadSafeRecorder> {
+public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements JnrTestRecorderInterface {
 
 	private Map<String, List<JnrTestResult>> results = new ConcurrentHashMap<>();
 
@@ -27,7 +27,7 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements
 	private AtomicLong totalTime = new AtomicLong(0);
 
 	@Override
-	public JnrTestThreadSafeRecorder withElapsedTime(boolean withElapsedTime) {
+	public JnrTestRecorderInterface withElapsedTime(boolean withElapsedTime) {
 		this.withElapsedTime = withElapsedTime;
 		return this;
 	}
