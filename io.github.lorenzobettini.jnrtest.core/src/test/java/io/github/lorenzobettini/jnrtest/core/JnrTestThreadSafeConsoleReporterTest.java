@@ -79,8 +79,8 @@ class JnrTestThreadSafeConsoleReporterTest {
 
 	@Test
 	void testThreadSafetyWithResultsAndVerificationWithOnlySummaries() throws InterruptedException {
-		JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter();
-		reporter.withOnlySummaries(true);
+		JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter()
+				.withOnlySummaries(true);
 
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
 

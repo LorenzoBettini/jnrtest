@@ -27,7 +27,7 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements
 	private AtomicLong totalTime = new AtomicLong(0);
 
 	@Override
-	public JnrTestRecorderInterface withElapsedTime(boolean withElapsedTime) {
+	public JnrTestThreadSafeRecorder withElapsedTime(boolean withElapsedTime) {
 		this.withElapsedTime = withElapsedTime;
 		return this;
 	}

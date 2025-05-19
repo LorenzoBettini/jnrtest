@@ -27,13 +27,13 @@ public class JnrTestConsoleReporter implements JnrTestReporterInterface {
 	}
 
 	@Override
-	public JnrTestReporterInterface withOnlySummaries(boolean onlySummaries) {
+	public JnrTestConsoleReporter withOnlySummaries(boolean onlySummaries) {
 		this.onlySummaries = onlySummaries;
 		return this;
 	}
 
 	@Override
-	public JnrTestReporterInterface withElapsedTime(boolean withElapsedTime) {
+	public JnrTestConsoleReporter withElapsedTime(boolean withElapsedTime) {
 		testStatistics.setWithElapsedTime(withElapsedTime);
 		return this;
 	}

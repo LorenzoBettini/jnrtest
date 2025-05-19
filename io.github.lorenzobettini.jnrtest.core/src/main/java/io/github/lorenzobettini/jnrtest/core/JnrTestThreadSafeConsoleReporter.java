@@ -18,13 +18,13 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestReporterInterfac
 	private boolean onlySummaries = false;
 
 	@Override
-	public JnrTestReporterInterface withElapsedTime(boolean withElapsedTime) {
+	public JnrTestThreadSafeConsoleReporter withElapsedTime(boolean withElapsedTime) {
 		this.withElapsedTime = withElapsedTime;
 		return this;
 	}
 
 	@Override
-	public JnrTestReporterInterface withOnlySummaries(boolean onlySummaries) {
+	public JnrTestThreadSafeConsoleReporter withOnlySummaries(boolean onlySummaries) {
 		this.onlySummaries = onlySummaries;
 		return this;
 	}
@@ -36,11 +36,10 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestReporterInterfac
 			currentKey.set(key);
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			PrintStream printStream = new PrintStream(outputStream);
-			JnrTestConsoleReporter reporter = new JnrTestConsoleReporter(printStream);
-			reporter.withElapsedTime(withElapsedTime);
-			reporter.withOnlySummaries(onlySummaries);
 			currentOutputStream.set(outputStream);
-			currentReporter.set(reporter);
+			currentReporter.set(new JnrTestConsoleReporter(printStream)
+					.withElapsedTime(withElapsedTime)
+					.withOnlySummaries(onlySummaries));
 			currentReporter.get().notify(event);
 		} else if (event.status() == JnrTestStatus.END) {
 			JnrTestConsoleReporter reporter = currentReporter.get();
