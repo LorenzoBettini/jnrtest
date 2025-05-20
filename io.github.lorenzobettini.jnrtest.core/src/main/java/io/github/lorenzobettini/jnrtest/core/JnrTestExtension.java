@@ -6,7 +6,7 @@ import java.util.List;
  * Represents code to be executed before and after a {@link JnrTest}
  * lifecyle.
  * 
- * The implementation must implement the method {@link #extend(List, List)} that
+ * The implementation must implement the method {@link #extend(JnrTest, List, List)} that
  * receives the lists of runnables to be executed "before" and "after". Whether
  * they are the lists of runnables before and after all or each tests depends on
  * the public method invoked: {@link #extendAll(JnrTest)} or

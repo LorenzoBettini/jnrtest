@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Stores the tests represented by {@link JnrTestSpecification}.
+ * Stores the tests represented by {@link JnrTestRunnableSpecification}.
  * 
  * @author Lorenzo Bettini
  *

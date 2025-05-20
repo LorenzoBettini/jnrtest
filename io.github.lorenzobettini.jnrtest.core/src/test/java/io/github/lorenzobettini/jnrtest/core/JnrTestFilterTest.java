@@ -4,6 +4,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import java.util.function.Predicate;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +46,7 @@ class JnrTestFilterTest {
 					}
 				});
 				
-		// Use filterByClassDescription which is a convenience method
+		// Use convenience method instead of creating a Predicate directly
 		runner.filterByClassDescription("First.*");
 		
 		runner.execute();
@@ -84,7 +86,7 @@ class JnrTestFilterTest {
 					}
 				});
 				
-		// Use convenience method for specification filtering
+		// Use convenience method instead of creating a Predicate directly
 		runner.filterBySpecificationDescription(".*important.*");
 		
 		runner.execute();
@@ -124,9 +126,9 @@ class JnrTestFilterTest {
 					}
 				});
 		
-		// Apply both filters - class filter first, then specification filter
-		runner.classFilter(JnrTestFilters.byClassDescription("First.*"));
-		runner.specificationFilter(JnrTestFilters.bySpecificationDescription(".*important.*"));
+		// Apply both filters using convenience methods
+		runner.filterByClassDescription("First.*");
+		runner.filterBySpecificationDescription(".*important.*");
 		
 		runner.execute();
 		
@@ -166,9 +168,12 @@ class JnrTestFilterTest {
 				});
 		
 		// Apply negation to the specification filter
-		runner.specificationFilter(JnrTestFilters.notSpecification(
-				JnrTestFilters.bySpecificationDescription(".*important.*")
-		));
+		Predicate<JnrTestRunnableSpecification> importantFilter = 
+			spec -> spec.description().matches(".*important.*");
+		Predicate<JnrTestRunnableSpecification> notImportantFilter = 
+			importantFilter.negate();
+			
+		runner.specificationFilter(notImportantFilter);
 		
 		runner.execute();
 		
@@ -210,10 +215,15 @@ class JnrTestFilterTest {
 				});
 		
 		// Apply AND logic to multiple class filters
-		runner.classFilter(JnrTestFilters.allClasses(
-				JnrTestFilters.byClassDescription("First.*"),
-				JnrTestFilters.byClassDescription(".*Important.*")
-		));
+		Predicate<JnrTest> firstFilter = 
+			testClass -> testClass.getDescription().matches("First.*");
+		Predicate<JnrTest> importantFilter = 
+			testClass -> testClass.getDescription().matches(".*Important.*");
+			
+		// Combine filters with AND logic
+		Predicate<JnrTest> combinedFilter = firstFilter.and(importantFilter);
+		
+		runner.classFilter(combinedFilter);
 		
 		runner.execute();
 		
@@ -247,10 +257,16 @@ class JnrTestFilterTest {
 				});
 		
 		// Apply OR logic to multiple specification filters
-		runner.specificationFilter(JnrTestFilters.anySpecification(
-				JnrTestFilters.bySpecificationDescription(".*important.*"),
-				JnrTestFilters.bySpecificationDescription(".*critical.*")
-		));
+		Predicate<JnrTestRunnableSpecification> importantFilter = 
+			spec -> spec.description().matches(".*important.*");
+		Predicate<JnrTestRunnableSpecification> criticalFilter = 
+			spec -> spec.description().matches(".*critical.*");
+			
+		// Combine filters with OR logic
+		Predicate<JnrTestRunnableSpecification> combinedFilter = 
+			importantFilter.or(criticalFilter);
+		
+		runner.specificationFilter(combinedFilter);
 		
 		runner.execute();
 		

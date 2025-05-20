@@ -1,10 +1,10 @@
 package io.github.lorenzobettini.jnrtest.examples;
 
+import java.util.function.Predicate;
+
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
-import io.github.lorenzobettini.jnrtest.core.JnrTestClassFilter;
 import io.github.lorenzobettini.jnrtest.core.JnrTestConsoleExecutor;
-import io.github.lorenzobettini.jnrtest.core.JnrTestFilters;
-import io.github.lorenzobettini.jnrtest.core.JnrTestSpecificationFilter;
+import io.github.lorenzobettini.jnrtest.core.JnrTestRunnableSpecification;
 
 /**
  * Examples of using filters in JnrTest.
@@ -80,6 +80,7 @@ public class JnrTestFilteringExamples {
             .execute();
 
         System.out.println("\n=== Filtering by test class description ===");
+        // Use convenience method instead of creating a predicate
         new JnrTestConsoleExecutor()
             .add(calculatorTests)
             .add(stringUtilsTests)
@@ -87,6 +88,7 @@ public class JnrTestFilteringExamples {
             .execute();
 
         System.out.println("\n=== Filtering by test specification description ===");
+        // Use convenience method instead of creating a predicate
         new JnrTestConsoleExecutor()
             .add(calculatorTests)
             .add(stringUtilsTests)
@@ -94,59 +96,88 @@ public class JnrTestFilteringExamples {
             .execute();
 
         System.out.println("\n=== Filtering by combined conditions (AND) ===");
+        // Create necessary filters for examples below (they will be reused)
+        Predicate<JnrTest> stringClassFilter = 
+            testClass -> testClass.getDescription().matches("String.*");
+        
+        Predicate<JnrTestRunnableSpecification> criticalSpecFilter = 
+            spec -> spec.description().matches("Critical.*");
+        
+        // Using convenience methods with string patterns
         new JnrTestConsoleExecutor()
             .add(calculatorTests)
             .add(stringUtilsTests)
-            .classFilter(JnrTestFilters.byClassDescription("String.*"))
-            .specificationFilter(JnrTestFilters.bySpecificationDescription("Critical.*"))
+            .filterByClassDescription("String.*")
+            .filterBySpecificationDescription("Critical.*")
             .execute();
 
         System.out.println("\n=== Using multiple class filters with OR logic ===");
+        // Create filter for Calculator* classes
+        Predicate<JnrTest> calculatorFilter = 
+            testClass -> testClass.getDescription().matches("Calculator.*");
+        
+        // Combine filters using OR
+        Predicate<JnrTest> combinedClassFilter = 
+            calculatorFilter.or(stringClassFilter);
+        
         new JnrTestConsoleExecutor()
             .add(calculatorTests)
             .add(stringUtilsTests)
-            .classFilter(JnrTestFilters.anyClass(
-                JnrTestFilters.byClassDescription("Calculator.*"),
-                JnrTestFilters.byClassDescription("String.*")
-            ))
+            .classFilter(combinedClassFilter)
             .execute();
 
         System.out.println("\n=== Using multiple specification filters with OR logic ===");
+        // Create filter for Addition* specifications
+        Predicate<JnrTestRunnableSpecification> additionFilter = 
+            spec -> spec.description().matches(".*Addition.*");
+        
+        // Create filter for Format* specifications
+        Predicate<JnrTestRunnableSpecification> formatFilter = 
+            spec -> spec.description().matches(".*Format.*");
+        
+        // Combine filters using OR
+        Predicate<JnrTestRunnableSpecification> combinedSpecFilter = 
+            additionFilter.or(formatFilter);
+        
         new JnrTestConsoleExecutor()
             .add(calculatorTests)
             .add(stringUtilsTests)
-            .specificationFilter(JnrTestFilters.anySpecification(
-                JnrTestFilters.bySpecificationDescription(".*Addition.*"),
-                JnrTestFilters.bySpecificationDescription(".*Format.*")
-            ))
+            .specificationFilter(combinedSpecFilter)
             .execute();
 
         System.out.println("\n=== Using negation in filters ===");
+        // Create filter that negates Critical* specifications 
+        Predicate<JnrTestRunnableSpecification> notCriticalFilter = 
+            criticalSpecFilter.negate();
+        
         new JnrTestConsoleExecutor()
             .add(calculatorTests)
             .add(stringUtilsTests)
-            .specificationFilter(JnrTestFilters.notSpecification(
-                JnrTestFilters.bySpecificationDescription("Critical.*")
-            ))
+            .specificationFilter(notCriticalFilter)
             .execute();
 
         System.out.println("\n=== Using multiple filters with AND combination ===");
+        // Create filter for Calculator* classes (reusing from before)
+        
+        // Create filter that is NOT Utils* classes
+        Predicate<JnrTest> notUtilsFilter = 
+            testClass -> !testClass.getDescription().contains("Utils");
+        
+        // Combine filters using AND (chaining in classFilter adds with AND automatically)
         new JnrTestConsoleExecutor()
             .add(calculatorTests)
             .add(stringUtilsTests)
-            .classFilter(JnrTestFilters.allClasses(
-                JnrTestFilters.byClassDescription("Calculator.*"),
-                JnrTestFilters.notClass(JnrTestFilters.byClassDescription(".*Utils.*"))
-            ))
+            .classFilter(calculatorFilter)
+            .classFilter(notUtilsFilter)
             .execute();
 
         System.out.println("\n=== Creating custom filters ===");
         // Custom class filter
-        JnrTestClassFilter customClassFilter = testClass ->
+        Predicate<JnrTest> customClassFilter = testClass ->
             !testClass.getDescription().contains("String");
 
         // Custom specification filter
-        JnrTestSpecificationFilter customSpecFilter = runnable ->
+        Predicate<JnrTestRunnableSpecification> customSpecFilter = runnable ->
             !runnable.description().contains("Division");
 
         new JnrTestConsoleExecutor()
