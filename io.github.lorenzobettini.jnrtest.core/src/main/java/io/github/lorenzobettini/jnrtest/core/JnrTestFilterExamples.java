@@ -20,12 +20,8 @@ public final class JnrTestFilterExamples {
 	 * How to filter test classes by their description.
 	 * 
 	 * <pre>
-	 * // Create a filter that matches test classes whose description contains "Calculator"
-	 * Predicate&lt;JnrTest&gt; calculatorFilter = testClass -&gt; 
-	 *     testClass.getDescription().contains("Calculator");
-	 * 
-	 * // Apply the filter to a test runner
-	 * runner.classFilter(calculatorFilter);
+	 * // Use the convenience method on the runner
+	 * runner.filterByClassDescription("Calculator.*");
 	 * </pre>
 	 */
 	public static void filterByClassDescription() {
@@ -36,12 +32,8 @@ public final class JnrTestFilterExamples {
 	 * How to filter test specifications by their description.
 	 * 
 	 * <pre>
-	 * // Create a filter that matches specifications whose description contains "important"
-	 * Predicate&lt;JnrTestRunnableSpecification&gt; importantFilter = spec -&gt; 
-	 *     spec.description().contains("important");
-	 * 
-	 * // Apply the filter to a test runner
-	 * runner.specificationFilter(importantFilter);
+	 * // Use the convenience method on the runner
+	 * runner.filterBySpecificationDescription(".*important.*");
 	 * </pre>
 	 */
 	public static void filterBySpecificationDescription() {
@@ -110,18 +102,14 @@ public final class JnrTestFilterExamples {
 	}
 
 	/**
-	 * Using convenience methods from JnrTestFilters.
+	 * Using convenience methods.
 	 * 
 	 * <pre>
-	 * // Create a filter directly
-	 * Predicate&lt;JnrTest&gt; classFilter = testClass -&gt; 
-	 *     testClass.getDescription().matches("Calculator.*");
-	 * 
-	 * // Apply the filter
-	 * runner.classFilter(classFilter);
-	 * 
-	 * // Or use the convenience methods directly on the runner
+	 * // Using the convenience method directly on the runner
 	 * runner.filterByClassDescription("Calculator.*");
+	 * 
+	 * // And for specifications
+	 * runner.filterBySpecificationDescription(".*important.*");
 	 * </pre>
 	 */
 	public static void usingConvenienceMethods() {

@@ -26,5 +26,9 @@ public class JnrTestFiltersTestJnrTest extends JnrTest {
 			() -> originalTest.testPredicateNegation());
 		test("testPredicateOr",
 			() -> originalTest.testPredicateOr());
+		test("testDirectPredicateOrWithConvenienceMethods",
+			() -> originalTest.testDirectPredicateOrWithConvenienceMethods());
+		test("testConvenienceMethodsNegation",
+			() -> originalTest.testConvenienceMethodsNegation());
 	}
 }

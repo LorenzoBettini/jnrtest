@@ -46,9 +46,8 @@ class JnrTestFilterTest {
 					}
 				});
 				
-		// Create a Predicate directly
-		Predicate<JnrTest> classFilter = testClass -> testClass.getDescription().matches("First.*");
-		runner.classFilter(classFilter);
+		// Use convenience method instead of creating a Predicate directly
+		runner.filterByClassDescription("First.*");
 		
 		runner.execute();
 		
@@ -87,11 +86,8 @@ class JnrTestFilterTest {
 					}
 				});
 				
-		// Create a Predicate for specification filtering
-		Predicate<JnrTestRunnableSpecification> importantSpecFilter = 
-			spec -> spec.description().matches(".*important.*");
-		
-		runner.specificationFilter(importantSpecFilter);
+		// Use convenience method instead of creating a Predicate directly
+		runner.filterBySpecificationDescription(".*important.*");
 		
 		runner.execute();
 		
@@ -130,14 +126,9 @@ class JnrTestFilterTest {
 					}
 				});
 		
-		// Apply both filters - class filter first, then specification filter
-		Predicate<JnrTest> classFilter = testClass -> 
-			testClass.getDescription().matches("First.*");
-		Predicate<JnrTestRunnableSpecification> specFilter = spec -> 
-			spec.description().matches(".*important.*");
-		
-		runner.classFilter(classFilter);
-		runner.specificationFilter(specFilter);
+		// Apply both filters using convenience methods
+		runner.filterByClassDescription("First.*");
+		runner.filterBySpecificationDescription(".*important.*");
 		
 		runner.execute();
 		

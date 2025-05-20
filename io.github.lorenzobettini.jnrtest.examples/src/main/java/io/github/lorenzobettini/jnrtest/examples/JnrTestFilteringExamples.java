@@ -80,41 +80,35 @@ public class JnrTestFilteringExamples {
             .execute();
 
         System.out.println("\n=== Filtering by test class description ===");
-        // Create a filter using a lambda expression
-        Predicate<JnrTest> calculatorClassFilter = 
-            testClass -> testClass.getDescription().matches("Calculator.*");
-        
+        // Use convenience method instead of creating a predicate
         new JnrTestConsoleExecutor()
             .add(calculatorTests)
             .add(stringUtilsTests)
-            .classFilter(calculatorClassFilter)
+            .filterByClassDescription("Calculator.*")
             .execute();
 
         System.out.println("\n=== Filtering by test specification description ===");
-        // Create a filter using a lambda expression
-        Predicate<JnrTestRunnableSpecification> subtractionSpecFilter = 
-            spec -> spec.description().matches(".*Subtraction.*");
-            
+        // Use convenience method instead of creating a predicate
         new JnrTestConsoleExecutor()
             .add(calculatorTests)
             .add(stringUtilsTests)
-            .specificationFilter(subtractionSpecFilter)
+            .filterBySpecificationDescription(".*Subtraction.*")
             .execute();
 
         System.out.println("\n=== Filtering by combined conditions (AND) ===");
-        // Create filter for String* classes
+        // Create necessary filters for examples below (they will be reused)
         Predicate<JnrTest> stringClassFilter = 
             testClass -> testClass.getDescription().matches("String.*");
         
-        // Create filter for Critical* specifications
         Predicate<JnrTestRunnableSpecification> criticalSpecFilter = 
             spec -> spec.description().matches("Critical.*");
         
+        // Using convenience methods with string patterns
         new JnrTestConsoleExecutor()
             .add(calculatorTests)
             .add(stringUtilsTests)
-            .classFilter(stringClassFilter)
-            .specificationFilter(criticalSpecFilter)
+            .filterByClassDescription("String.*")
+            .filterBySpecificationDescription("Critical.*")
             .execute();
 
         System.out.println("\n=== Using multiple class filters with OR logic ===");

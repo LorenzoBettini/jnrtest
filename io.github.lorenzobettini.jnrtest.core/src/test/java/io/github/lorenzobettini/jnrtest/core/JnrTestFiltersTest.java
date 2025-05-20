@@ -155,4 +155,40 @@ class JnrTestFiltersTest {
 		assertTrue(combined.test(stringTest));
 		assertFalse(combined.test(new FakeTest("Other")));
 	}
+
+	@Test
+	void testDirectPredicateOrWithConvenienceMethods() {
+		// Given a filters instance
+		JnrTestFilters filters = new JnrTestFilters();
+
+		// When we use the convenience methods
+		filters.byClassDescription("Calculator.*");
+
+		// And then use the predicate directly
+		Predicate<JnrTest> directPredicate = testClass -> testClass.getDescription().contains("String");
+
+		// We can combine them with OR logic
+		Predicate<JnrTest> combined = filters.getClassFilter().or(directPredicate);
+
+		// Then the filter should accept both types of classes
+		assertTrue(combined.test(calculatorTest));
+		assertTrue(combined.test(stringTest));
+		assertFalse(combined.test(new FakeTest("Other")));
+	}
+
+	@Test
+	void testConvenienceMethodsNegation() {
+		// Given a filters instance
+		JnrTestFilters filters = new JnrTestFilters();
+
+		// When we use the convenience method
+		filters.bySpecificationDescription("Addition.*");
+
+		// And then negate the filter
+		Predicate<JnrTestRunnableSpecification> negated = filters.getSpecificationFilter().negate();
+
+		// Then the filter should reject additions but accept other types
+		assertFalse(negated.test(additionSpec));
+		assertTrue(negated.test(subtractionSpec));
+	}
 }
