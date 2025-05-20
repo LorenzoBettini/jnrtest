@@ -5,7 +5,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Specifies the tests represented by {@link JnrTestSpecification}, by
+ * Specifies the tests represented by {@link JnrTestRunnableSpecification}, by
  * overriding {@link #specify()}.
  * 
  * @author Lorenzo Bettini

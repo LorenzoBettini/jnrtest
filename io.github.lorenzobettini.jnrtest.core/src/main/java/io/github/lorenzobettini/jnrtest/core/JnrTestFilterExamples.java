@@ -19,10 +19,10 @@ public final class JnrTestFilterExamples {
 	/**
 	 * How to filter test classes by their description.
 	 * 
-	 * <pre>
+	 * <pre>{@code
 	 * // Use the convenience method on the runner
 	 * runner.filterByClassDescription("Calculator.*");
-	 * </pre>
+	 * }</pre>
 	 */
 	public static void filterByClassDescription() {
 		// Example method - not meant to be executed
@@ -31,10 +31,10 @@ public final class JnrTestFilterExamples {
 	/**
 	 * How to filter test specifications by their description.
 	 * 
-	 * <pre>
+	 * <pre>{@code
 	 * // Use the convenience method on the runner
 	 * runner.filterBySpecificationDescription(".*important.*");
-	 * </pre>
+	 * }</pre>
 	 */
 	public static void filterBySpecificationDescription() {
 		// Example method - not meant to be executed
@@ -43,19 +43,19 @@ public final class JnrTestFilterExamples {
 	/**
 	 * How to combine multiple filters using AND logic.
 	 * 
-	 * <pre>
+	 * <pre>{@code
 	 * // Create two filters
-	 * Predicate&lt;JnrTest&gt; calculatorFilter = testClass -&gt; 
+	 * Predicate<JnrTest> calculatorFilter = testClass -> 
 	 *     testClass.getDescription().contains("Calculator");
-	 * Predicate&lt;JnrTest&gt; utilsFilter = testClass -&gt; 
+	 * Predicate<JnrTest> utilsFilter = testClass -> 
 	 *     testClass.getDescription().contains("Utils");
 	 * 
 	 * // Combine filters with AND
-	 * Predicate&lt;JnrTest&gt; combinedFilter = calculatorFilter.and(utilsFilter);
+	 * Predicate<JnrTest> combinedFilter = calculatorFilter.and(utilsFilter);
 	 * 
 	 * // Apply the combined filter
 	 * runner.classFilter(combinedFilter);
-	 * </pre>
+	 * }</pre>
 	 */
 	public static void combineFiltersWithAnd() {
 		// Example method - not meant to be executed
@@ -64,19 +64,19 @@ public final class JnrTestFilterExamples {
 	/**
 	 * How to combine multiple filters using OR logic.
 	 * 
-	 * <pre>
+	 * <pre>{@code
 	 * // Create two filters
-	 * Predicate&lt;JnrTest&gt; calculatorFilter = testClass -&gt; 
+	 * Predicate<JnrTest> calculatorFilter = testClass -> 
 	 *     testClass.getDescription().contains("Calculator");
-	 * Predicate&lt;JnrTest&gt; stringFilter = testClass -&gt; 
+	 * Predicate<JnrTest> stringFilter = testClass -> 
 	 *     testClass.getDescription().contains("String");
 	 * 
 	 * // Combine filters with OR
-	 * Predicate&lt;JnrTest&gt; combinedFilter = calculatorFilter.or(stringFilter);
+	 * Predicate<JnrTest> combinedFilter = calculatorFilter.or(stringFilter);
 	 * 
 	 * // Apply the combined filter
 	 * runner.classFilter(combinedFilter);
-	 * </pre>
+	 * }</pre>
 	 */
 	public static void combineFiltersWithOr() {
 		// Example method - not meant to be executed
@@ -85,17 +85,17 @@ public final class JnrTestFilterExamples {
 	/**
 	 * How to negate a filter.
 	 * 
-	 * <pre>
+	 * <pre>{@code
 	 * // Create a filter
-	 * Predicate&lt;JnrTest&gt; calculatorFilter = testClass -&gt; 
+	 * Predicate<JnrTest> calculatorFilter = testClass -> 
 	 *     testClass.getDescription().contains("Calculator");
 	 * 
 	 * // Negate the filter
-	 * Predicate&lt;JnrTest&gt; notCalculatorFilter = calculatorFilter.negate();
+	 * Predicate<JnrTest> notCalculatorFilter = calculatorFilter.negate();
 	 * 
 	 * // Apply the negated filter
 	 * runner.classFilter(notCalculatorFilter);
-	 * </pre>
+	 * }</pre>
 	 */
 	public static void negateFilter() {
 		// Example method - not meant to be executed
@@ -104,13 +104,13 @@ public final class JnrTestFilterExamples {
 	/**
 	 * Using convenience methods.
 	 * 
-	 * <pre>
+	 * <pre>{@code
 	 * // Using the convenience method directly on the runner
 	 * runner.filterByClassDescription("Calculator.*");
 	 * 
 	 * // And for specifications
 	 * runner.filterBySpecificationDescription(".*important.*");
-	 * </pre>
+	 * }</pre>
 	 */
 	public static void usingConvenienceMethods() {
 		// Example method - not meant to be executed
