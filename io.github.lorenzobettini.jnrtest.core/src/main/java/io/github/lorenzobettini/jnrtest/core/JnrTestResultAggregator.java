@@ -12,6 +12,12 @@ public class JnrTestResultAggregator {
 	private int errors;
 	private long totalTime;
 
+	/**
+	 * Aggregates the results from a test recorder into this aggregator.
+	 * 
+	 * @param testRecorder the recorder containing test results to aggregate
+	 * @return this aggregator instance for method chaining
+	 */
 	public JnrTestResultAggregator aggregate(JnrTestRecorderInterface testRecorder) {
 		testRecorder.getResults().values().stream()
 			.flatMap(l -> l.stream())
@@ -34,18 +40,38 @@ public class JnrTestResultAggregator {
 		return this;
 	}
 
+	/**
+	 * Gets the number of successful tests.
+	 * 
+	 * @return the number of tests that succeeded
+	 */
 	public int getSucceeded() {
 		return succeeded;
 	}
 
+	/**
+	 * Gets the number of failed tests.
+	 * 
+	 * @return the number of tests that failed
+	 */
 	public int getFailed() {
 		return failed;
 	}
 
+	/**
+	 * Gets the number of tests with errors.
+	 * 
+	 * @return the number of tests that resulted in an error
+	 */
 	public int getErrors() {
 		return errors;
 	}
 
+	/**
+	 * Gets the total execution time for all tests.
+	 * 
+	 * @return the total time in milliseconds
+	 */
 	public long getTotalTime() {
 		return totalTime;
 	}

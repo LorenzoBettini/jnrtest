@@ -19,11 +19,18 @@ public class JnrTestStore {
 	private List<JnrTestRunnableSpecification> afterEachRunnables = new ArrayList<>();
 
 	/**
+	 * Creates a new empty test store.
+	 */
+	public JnrTestStore() {
+		// Default constructor
+	}
+
+	/**
 	 * Specify a test to run (in the shape of a {@link JnrTestRunnable}, with the
 	 * given description.
 	 * 
-	 * @param description
-	 * @param testRunnable
+	 * @param description The description of the test to be executed
+	 * @param testRunnable The runnable implementation containing the test code to execute
 	 */
 	public void test(String description, JnrTestRunnable testRunnable) {
 		runnableSpecifications.add(new JnrTestRunnableSpecification(description, testRunnable));
@@ -32,8 +39,8 @@ public class JnrTestStore {
 	/**
 	 * Specifies a code to run before all tests.
 	 * 
-	 * @param description
-	 * @param beforeAllRunnable
+	 * @param description The description of the before-all hook
+	 * @param beforeAllRunnable The runnable to execute before all tests
 	 */
 	public void beforeAll(String description, JnrTestRunnable beforeAllRunnable) {
 		beforeAllRunnables.add(new JnrTestRunnableSpecification(description, beforeAllRunnable));
@@ -42,8 +49,8 @@ public class JnrTestStore {
 	/**
 	 * Specifies a code to run before each test.
 	 * 
-	 * @param description
-	 * @param beforeEachRunnable
+	 * @param description The description of the before-each hook
+	 * @param beforeEachRunnable The runnable to execute before each test
 	 */
 	public void beforeEach(String description, JnrTestRunnable beforeEachRunnable) {
 		beforeEachRunnables.add(new JnrTestRunnableSpecification(description, beforeEachRunnable));
@@ -52,8 +59,8 @@ public class JnrTestStore {
 	/**
 	 * Specifies a code to run after all tests.
 	 * 
-	 * @param description
-	 * @param afterAllRunnable
+	 * @param description The description of the after-all hook
+	 * @param afterAllRunnable The runnable to execute after all tests
 	 */
 	public void afterAll(String description, JnrTestRunnable afterAllRunnable) {
 		afterAllRunnables.add(new JnrTestRunnableSpecification(description, afterAllRunnable));
@@ -62,29 +69,54 @@ public class JnrTestStore {
 	/**
 	 * Specifies a code to run after each test.
 	 * 
-	 * @param description
-	 * @param afterEachRunnable
+	 * @param description The description of the after-each hook
+	 * @param afterEachRunnable The runnable to execute after each test
 	 */
 	public void afterEach(String description, JnrTestRunnable afterEachRunnable) {
 		afterEachRunnables.add(new JnrTestRunnableSpecification(description, afterEachRunnable));
 	}
 
+	/**
+	 * Gets the list of all runnable specifications (tests).
+	 * 
+	 * @return the list of test specifications
+	 */
 	public List<JnrTestRunnableSpecification> getRunnableSpecifications() {
 		return runnableSpecifications;
 	}
 
+	/**
+	 * Gets the list of before-all runnable specifications.
+	 * 
+	 * @return the list of before-all runnable specifications
+	 */
 	public List<JnrTestRunnableSpecification> getBeforeAllRunnables() {
 		return beforeAllRunnables;
 	}
 
+	/**
+	 * Gets the list of before-each runnable specifications.
+	 * 
+	 * @return the list of before-each runnable specifications
+	 */
 	public List<JnrTestRunnableSpecification> getBeforeEachRunnables() {
 		return beforeEachRunnables;
 	}
 
+	/**
+	 * Gets the list of after-all runnable specifications.
+	 * 
+	 * @return the list of after-all runnable specifications
+	 */
 	public List<JnrTestRunnableSpecification> getAfterAllRunnables() {
 		return afterAllRunnables;
 	}
 
+	/**
+	 * Gets the list of after-each runnable specifications.
+	 * 
+	 * @return the list of after-each runnable specifications
+	 */
 	public List<JnrTestRunnableSpecification> getAfterEachRunnables() {
 		return afterEachRunnables;
 	}

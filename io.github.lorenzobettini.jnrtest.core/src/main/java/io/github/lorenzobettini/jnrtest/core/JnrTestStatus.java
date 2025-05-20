@@ -8,6 +8,14 @@ package io.github.lorenzobettini.jnrtest.core;
  */
 public enum JnrTestStatus {
 
-	START, END
+	/**
+	 * The test class execution has started
+	 */
+	START, 
+	
+	/**
+	 * The test class execution has completed
+	 */
+	END
 
 }

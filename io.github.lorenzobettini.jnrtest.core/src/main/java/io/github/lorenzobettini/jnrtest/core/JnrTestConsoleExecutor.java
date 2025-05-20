@@ -115,10 +115,20 @@ public class JnrTestConsoleExecutor {
 		return this;
 	}
 
+	/**
+	 * Gets the test recorder used by this executor.
+	 * 
+	 * @return the recorder instance
+	 */
 	public JnrTestRecorderInterface getRecorder() {
 		return recorder;
 	}
 
+	/**
+	 * Gets the test reporter used by this executor.
+	 * 
+	 * @return the reporter instance
+	 */
 	public JnrTestReporterInterface getReporter() {
 		return reporter;
 	}

@@ -17,18 +17,47 @@ import java.util.List;
  */
 public abstract class JnrTestExtension {
 
+	/**
+	 * Creates a new test extension.
+	 */
+	protected JnrTestExtension() {
+		// Default constructor
+	}
+
+	/**
+	 * Extends a test class with before-all and after-all hooks.
+	 * 
+	 * @param <T> The type of the test class
+	 * @param testClass The test class to extend
+	 * @return The extended test class
+	 */
 	public <T extends JnrTest> T extendAll(T testClass) {
 		var store = testClass.getStore();
 		extend(testClass, store.getBeforeAllRunnables(), store.getAfterAllRunnables());
 		return testClass;
 	}
 
+	/**
+	 * Extends a test class with before-each and after-each hooks.
+	 * 
+	 * @param <T> The type of the test class
+	 * @param testClass The test class to extend
+	 * @return The extended test class
+	 */
 	public <T extends JnrTest> T extendEach(T testClass) {
 		var store = testClass.getStore();
 		extend(testClass, store.getBeforeEachRunnables(), store.getAfterEachRunnables());
 		return testClass;
 	}
 
+	/**
+	 * Extends a test class by modifying the before and after runnables.
+	 * 
+	 * @param <T> The type of the test class
+	 * @param testClass The test class to extend
+	 * @param before The list of runnables to execute before tests
+	 * @param after The list of runnables to execute after tests
+	 */
 	protected abstract <T extends JnrTest> void extend(T testClass, List<JnrTestRunnableSpecification> before,
 			List<JnrTestRunnableSpecification> after);
 

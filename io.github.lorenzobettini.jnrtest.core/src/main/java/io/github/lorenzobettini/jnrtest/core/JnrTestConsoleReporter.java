@@ -18,10 +18,18 @@ public class JnrTestConsoleReporter implements JnrTestReporterInterface {
 	private boolean onlySummaries = false;
 	private JnrTestStatistics testStatistics = new JnrTestStatistics();
 
+	/**
+	 * Creates a new console reporter with the default output stream (System.out).
+	 */
 	public JnrTestConsoleReporter() {
 		this(System.out); // NOSONAR
 	}
 
+	/**
+	 * Creates a new console reporter with the specified output stream.
+	 * 
+	 * @param printStream the stream to use for output
+	 */
 	public JnrTestConsoleReporter(PrintStream printStream) {
 		this.printStream = printStream;
 	}
@@ -38,10 +46,18 @@ public class JnrTestConsoleReporter implements JnrTestReporterInterface {
 		return this;
 	}
 
+	/**
+	 * Resets the test statistics.
+	 */
 	private void reset() {
 		testStatistics.reset();
 	}
 
+	/**
+	 * Handles test lifecycle events.
+	 * 
+	 * @param event the test lifecycle event
+	 */
 	@Override
 	public void notify(JnrTestLifecycleEvent event) {
 		if (event.status() == JnrTestStatus.START) {
@@ -61,6 +77,11 @@ public class JnrTestConsoleReporter implements JnrTestReporterInterface {
 		}
 	}
 
+	/**
+	 * Handles test runnable lifecycle events, specifically to track elapsed time.
+	 * 
+	 * @param event the test runnable lifecycle event
+	 */
 	@Override
 	public void notify(JnrTestRunnableLifecycleEvent event) {
 		if (!testStatistics.isWithElapsedTime() || event.kind() != JnrTestRunnableKind.TEST) {
@@ -73,6 +94,11 @@ public class JnrTestConsoleReporter implements JnrTestReporterInterface {
 		}
 	}
 
+	/**
+	 * Handles test result events and updates statistics accordingly.
+	 * 
+	 * @param result the test result
+	 */
 	@Override
 	public void notify(JnrTestResult result) {
 		switch (result.status()) {
@@ -98,6 +124,11 @@ public class JnrTestConsoleReporter implements JnrTestReporterInterface {
 		}
 	}
 
+	/**
+	 * Displays a message to the configured output stream.
+	 * 
+	 * @param message the message to display
+	 */
 	private void show(String message) {
 		printStream.println(message);
 	}

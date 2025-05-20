@@ -7,5 +7,10 @@ package io.github.lorenzobettini.jnrtest.core;
  */
 @FunctionalInterface
 public interface JnrTestRunnable {
+	/**
+	 * Runs the test.
+	 * 
+	 * @throws Exception If the test execution fails
+	 */
 	void runTest() throws Exception; // NOSONAR
 }

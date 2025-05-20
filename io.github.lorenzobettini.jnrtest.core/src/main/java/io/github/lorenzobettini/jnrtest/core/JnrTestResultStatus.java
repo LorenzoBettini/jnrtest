@@ -8,6 +8,19 @@ package io.github.lorenzobettini.jnrtest.core;
  */
 public enum JnrTestResultStatus {
 
-	SUCCESS, FAILED, ERROR
+	/**
+	 * Test executed successfully without errors
+	 */
+	SUCCESS, 
+	
+	/**
+	 * Test failed due to an assertion error
+	 */
+	FAILED, 
+	
+	/**
+	 * Test encountered an unexpected error during execution
+	 */
+	ERROR
 
 }

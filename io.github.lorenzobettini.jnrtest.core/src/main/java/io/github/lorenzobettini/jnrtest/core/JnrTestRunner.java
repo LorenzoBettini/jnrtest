@@ -19,21 +19,45 @@ public class JnrTestRunner {
 	private final List<JnrTestListener> listeners = new ArrayList<>();
 	private final JnrTestFilters filters = new JnrTestFilters();
 
+	/**
+	 * Adds a test class to be executed.
+	 * 
+	 * @param testClass the test class to add
+	 * @return this runner for method chaining
+	 */
 	public JnrTestRunner add(JnrTest testClass) {
 		testClasses.add(testClass);
 		return this;
 	}
 
+	/**
+	 * Adds a test listener that will be notified of test events.
+	 * 
+	 * @param listener the test listener to add
+	 * @return this runner for method chaining
+	 */
 	public JnrTestRunner testListener(JnrTestListener listener) {
 		listeners.add(listener);
 		return this;
 	}
 
+	/**
+	 * Sets a filter for test classes.
+	 * 
+	 * @param filter the predicate to filter test classes
+	 * @return this runner for method chaining
+	 */
 	public JnrTestRunner classFilter(Predicate<JnrTest> filter) {
 		filters.classFilter(filter);
 		return this;
 	}
 	
+	/**
+	 * Sets a filter for test specifications.
+	 * 
+	 * @param filter the predicate to filter test specifications
+	 * @return this runner for method chaining
+	 */
 	public JnrTestRunner specificationFilter(Predicate<JnrTestRunnableSpecification> filter) {
 		filters.specificationFilter(filter);
 		return this;
@@ -61,6 +85,10 @@ public class JnrTestRunner {
 		return this;
 	}
 
+	/**
+	 * Executes all the test classes that have been added to this runner.
+	 * Filters will be applied according to the configured filter predicates.
+	 */
 	public void execute() {
 		getTestClassesStream().forEach(this::executeTestClass);
 	}
@@ -68,6 +96,8 @@ public class JnrTestRunner {
 	/**
 	 * Returns a stream of test classes to be executed. Subclasses can override this
 	 * method to customize the stream of test classes.
+	 * 
+	 * @return the stream of test classes to be executed, filtered according to the configured filters
 	 */
 	protected Stream<JnrTest> getTestClassesStream() {
 		Predicate<JnrTest> classFilter = filters.getClassFilter();

@@ -8,6 +8,14 @@ package io.github.lorenzobettini.jnrtest.core;
  */
 public enum JnrTestRunnableStatus {
 
-	START, END
+	/**
+	 * The runnable has started execution
+	 */
+	START, 
+	
+	/**
+	 * The runnable has completed execution
+	 */
+	END
 
 }
