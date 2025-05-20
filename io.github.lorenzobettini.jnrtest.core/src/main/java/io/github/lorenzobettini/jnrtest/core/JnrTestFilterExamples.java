@@ -113,14 +113,15 @@ public final class JnrTestFilterExamples {
 	 * Using convenience methods from JnrTestFilters.
 	 * 
 	 * <pre>
-	 * // Create JnrTestFilters instance
-	 * JnrTestFilters filters = new JnrTestFilters();
-	 * 
-	 * // Create a filter using convenience method
-	 * Predicate&lt;JnrTest&gt; classFilter = filters.createClassDescriptionFilter("Calculator.*");
+	 * // Create a filter directly
+	 * Predicate&lt;JnrTest&gt; classFilter = testClass -&gt; 
+	 *     testClass.getDescription().matches("Calculator.*");
 	 * 
 	 * // Apply the filter
 	 * runner.classFilter(classFilter);
+	 * 
+	 * // Or use the convenience methods directly on the runner
+	 * runner.filterByClassDescription("Calculator.*");
 	 * </pre>
 	 */
 	public static void usingConvenienceMethods() {

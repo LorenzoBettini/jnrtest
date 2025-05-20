@@ -46,7 +46,8 @@ public class JnrTestRunner {
 	 * @return this runner for method chaining
 	 */
 	public JnrTestRunner filterByClassDescription(String pattern) {
-		return classFilter(filters.createClassDescriptionFilter(pattern));
+		filters.byClassDescription(pattern);
+		return this;
 	}
 	
 	/**
@@ -56,7 +57,8 @@ public class JnrTestRunner {
 	 * @return this runner for method chaining
 	 */
 	public JnrTestRunner filterBySpecificationDescription(String pattern) {
-		return specificationFilter(filters.createSpecificationDescriptionFilter(pattern));
+		filters.bySpecificationDescription(pattern);
+		return this;
 	}
 
 	public void execute() {

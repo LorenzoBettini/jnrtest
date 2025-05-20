@@ -91,24 +91,4 @@ public class JnrTestFilters {
 	public Predicate<JnrTestRunnableSpecification> getSpecificationFilter() {
 		return specificationFilter;
 	}
-	
-	/**
-	 * Create a filter predicate that tests if a class description matches a pattern.
-	 * 
-	 * @param pattern the regex pattern to match
-	 * @return a predicate that tests if a class description matches the pattern
-	 */
-	public Predicate<JnrTest> createClassDescriptionFilter(String pattern) {
-		return testClass -> testClass.getDescription().matches(pattern);
-	}
-	
-	/**
-	 * Create a filter predicate that tests if a specification description matches a pattern.
-	 * 
-	 * @param pattern the regex pattern to match
-	 * @return a predicate that tests if a specification description matches the pattern
-	 */
-	public Predicate<JnrTestRunnableSpecification> createSpecificationDescriptionFilter(String pattern) {
-		return spec -> spec.description().matches(pattern);
-	}
 }
