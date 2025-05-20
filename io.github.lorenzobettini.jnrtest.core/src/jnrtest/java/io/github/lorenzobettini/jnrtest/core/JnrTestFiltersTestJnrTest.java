@@ -10,29 +10,21 @@ public class JnrTestFiltersTestJnrTest extends JnrTest {
 
 	@Override
 	protected void specify() {
-		test("testEmptyArrayWithAllClassesReturnsTrue",
-			() -> originalTest.testEmptyArrayWithAllClassesReturnsTrue());
-		test("testEmptyArrayWithAllSpecificationsReturnsTrue",
-			() -> originalTest.testEmptyArrayWithAllSpecificationsReturnsTrue());
-		test("testEmptyArrayWithAnyClassReturnsTrue",
-			() -> originalTest.testEmptyArrayWithAnyClassReturnsTrue());
-		test("testEmptyArrayWithAnySpecificationReturnsTrue",
-			() -> originalTest.testEmptyArrayWithAnySpecificationReturnsTrue());
-		test("testAllClassesReturnsTrueWhenAllFiltersReturnTrue",
-			() -> originalTest.testAllClassesReturnsTrueWhenAllFiltersReturnTrue());
-		test("testAllClassesReturnsFalseWhenAnyFilterReturnsFalse",
-			() -> originalTest.testAllClassesReturnsFalseWhenAnyFilterReturnsFalse());
-		test("testAnyClassReturnsTrueWhenAnyFilterReturnsTrue",
-			() -> originalTest.testAnyClassReturnsTrueWhenAnyFilterReturnsTrue());
-		test("testAnyClassReturnsFalseWhenAllFiltersReturnFalse",
-			() -> originalTest.testAnyClassReturnsFalseWhenAllFiltersReturnFalse());
+		test("testFiltersAreInitiallyNull",
+			() -> originalTest.testFiltersAreInitiallyNull());
+		test("testClassFilterAcceptsWhenMatches",
+			() -> originalTest.testClassFilterAcceptsWhenMatches());
+		test("testSpecificationFilterAcceptsWhenMatches",
+			() -> originalTest.testSpecificationFilterAcceptsWhenMatches());
+		test("testMultipleClassFiltersWithAnd",
+			() -> originalTest.testMultipleClassFiltersWithAnd());
 		test("testByClassDescriptionFilterMatchesCorrectPattern",
 			() -> originalTest.testByClassDescriptionFilterMatchesCorrectPattern());
 		test("testBySpecificationDescriptionFilterMatchesCorrectPattern",
 			() -> originalTest.testBySpecificationDescriptionFilterMatchesCorrectPattern());
-		test("testNotClassNegatesResult",
-			() -> originalTest.testNotClassNegatesResult());
-		test("testNotSpecificationNegatesResult",
-			() -> originalTest.testNotSpecificationNegatesResult());
+		test("testPredicateNegation",
+			() -> originalTest.testPredicateNegation());
+		test("testPredicateOr",
+			() -> originalTest.testPredicateOr());
 	}
 }

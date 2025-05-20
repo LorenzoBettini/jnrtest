@@ -3,181 +3,156 @@ package io.github.lorenzobettini.jnrtest.core;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.function.Predicate;
+
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for the {@link JnrTestFilters} class focusing on corner cases
- * and ensuring the expected behavior.
+ * Tests for the {@link JnrTestFilters} class focusing on corner cases and
+ * ensuring the expected behavior.
  */
 class JnrTestFiltersTest {
-    
-    // Simple fake test class implementation
-    private static class FakeTest extends JnrTest {
-        
-        public FakeTest(String description) {
-            super(description);
-        }
-        
-        @Override
-        protected void specify() {
-            // Empty implementation for testing
-        }
-    }
-    
-    // Empty runnable for testing
-    private static final JnrTestRunnable EMPTY_RUNNABLE = () -> {};
-    
-    // Reusable test instances
-    private final JnrTest calculatorTest = new FakeTest("Calculator");
-    private final JnrTest stringTest = new FakeTest("String");
-    private final JnrTestRunnableSpecification additionSpec = 
-            new JnrTestRunnableSpecification("Addition", EMPTY_RUNNABLE);
-    private final JnrTestRunnableSpecification subtractionSpec = 
-            new JnrTestRunnableSpecification("Subtraction", EMPTY_RUNNABLE);
-    
-    @Test
-    void testEmptyArrayWithAllClassesReturnsTrue() {
-        // When we have an empty array of class filters
-        JnrTestClassFilter filter = JnrTestFilters.allClasses();
-        
-        // Then the filter should accept any test class (return true)
-        assertTrue(filter.include(calculatorTest));
-    }
-    
-    @Test
-    void testEmptyArrayWithAllSpecificationsReturnsTrue() {
-        // When we have an empty array of specification filters
-        JnrTestSpecificationFilter filter = JnrTestFilters.allSpecifications();
-        
-        // Then the filter should accept any specification (return true)
-        assertTrue(filter.include(additionSpec));
-    }
-    
-    @Test
-    void testEmptyArrayWithAnyClassReturnsTrue() {
-        // When we have an empty array of class filters
-        JnrTestClassFilter filter = JnrTestFilters.anyClass();
-        
-        // Then the filter should accept any test class (return true)
-        assertTrue(filter.include(calculatorTest));
-    }
-    
-    @Test
-    void testEmptyArrayWithAnySpecificationReturnsTrue() {
-        // When we have an empty array of specification filters
-        JnrTestSpecificationFilter filter = JnrTestFilters.anySpecification();
-        
-        // Then the filter should accept any specification (return true)
-        assertTrue(filter.include(additionSpec));
-    }
-    
-    @Test
-    void testAllClassesReturnsTrueWhenAllFiltersReturnTrue() {
-        // Given two class filters that both accept
-        JnrTestClassFilter filter1 = testClass -> true;
-        JnrTestClassFilter filter2 = testClass -> true;
-        
-        // When we combine them with allClasses
-        JnrTestClassFilter combined = JnrTestFilters.allClasses(filter1, filter2);
-        
-        // Then the combined filter should accept (return true)
-        assertTrue(combined.include(calculatorTest));
-    }
-    
-    @Test
-    void testAllClassesReturnsFalseWhenAnyFilterReturnsFalse() {
-        // Given two class filters, one that rejects
-        JnrTestClassFilter filter1 = testClass -> true;
-        JnrTestClassFilter filter2 = testClass -> false;
-        
-        // When we combine them with allClasses
-        JnrTestClassFilter combined = JnrTestFilters.allClasses(filter1, filter2);
-        
-        // Then the combined filter should reject (return false)
-        assertFalse(combined.include(calculatorTest));
-    }
-    
-    @Test
-    void testAnyClassReturnsTrueWhenAnyFilterReturnsTrue() {
-        // Given two class filters, one that accepts
-        JnrTestClassFilter filter1 = testClass -> false;
-        JnrTestClassFilter filter2 = testClass -> true;
-        
-        // When we combine them with anyClass
-        JnrTestClassFilter combined = JnrTestFilters.anyClass(filter1, filter2);
-        
-        // Then the combined filter should accept (return true)
-        assertTrue(combined.include(calculatorTest));
-    }
-    
-    @Test
-    void testAnyClassReturnsFalseWhenAllFiltersReturnFalse() {
-        // Given two class filters that both reject
-        JnrTestClassFilter filter1 = testClass -> false;
-        JnrTestClassFilter filter2 = testClass -> false;
-        
-        // When we combine them with anyClass
-        JnrTestClassFilter combined = JnrTestFilters.anyClass(filter1, filter2);
-        
-        // Then the combined filter should reject (return false)
-        assertFalse(combined.include(calculatorTest));
-    }
-    
-    @Test
-    void testByClassDescriptionFilterMatchesCorrectPattern() {
-        // When we create a filter for a specific pattern
-        JnrTestClassFilter filter = JnrTestFilters.byClassDescription("Calculator.*");
-        
-        // Then the filter should accept a matching class
-        assertTrue(filter.include(new FakeTest("Calculator Test")));
-        
-        // And reject a non-matching class
-        assertFalse(filter.include(new FakeTest("String Utils")));
-    }
-    
-    @Test
-    void testBySpecificationDescriptionFilterMatchesCorrectPattern() {
-        // When we create a filter for a specific pattern
-        JnrTestSpecificationFilter filter = JnrTestFilters.bySpecificationDescription("Addition.*");
-        
-        // Then the filter should accept a matching specification
-        assertTrue(filter.include(new JnrTestRunnableSpecification("Addition Test", EMPTY_RUNNABLE)));
-        
-        // And reject a non-matching specification
-        assertFalse(filter.include(new JnrTestRunnableSpecification("Subtraction Test", EMPTY_RUNNABLE)));
-    }
-    
-    @Test
-    void testNotClassNegatesResult() {
-        // Given a filter that accepts a specific class
-        JnrTestClassFilter originalFilter = testClass -> 
-            testClass.getDescription().equals("Calculator");
-        
-        // When we negate it
-        JnrTestClassFilter negatedFilter = JnrTestFilters.notClass(originalFilter);
-        
-        // Then the results should be inverted
-        assertTrue(originalFilter.include(calculatorTest));
-        assertFalse(negatedFilter.include(calculatorTest));
-        
-        assertFalse(originalFilter.include(stringTest));
-        assertTrue(negatedFilter.include(stringTest));
-    }
-    
-    @Test
-    void testNotSpecificationNegatesResult() {
-        // Given a filter that accepts a specific specification
-        JnrTestSpecificationFilter originalFilter = spec -> 
-            spec.description().equals("Addition");
-        
-        // When we negate it
-        JnrTestSpecificationFilter negatedFilter = JnrTestFilters.notSpecification(originalFilter);
-        
-        // Then the results should be inverted
-        assertTrue(originalFilter.include(additionSpec));
-        assertFalse(negatedFilter.include(additionSpec));
-        
-        assertFalse(originalFilter.include(subtractionSpec));
-        assertTrue(negatedFilter.include(subtractionSpec));
-    }
+
+	// Simple fake test class implementation
+	private static class FakeTest extends JnrTest {
+
+		public FakeTest(String description) {
+			super(description);
+		}
+
+		@Override
+		protected void specify() {
+			// Empty implementation for testing
+		}
+	}
+
+	// Empty runnable for testing
+	private static final JnrTestRunnable EMPTY_RUNNABLE = () -> {
+	};
+
+	// Reusable test instances
+	private final JnrTest calculatorTest = new FakeTest("Calculator");
+	private final JnrTest stringTest = new FakeTest("String");
+	private final JnrTestRunnableSpecification additionSpec = new JnrTestRunnableSpecification("Addition",
+			EMPTY_RUNNABLE);
+	private final JnrTestRunnableSpecification subtractionSpec = new JnrTestRunnableSpecification("Subtraction",
+			EMPTY_RUNNABLE);
+
+	@Test
+	void testFiltersAreInitiallyNull() {
+		// When we create a new filter instance
+		JnrTestFilters filters = new JnrTestFilters();
+
+		// Then the filter should be null
+		assertTrue(filters.getClassFilter() == null);
+		assertTrue(filters.getSpecificationFilter() == null);
+	}
+
+	@Test
+	void testClassFilterAcceptsWhenMatches() {
+		// Given a JnrTestFilters instance
+		JnrTestFilters filters = new JnrTestFilters();
+
+		// When we add a class filter that matches calculator test
+		filters.classFilter(testClass -> testClass.getDescription().equals("Calculator"));
+
+		// Then the filter should accept calculator test
+		assertTrue(filters.getClassFilter().test(calculatorTest));
+
+		// And reject string test
+		assertFalse(filters.getClassFilter().test(stringTest));
+	}
+
+	@Test
+	void testSpecificationFilterAcceptsWhenMatches() {
+		// Given a JnrTestFilters instance
+		JnrTestFilters filters = new JnrTestFilters();
+
+		// When we add a specification filter that matches addition test
+		filters.specificationFilter(spec -> spec.description().equals("Addition"));
+
+		// Then the filter should accept addition spec
+		assertTrue(filters.getSpecificationFilter().test(additionSpec));
+
+		// And reject subtraction spec
+		assertFalse(filters.getSpecificationFilter().test(subtractionSpec));
+	}
+
+	@Test
+	void testMultipleClassFiltersWithAnd() {
+		// Given a JnrTestFilters instance
+		JnrTestFilters filters = new JnrTestFilters();
+
+		// When we add multiple class filters with AND logic
+		filters.classFilter(testClass -> true);
+		filters.classFilter(testClass -> false);
+
+		// Then the combined filter should reject (return false)
+		assertFalse(filters.getClassFilter().test(calculatorTest));
+	}
+
+	@Test
+	void testByClassDescriptionFilterMatchesCorrectPattern() {
+		// Given a JnrTestFilters instance
+		JnrTestFilters filters = new JnrTestFilters();
+
+		// When we add a class description filter
+		filters.byClassDescription("Calculator.*");
+
+		// Then the filter should accept a matching class
+		assertTrue(filters.getClassFilter().test(new FakeTest("Calculator Test")));
+
+		// And reject a non-matching class
+		assertFalse(filters.getClassFilter().test(new FakeTest("String Utils")));
+	}
+
+	@Test
+	void testBySpecificationDescriptionFilterMatchesCorrectPattern() {
+		// Given a JnrTestFilters instance
+		JnrTestFilters filters = new JnrTestFilters();
+
+		// When we add a specification description filter
+		filters.bySpecificationDescription("Addition.*");
+
+		// Then the filter should accept a matching specification
+		assertTrue(filters.getSpecificationFilter()
+				.test(new JnrTestRunnableSpecification("Addition Test", EMPTY_RUNNABLE)));
+
+		// And reject a non-matching specification
+		assertFalse(filters.getSpecificationFilter()
+				.test(new JnrTestRunnableSpecification("Subtraction Test", EMPTY_RUNNABLE)));
+	}
+
+	@Test
+	void testPredicateNegation() {
+		// Given a JnrTestFilters instance with a filter
+		JnrTestFilters filters = new JnrTestFilters();
+		filters.classFilter(testClass -> testClass.getDescription().equals("Calculator"));
+
+		// When we negate the filter
+		Predicate<JnrTest> original = filters.getClassFilter();
+		Predicate<JnrTest> negated = original.negate();
+
+		// Then the results should be inverted
+		assertTrue(original.test(calculatorTest));
+		assertFalse(negated.test(calculatorTest));
+
+		assertFalse(original.test(stringTest));
+		assertTrue(negated.test(stringTest));
+	}
+
+	@Test
+	void testPredicateOr() {
+		// Given two predicates
+		Predicate<JnrTest> predicate1 = testClass -> testClass.getDescription().equals("Calculator");
+		Predicate<JnrTest> predicate2 = testClass -> testClass.getDescription().equals("String");
+
+		// When we combine them with OR
+		Predicate<JnrTest> combined = predicate1.or(predicate2);
+
+		// Then the combined predicate should accept either
+		assertTrue(combined.test(calculatorTest));
+		assertTrue(combined.test(stringTest));
+		assertFalse(combined.test(new FakeTest("Other")));
+	}
 }

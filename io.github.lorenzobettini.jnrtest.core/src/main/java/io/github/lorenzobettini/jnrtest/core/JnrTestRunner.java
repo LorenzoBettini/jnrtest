@@ -3,6 +3,7 @@ package io.github.lorenzobettini.jnrtest.core;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -16,8 +17,7 @@ public class JnrTestRunner {
 
 	private final List<JnrTest> testClasses = new ArrayList<>();
 	private final List<JnrTestListener> listeners = new ArrayList<>();
-	private JnrTestClassFilter classFilter = null;
-	private JnrTestSpecificationFilter specificationFilter = null;
+	private final JnrTestFilters filters = new JnrTestFilters();
 
 	public JnrTestRunner add(JnrTest testClass) {
 		testClasses.add(testClass);
@@ -29,13 +29,13 @@ public class JnrTestRunner {
 		return this;
 	}
 
-	public JnrTestRunner classFilter(JnrTestClassFilter filter) {
-		this.classFilter = filter;
+	public JnrTestRunner classFilter(Predicate<JnrTest> filter) {
+		filters.classFilter(filter);
 		return this;
 	}
 	
-	public JnrTestRunner specificationFilter(JnrTestSpecificationFilter filter) {
-		this.specificationFilter = filter;
+	public JnrTestRunner specificationFilter(Predicate<JnrTestRunnableSpecification> filter) {
+		filters.specificationFilter(filter);
 		return this;
 	}
 
@@ -46,7 +46,7 @@ public class JnrTestRunner {
 	 * @return this runner for method chaining
 	 */
 	public JnrTestRunner filterByClassDescription(String pattern) {
-		return classFilter(JnrTestFilters.byClassDescription(pattern));
+		return classFilter(filters.createClassDescriptionFilter(pattern));
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class JnrTestRunner {
 	 * @return this runner for method chaining
 	 */
 	public JnrTestRunner filterBySpecificationDescription(String pattern) {
-		return specificationFilter(JnrTestFilters.bySpecificationDescription(pattern));
+		return specificationFilter(filters.createSpecificationDescriptionFilter(pattern));
 	}
 
 	public void execute() {
@@ -68,13 +68,14 @@ public class JnrTestRunner {
 	 * method to customize the stream of test classes.
 	 */
 	protected Stream<JnrTest> getTestClassesStream() {
+		Predicate<JnrTest> classFilter = filters.getClassFilter();
 		if (classFilter == null) {
 			// No filtering needed
 			return testClasses.stream();
 		}
 		// Apply the class filter
 		return testClasses.stream()
-				.filter(testClass -> classFilter.include(testClass));
+				.filter(classFilter);
 	}
 
 	private void executeTestClass(JnrTest testClass) {
@@ -115,13 +116,14 @@ public class JnrTestRunner {
 	private void executeTestRunnables(JnrTestStore store) {
 		List<JnrTestRunnableSpecification> runnablesToExecute;
 		
-		if (specificationFilter == null) {
+		Predicate<JnrTestRunnableSpecification> specFilter = filters.getSpecificationFilter();
+		if (specFilter == null) {
 			// No specification filtering needed, execute all test runnables
 			runnablesToExecute = store.getRunnableSpecifications();
 		} else {
 			// Apply specification filter
 			runnablesToExecute = store.getRunnableSpecifications().stream()
-					.filter(specificationFilter::include)
+					.filter(specFilter)
 					.toList();
 		}
 		

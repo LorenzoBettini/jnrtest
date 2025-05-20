@@ -1,5 +1,7 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import java.util.function.Predicate;
+
 /**
  * A high-level class that provides a simplified API for setting up and executing test classes
  * in a sequential environment.
@@ -75,7 +77,7 @@ public class JnrTestConsoleExecutor {
 	 * @param filter the filter to apply
 	 * @return this instance for method chaining
 	 */
-	public JnrTestConsoleExecutor classFilter(JnrTestClassFilter filter) {
+	public JnrTestConsoleExecutor classFilter(Predicate<JnrTest> filter) {
 		runner.classFilter(filter);
 		return this;
 	}
@@ -86,7 +88,7 @@ public class JnrTestConsoleExecutor {
 	 * @param filter the filter to apply
 	 * @return this instance for method chaining
 	 */
-	public JnrTestConsoleExecutor specificationFilter(JnrTestSpecificationFilter filter) {
+	public JnrTestConsoleExecutor specificationFilter(Predicate<JnrTestRunnableSpecification> filter) {
 		runner.specificationFilter(filter);
 		return this;
 	}

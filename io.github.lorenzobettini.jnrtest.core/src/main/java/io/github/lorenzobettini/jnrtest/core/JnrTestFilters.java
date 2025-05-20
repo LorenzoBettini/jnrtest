@@ -1,16 +1,23 @@
 package io.github.lorenzobettini.jnrtest.core;
 
-import java.util.Arrays;
+import java.util.function.Predicate;
 
 /**
- * Standard implementations of filters for test classes and test specifications.
+ * Manages filters for test classes and test specifications.
  * 
  * @author Lorenzo Bettini
  */
 public class JnrTestFilters {
 
-	private JnrTestFilters() {
-		// Utility class should not be instantiated
+	private Predicate<JnrTest> classFilter;
+	private Predicate<JnrTestRunnableSpecification> specificationFilter;
+
+	/**
+	 * Creates a new instance with null filters.
+	 */
+	public JnrTestFilters() {
+		this.classFilter = null;
+		this.specificationFilter = null;
 	}
 
 	/**
@@ -18,10 +25,10 @@ public class JnrTestFilters {
 	 * the specified pattern.
 	 * 
 	 * @param pattern the regex pattern to match against the test class description
-	 * @return a filter that accepts test classes whose description matches the pattern
+	 * @return this instance for method chaining
 	 */
-	public static JnrTestClassFilter byClassDescription(String pattern) {
-		return (testClass) -> testClass.getDescription().matches(pattern);
+	public JnrTestFilters byClassDescription(String pattern) {
+		return classFilter(testClass -> testClass.getDescription().matches(pattern));
 	}
 
 	/**
@@ -29,103 +36,79 @@ public class JnrTestFilters {
 	 * the specified pattern.
 	 * 
 	 * @param pattern the regex pattern to match against the test specification description
-	 * @return a filter that accepts test specifications whose description matches the pattern
+	 * @return this instance for method chaining
 	 */
-	public static JnrTestSpecificationFilter bySpecificationDescription(String pattern) {
-		return (runnableSpecification) -> 
-			runnableSpecification.description().matches(pattern);
+	public JnrTestFilters bySpecificationDescription(String pattern) {
+		return specificationFilter(
+			runnableSpecification -> runnableSpecification.description().matches(pattern)
+		);
 	}
 
 	/**
-	 * Combines multiple class filters with a logical AND.
+	 * Adds a class filter and combines it with any existing class filter using logical AND.
 	 * 
-	 * @param filters the filters to combine
-	 * @return a filter that accepts a test class only if all the specified filters accept it.
-	 *         When the array of filters is empty, this returns a filter that always accepts
-	 *         (returns true for) every test class.
+	 * @param filter the filter to add
+	 * @return this instance for method chaining
 	 */
-	public static JnrTestClassFilter allClasses(JnrTestClassFilter... filters) {
-		return (testClass) -> {
-			if (filters.length == 0) {
-				return true;
-			}
-			return Arrays.stream(filters)
-					.allMatch(filter -> filter.include(testClass));
-		};
+	public JnrTestFilters classFilter(Predicate<JnrTest> filter) {
+		if (this.classFilter != null) {
+			this.classFilter = this.classFilter.and(filter);
+		} else {
+			this.classFilter = filter;
+		}
+		return this;
 	}
 
 	/**
-	 * Combines multiple specification filters with a logical AND.
+	 * Adds a specification filter and combines it with any existing specification filter using logical AND.
 	 * 
-	 * @param filters the filters to combine
-	 * @return a filter that accepts a test specification only if all the specified filters accept it.
-	 *         When the array of filters is empty, this returns a filter that always accepts
-	 *         (returns true for) every specification.
+	 * @param filter the filter to add
+	 * @return this instance for method chaining
 	 */
-	public static JnrTestSpecificationFilter allSpecifications(JnrTestSpecificationFilter... filters) {
-		return (runnableSpecification) -> {
-			if (filters.length == 0) {
-				return true;
-			}
-			return Arrays.stream(filters)
-					.allMatch(filter -> filter.include(runnableSpecification));
-		};
+	public JnrTestFilters specificationFilter(Predicate<JnrTestRunnableSpecification> filter) {
+		if (this.specificationFilter != null) {
+			this.specificationFilter = this.specificationFilter.and(filter);
+		} else {
+			this.specificationFilter = filter;
+		}
+		return this;
 	}
 
 	/**
-	 * Combines multiple class filters with a logical OR.
+	 * Gets the current class filter.
 	 * 
-	 * @param filters the filters to combine
-	 * @return a filter that accepts a test class if any of the specified filters accept it.
-	 *         When the array of filters is empty, this returns a filter that always accepts
-	 *         (returns true for) every test class.
+	 * @return the current class filter
 	 */
-	public static JnrTestClassFilter anyClass(JnrTestClassFilter... filters) {
-		return (testClass) -> {
-			if (filters.length == 0) {
-				return true;
-			}
-			return Arrays.stream(filters)
-					.anyMatch(filter -> filter.include(testClass));
-		};
+	public Predicate<JnrTest> getClassFilter() {
+		return classFilter;
 	}
 
 	/**
-	 * Combines multiple specification filters with a logical OR.
+	 * Gets the current specification filter.
 	 * 
-	 * @param filters the filters to combine
-	 * @return a filter that accepts a test specification if any of the specified filters accept it.
-	 *         When the array of filters is empty, this returns a filter that always accepts
-	 *         (returns true for) every specification.
+	 * @return the current specification filter
 	 */
-	public static JnrTestSpecificationFilter anySpecification(JnrTestSpecificationFilter... filters) {
-		return (runnableSpecification) -> {
-			if (filters.length == 0) {
-				return true;
-			}
-			return Arrays.stream(filters)
-					.anyMatch(filter -> filter.include(runnableSpecification));
-		};
+	public Predicate<JnrTestRunnableSpecification> getSpecificationFilter() {
+		return specificationFilter;
 	}
-
+	
 	/**
-	 * Creates a filter that negates the result of the specified class filter.
+	 * Create a filter predicate that tests if a class description matches a pattern.
 	 * 
-	 * @param filter the filter to negate
-	 * @return a filter that accepts a test class if the specified filter rejects it
+	 * @param pattern the regex pattern to match
+	 * @return a predicate that tests if a class description matches the pattern
 	 */
-	public static JnrTestClassFilter notClass(JnrTestClassFilter filter) {
-		return (testClass) -> !filter.include(testClass);
+	public Predicate<JnrTest> createClassDescriptionFilter(String pattern) {
+		return testClass -> testClass.getDescription().matches(pattern);
 	}
-
+	
 	/**
-	 * Creates a filter that negates the result of the specified specification filter.
+	 * Create a filter predicate that tests if a specification description matches a pattern.
 	 * 
-	 * @param filter the filter to negate
-	 * @return a filter that accepts a test specification if the specified filter rejects it
+	 * @param pattern the regex pattern to match
+	 * @return a predicate that tests if a specification description matches the pattern
 	 */
-	public static JnrTestSpecificationFilter notSpecification(JnrTestSpecificationFilter filter) {
-		return (runnableSpecification) -> 
-			!filter.include(runnableSpecification);
+	public Predicate<JnrTestRunnableSpecification> createSpecificationDescriptionFilter(String pattern) {
+		return spec -> spec.description().matches(pattern);
 	}
 }
