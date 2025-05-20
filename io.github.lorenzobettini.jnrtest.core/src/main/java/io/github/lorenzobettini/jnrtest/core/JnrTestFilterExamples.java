@@ -1,7 +1,5 @@
 package io.github.lorenzobettini.jnrtest.core;
 
-import java.util.function.Predicate;
-
 /**
  * Examples of how to use filters with JnrTest.
  * 
