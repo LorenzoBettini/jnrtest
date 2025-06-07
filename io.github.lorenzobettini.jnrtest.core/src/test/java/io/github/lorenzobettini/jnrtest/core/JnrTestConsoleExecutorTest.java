@@ -111,12 +111,10 @@ class JnrTestConsoleExecutorTest {
 		// Create executor and add passing test
 		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
 		executor.add(passingTestClass);
-		
-		// Execute without throwing
-		boolean result = executor.executeWithoutThrowing();
+
+		executor.execute();
 		
 		// Verify result
-		assertTrue(result);
 		assertThat(outContent.toString())
 			.contains("[SUCCESS] passing test")
 			.contains("Tests run: 1, Succeeded: 1, Failures: 0, Errors: 0");
