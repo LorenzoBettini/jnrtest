@@ -18,8 +18,8 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements
 
 	private Map<String, List<JnrTestResult>> results = new ConcurrentHashMap<>();
 
-	private ThreadLocal<String> currentKey = ThreadLocal.withInitial(() -> null);
-	private ThreadLocal<Long> startTime = ThreadLocal.withInitial(() -> 0L);
+	private ThreadLocal<String> currentKey = new ThreadLocal<>();
+	private ThreadLocal<Long> startTime = new ThreadLocal<>();
 
 	private boolean success = true;
 
@@ -40,6 +40,7 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements
 	@Override
 	public void notify(JnrTestLifecycleEvent event) {
 		if (event.status() != JnrTestStatus.START) {
+			currentKey.remove();
 			return;
 		}
 		String key = event.description();
@@ -56,6 +57,7 @@ public class JnrTestThreadSafeRecorder extends JnrTestListenerAdapter implements
 			startTime.set(System.currentTimeMillis());
 		} else {
 			totalTime.addAndGet(System.currentTimeMillis() - startTime.get());
+			startTime.remove();
 		}
 	}
 
