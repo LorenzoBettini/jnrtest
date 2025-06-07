@@ -496,8 +496,7 @@ public class JnrTestJUnitProcessor {
 			return "";
 		}
 		
-		String commonPackage = firstClass.substring(0, lastDotIndex);
-		return commonPackage;
+		return firstClass.substring(0, lastDotIndex);
 	}
 
 	/**
