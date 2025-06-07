@@ -370,7 +370,7 @@ public class JnrTestJUnitProcessor {
 		String classHeader = """
 			package %s;
 
-			public class %s extends JnrTest {
+			public class %s extends JnrTest { // NOSONAR
 
 				private %s originalTest = new %s();
 

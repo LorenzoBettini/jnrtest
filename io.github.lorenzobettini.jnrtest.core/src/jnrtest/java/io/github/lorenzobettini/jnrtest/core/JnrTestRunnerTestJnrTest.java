@@ -1,6 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
-public class JnrTestRunnerTestJnrTest extends JnrTest {
+public class JnrTestRunnerTestJnrTest extends JnrTest { // NOSONAR
 
 	private JnrTestRunnerTest originalTest = new JnrTestRunnerTest();
 
