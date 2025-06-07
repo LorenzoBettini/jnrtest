@@ -10,11 +10,16 @@ on:
 
 jobs:
   build:
-    runs-on: 'ubuntu-latest'
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    runs-on: ubuntu-latest
 
     steps:
       - name: 'Check out repository'
         uses: actions/checkout@v4
+        with:
+          # Shallow clones should be disabled for a better relevancy of SonarQube analysis
+          fetch-depth: 0
 
       - name: 'Set up Java'
         uses: actions/setup-java@v4
@@ -31,5 +36,11 @@ jobs:
           key: ${{ runner.os }}-m2-jacoco-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      # execute sonar:sonar only for internal PRs
+      - name: Set Maven Additional Goals
+        run: |
+          echo "SONARGOAL=sonar:sonar" >> $GITHUB_ENV
+        if: ${{ env.SONAR_TOKEN }}
+
       - name: 'Build, test, code quality and coverage'
-        run: mvn verify -Pjacoco
+        run: mvn verify -Pjacoco $SONARGOAL -Dsonar.projectKey=LorenzoBettini_jnrtest
