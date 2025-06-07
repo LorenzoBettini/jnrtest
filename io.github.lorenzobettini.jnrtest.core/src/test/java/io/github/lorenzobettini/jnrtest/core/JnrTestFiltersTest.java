@@ -1,6 +1,7 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Predicate;
@@ -44,8 +45,8 @@ class JnrTestFiltersTest {
 		JnrTestFilters filters = new JnrTestFilters();
 
 		// Then the filter should be null
-		assertTrue(filters.getClassFilter() == null);
-		assertTrue(filters.getSpecificationFilter() == null);
+		assertNull(filters.getClassFilter());
+		assertNull(filters.getSpecificationFilter());
 	}
 
 	@Test
