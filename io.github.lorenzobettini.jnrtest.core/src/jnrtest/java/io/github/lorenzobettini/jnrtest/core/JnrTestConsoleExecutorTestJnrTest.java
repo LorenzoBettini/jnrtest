@@ -30,5 +30,13 @@ public class JnrTestConsoleExecutorTestJnrTest extends JnrTest {
 			() -> originalTest.shouldReturnFalseWhenExecuteWithoutThrowingFails());
 		test("should filter tests correctly",
 			() -> originalTest.shouldFilterTestsCorrectly());
+		test("should apply class filter correctly",
+			() -> originalTest.shouldApplyClassFilterCorrectly());
+		test("should apply specification filter correctly",
+			() -> originalTest.shouldApplySpecificationFilterCorrectly());
+		test("should apply multiple filters with AND logic",
+			() -> originalTest.shouldApplyMultipleFiltersWithAndLogic());
+		test("should apply class description filter correctly",
+			() -> originalTest.shouldApplyClassDescriptionFilterCorrectly());
 	}
 }
