@@ -92,6 +92,26 @@ class JnrTestFiltersTest {
 	}
 
 	@Test
+	void testMultipleSpecificationFiltersWithAnd() {
+		// Given a JnrTestFilters instance
+		JnrTestFilters filters = new JnrTestFilters();
+
+		// When we add multiple specification filters with AND logic
+		filters.specificationFilter(spec -> spec.description().contains("Addition"));
+		filters.specificationFilter(spec -> spec.description().length() > 3);
+
+		// Then the combined filter should accept only when both conditions are true
+		assertTrue(filters.getSpecificationFilter().test(additionSpec)); // Contains "Addition" AND length > 3
+
+		// Create a specification that matches only one condition
+		JnrTestRunnableSpecification shortSpec = new JnrTestRunnableSpecification("Add", EMPTY_RUNNABLE);
+		assertFalse(filters.getSpecificationFilter().test(shortSpec)); // Contains "Add" but length <= 3
+
+		// And reject when neither condition is met
+		assertFalse(filters.getSpecificationFilter().test(subtractionSpec)); // Doesn't contain "Addition"
+	}
+
+	@Test
 	void testByClassDescriptionFilterMatchesCorrectPattern() {
 		// Given a JnrTestFilters instance
 		JnrTestFilters filters = new JnrTestFilters();
