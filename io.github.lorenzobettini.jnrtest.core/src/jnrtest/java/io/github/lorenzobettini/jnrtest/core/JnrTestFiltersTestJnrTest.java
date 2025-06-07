@@ -18,6 +18,8 @@ public class JnrTestFiltersTestJnrTest extends JnrTest {
 			() -> originalTest.testSpecificationFilterAcceptsWhenMatches());
 		test("testMultipleClassFiltersWithAnd",
 			() -> originalTest.testMultipleClassFiltersWithAnd());
+		test("testMultipleSpecificationFiltersWithAnd",
+			() -> originalTest.testMultipleSpecificationFiltersWithAnd());
 		test("testByClassDescriptionFilterMatchesCorrectPattern",
 			() -> originalTest.testByClassDescriptionFilterMatchesCorrectPattern());
 		test("testBySpecificationDescriptionFilterMatchesCorrectPattern",
