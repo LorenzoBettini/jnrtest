@@ -388,22 +388,47 @@ class JnrTestConsoleExecutorTest {
 	}
 
 	@Test
-	@DisplayName("should return same instance for method chaining with filters")
-	void shouldReturnSameInstanceForMethodChainingWithFilters() {
-		// Create executor
+	@DisplayName("should apply class description filter correctly")
+	void shouldApplyClassDescriptionFilterCorrectly() {
+		// Create test classes for filtering
 		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
 		
-		// Verify that filter methods return the same instance for chaining
-		JnrTestConsoleExecutor result1 = executor.classFilter(testClass -> true);
-		assertThat(result1).isSameAs(executor);
+		boolean[] methodsCalled = new boolean[4];
+		executor.add(new JnrTest("CalculatorService") {
+			@Override
+			protected void specify() {
+				test("addition test", () -> {
+					methodsCalled[0] = true;
+				});
+				test("multiplication test", () -> {
+					methodsCalled[1] = true;
+				});
+			}
+		});
 		
-		JnrTestConsoleExecutor result2 = executor.specificationFilter(spec -> true);
-		assertThat(result2).isSameAs(executor);
+		executor.add(new JnrTest("DatabaseManager") {
+			@Override
+			protected void specify() {
+				test("connect test", () -> {
+					methodsCalled[2] = true;
+				});
+				test("query test", () -> {
+					methodsCalled[3] = true;
+				});
+			}
+		});
 		
-		// Verify chaining works
-		JnrTestConsoleExecutor result3 = executor
-			.classFilter(testClass -> testClass.getDescription().contains("Test"))
-			.specificationFilter(spec -> spec.description().contains("important"));
-		assertThat(result3).isSameAs(executor);
+		// Apply a class description filter using regex pattern
+		executor.filterByClassDescription("Calculator.*");
+		
+		// Execute tests
+		boolean result = executor.executeWithoutThrowing();
+		
+		// Verify only Calculator tests were executed
+		assertTrue(result);
+		assertThat(methodsCalled[0]).isTrue();  // Calculator addition
+		assertThat(methodsCalled[1]).isTrue();  // Calculator multiplication
+		assertThat(methodsCalled[2]).isFalse(); // Database connect (filtered out)
+		assertThat(methodsCalled[3]).isFalse(); // Database query (filtered out)
 	}
 }
