@@ -40,6 +40,7 @@ public class JnrTestConsoleParallelExecutor extends JnrTestConsoleExecutor {
 	 *
 	 * @return true if all tests passed, false otherwise
 	 */
+	@Override
 	public boolean executeWithoutThrowing() {
 		var startTime = System.currentTimeMillis();
 		var result = super.executeWithoutThrowing();
