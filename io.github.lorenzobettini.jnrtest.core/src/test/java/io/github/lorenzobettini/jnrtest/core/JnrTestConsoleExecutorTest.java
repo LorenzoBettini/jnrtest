@@ -138,7 +138,7 @@ class JnrTestConsoleExecutorTest {
 		// Create executor and add passing test
 		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
 		executor.getRecorder().withElapsedTime();
-		executor.getReporter().withOnlySummaries(true);
+		executor.getReporter().withOnlySummaries();
 		executor.add(passingTestClass);
 		
 		// Execute without throwing
