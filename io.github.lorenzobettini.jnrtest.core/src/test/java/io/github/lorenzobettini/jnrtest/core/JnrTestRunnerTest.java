@@ -46,9 +46,7 @@ class JnrTestRunnerTest {
 			.add(new JnrTest("a test class") {
 				@Override
 				protected void specify() {
-					test("first test", () -> {
-						callable.firstMethod();
-					});
+					test("first test", callable::firstMethod);
 					test("test throwing exception", () -> {
 						throw new RuntimeException("exception");
 					});
@@ -59,9 +57,7 @@ class JnrTestRunnerTest {
 					test("test failing assertion", () -> {
 						assertTrue(false);
 					});
-					test("second test", () -> {
-						callable.secondMethod();
-					});
+					test("second test", callable::secondMethod);
 				}
 			});
 		runner.execute();
@@ -286,9 +282,7 @@ class JnrTestRunnerTest {
 				.add(new JnrTest("a test class") {
 			@Override
 			protected void specify() {
-				test("first test", () -> {
-					callable.firstMethod();
-				});
+				test("first test", callable::firstMethod);
 			}
 		});
 		runner.execute();
@@ -305,48 +299,28 @@ class JnrTestRunnerTest {
 				.add(new JnrTest("a test class") {
 			@Override
 			protected void specify() {
-				beforeEach("", () -> {
-					callable.beforeEachMethod1();
-				});
+				beforeEach("", callable::beforeEachMethod1);
 				beforeEach("", () -> {
 					throw new RuntimeException("exception");
 				});
-				beforeEach("", () -> {
-					callable.beforeEachMethod2();
-				});
-				beforeAll("", () -> {
-					callable.beforeAllMethod1();
-				});
+				beforeEach("", callable::beforeEachMethod2);
+				beforeAll("", callable::beforeAllMethod1);
 				beforeAll("", () -> {
 					throw new RuntimeException("exception");
 				});
-				beforeAll("", () -> {
-					callable.beforeAllMethod2();
-				});
-				afterEach("", () -> {
-					callable.afterEachMethod1();
-				});
+				beforeAll("", callable::beforeAllMethod2);
+				afterEach("", callable::afterEachMethod1);
 				afterEach("", () -> {
 					throw new RuntimeException("exception");
 				});
-				afterEach("", () -> {
-					callable.afterEachMethod2();
-				});
-				afterAll("", () -> {
-					callable.afterAllMethod1();
-				});
+				afterEach("", callable::afterEachMethod2);
+				afterAll("", callable::afterAllMethod1);
 				afterAll("", () -> {
 					throw new RuntimeException("exception");
 				});
-				afterAll("", () -> {
-					callable.afterAllMethod2();
-				});
-				test("first test", () -> {
-					callable.firstMethod();
-				});
-				test("second test", () -> {
-					callable.secondMethod();
-				});
+				afterAll("", callable::afterAllMethod2);
+				test("first test", callable::firstMethod);
+				test("second test", callable::secondMethod);
 			}
 		});
 		runner.execute();
@@ -378,32 +352,24 @@ class JnrTestRunnerTest {
 		var testClass = new JnrTest("a test class") {
 			@Override
 			protected void specify() {
-				test("first test", () -> {
-					callable.firstMethod();
-				});
-				test("second test", () -> {
-					callable.secondMethod();
-				});
+				test("first test", callable::firstMethod);
+				test("second test", callable::secondMethod);
 			}
 		};
 		var extensionAll = new JnrTestExtension() {
 			@Override
 			protected <T extends JnrTest> void extend(T testClass, List<JnrTestRunnableSpecification> before,
 					List<JnrTestRunnableSpecification> after) {
-				before.add(new JnrTestRunnableSpecification("before all",
-					() -> callable.beforeAllMethod1()));
-				after.add(new JnrTestRunnableSpecification("after all",
-					() -> callable.afterAllMethod1()));
+				before.add(new JnrTestRunnableSpecification("before all", callable::beforeAllMethod1));
+				after.add(new JnrTestRunnableSpecification("after all", callable::afterAllMethod1));
 			}
 		};
 		var extensionEach = new JnrTestExtension() {
 			@Override
 			protected <T extends JnrTest> void extend(T testClass, List<JnrTestRunnableSpecification> before,
 					List<JnrTestRunnableSpecification> after) {
-				before.add(new JnrTestRunnableSpecification("before each",
-						() -> callable.beforeEachMethod1()));
-				after.add(new JnrTestRunnableSpecification("after each",
-						() -> callable.afterEachMethod1()));
+				before.add(new JnrTestRunnableSpecification("before each", callable::beforeEachMethod1));
+				after.add(new JnrTestRunnableSpecification("after each", callable::afterEachMethod1));
 			}
 		};
 		testClass = extensionAll.extendAll(testClass);

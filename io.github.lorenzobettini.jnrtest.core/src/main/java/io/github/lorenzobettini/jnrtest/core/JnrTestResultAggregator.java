@@ -23,16 +23,17 @@ public class JnrTestResultAggregator {
 			.flatMap(l -> l.stream())
 			.forEach(result -> {
 				switch (result.status()) {
-				case SUCCESS: {
-					succeeded++;
-					break;
-				}
 				case FAILED: {
 					failed++;
 					break;
 				}
 				case ERROR: {
 					errors++;
+					break;
+				}
+				default: { // SUCCESS
+					succeeded++;
+					break;
 				}
 				}
 			});

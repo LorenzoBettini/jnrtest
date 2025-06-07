@@ -86,13 +86,14 @@ class JnrTestParallelRunnerTest {
 		runner.testListener(testRecorderWithElapsed);
 		runner.execute();
 		String out = getOutContent();
-		assertThat(out).contains("""
+		assertThat(out)
+		.contains("""
 			[  START] a test class with success
 			[SUCCESS] success test
 			[  ERROR] error test
 			Tests run: 2, Succeeded: 1, Failures: 0, Errors: 1
-			""");
-		assertThat(out).contains("""
+			""")
+		.contains("""
 			[  START] a test class with failure
 			[ FAILED] failed test
 			[SUCCESS] success test

@@ -1,6 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
-public class JnrTestConsoleParallelExecutorTestJnrTest extends JnrTest {
+public class JnrTestConsoleParallelExecutorTestJnrTest extends JnrTest { // NOSONAR
 
 	private JnrTestConsoleParallelExecutorTest originalTest = new JnrTestConsoleParallelExecutorTest();
 

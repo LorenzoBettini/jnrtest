@@ -1,0 +1,35 @@
+name: Code Quality
+
+on:
+  push:
+    paths-ignore:
+     - '**.md'
+  pull_request:
+    paths-ignore:
+     - '**.md'
+
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+      - name: 'Check out repository'
+        uses: actions/checkout@v4
+
+      - name: 'Set up Java'
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+
+      - name: 'Cache Maven packages'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2
+            ~/.sonar/cache
+          key: ${{ runner.os }}-m2-jacoco-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: 'Build, test, code quality and coverage'
+        run: mvn verify -Pjacoco

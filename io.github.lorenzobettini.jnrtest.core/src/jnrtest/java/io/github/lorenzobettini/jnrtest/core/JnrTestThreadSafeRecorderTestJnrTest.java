@@ -1,6 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
-public class JnrTestThreadSafeRecorderTestJnrTest extends JnrTest {
+public class JnrTestThreadSafeRecorderTestJnrTest extends JnrTest { // NOSONAR
 
 	private JnrTestThreadSafeRecorderTest originalTest = new JnrTestThreadSafeRecorderTest();
 

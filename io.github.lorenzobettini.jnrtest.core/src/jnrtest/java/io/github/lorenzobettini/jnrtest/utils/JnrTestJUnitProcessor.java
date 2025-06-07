@@ -370,7 +370,7 @@ public class JnrTestJUnitProcessor {
 		String classHeader = """
 			package %s;
 
-			public class %s extends JnrTest {
+			public class %s extends JnrTest { // NOSONAR
 
 				private %s originalTest = new %s();
 
@@ -496,8 +496,7 @@ public class JnrTestJUnitProcessor {
 			return "";
 		}
 		
-		String commonPackage = firstClass.substring(0, lastDotIndex);
-		return commonPackage;
+		return firstClass.substring(0, lastDotIndex);
 	}
 
 	/**

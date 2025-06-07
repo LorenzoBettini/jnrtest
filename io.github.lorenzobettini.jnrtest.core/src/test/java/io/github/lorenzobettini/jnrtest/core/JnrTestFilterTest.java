@@ -26,23 +26,15 @@ class JnrTestFilterTest {
 				.add(new JnrTest("FirstTestClass") {
 					@Override
 					protected void specify() {
-						test("test 1", () -> {
-							callable.testMethod1();
-						});
-						test("test 2", () -> {
-							callable.testMethod2();
-						});
+						test("test 1", callable::testMethod1);
+						test("test 2", callable::testMethod2);
 					}
 				})
 				.add(new JnrTest("SecondTestClass") {
 					@Override
 					protected void specify() {
-						test("test 3", () -> {
-							callable.testMethod3();
-						});
-						test("test 4", () -> {
-							callable.testMethod4();
-						});
+						test("test 3", callable::testMethod3);
+						test("test 4", callable::testMethod4);
 					}
 				});
 				
@@ -66,23 +58,15 @@ class JnrTestFilterTest {
 				.add(new JnrTest("FirstTestClass") {
 					@Override
 					protected void specify() {
-						test("test 1", () -> {
-							callable.testMethod1();
-						});
-						test("important test", () -> {
-							callable.testMethod2();
-						});
+						test("test 1", callable::testMethod1);
+						test("important test", callable::testMethod2);
 					}
 				})
 				.add(new JnrTest("SecondTestClass") {
 					@Override
 					protected void specify() {
-						test("test 3", () -> {
-							callable.testMethod3();
-						});
-						test("important test 2", () -> {
-							callable.testMethod4();
-						});
+						test("test 3", callable::testMethod3);
+						test("important test 2", callable::testMethod4);
 					}
 				});
 				
@@ -106,23 +90,15 @@ class JnrTestFilterTest {
 				.add(new JnrTest("FirstTestClass") {
 					@Override
 					protected void specify() {
-						test("test 1", () -> {
-							callable.testMethod1();
-						});
-						test("important test", () -> {
-							callable.testMethod2();
-						});
+						test("test 1", callable::testMethod1);
+						test("important test", callable::testMethod2);
 					}
 				})
 				.add(new JnrTest("SecondTestClass") {
 					@Override
 					protected void specify() {
-						test("test 3", () -> {
-							callable.testMethod3();
-						});
-						test("important test 2", () -> {
-							callable.testMethod4();
-						});
+						test("test 3", callable::testMethod3);
+						test("important test 2", callable::testMethod4);
 					}
 				});
 		
@@ -147,23 +123,15 @@ class JnrTestFilterTest {
 				.add(new JnrTest("FirstTestClass") {
 					@Override
 					protected void specify() {
-						test("test 1", () -> {
-							callable.testMethod1();
-						});
-						test("important test", () -> {
-							callable.testMethod2();
-						});
+						test("test 1", callable::testMethod1);
+						test("important test", callable::testMethod2);
 					}
 				})
 				.add(new JnrTest("SecondTestClass") {
 					@Override
 					protected void specify() {
-						test("test 3", () -> {
-							callable.testMethod3();
-						});
-						test("important test 2", () -> {
-							callable.testMethod4();
-						});
+						test("test 3", callable::testMethod3);
+						test("important test 2", callable::testMethod4);
 					}
 				});
 		
@@ -192,25 +160,19 @@ class JnrTestFilterTest {
 				.add(new JnrTest("FirstTestClass") {
 					@Override
 					protected void specify() {
-						test("test 1", () -> {
-							callable.testMethod1();
-						});
+						test("test 1", callable::testMethod1);
 					}
 				})
 				.add(new JnrTest("FirstImportantTestClass") {
 					@Override
 					protected void specify() {
-						test("test 2", () -> {
-							callable.testMethod2();
-						});
+						test("test 2", callable::testMethod2);
 					}
 				})
 				.add(new JnrTest("SecondTestClass") {
 					@Override
 					protected void specify() {
-						test("test 3", () -> {
-							callable.testMethod3();
-						});
+						test("test 3", callable::testMethod3);
 					}
 				});
 		
@@ -241,18 +203,10 @@ class JnrTestFilterTest {
 				.add(new JnrTest("TestClass") {
 					@Override
 					protected void specify() {
-						test("simple test", () -> {
-							callable.testMethod1();
-						});
-						test("important test", () -> {
-							callable.testMethod2();
-						});
-						test("critical test", () -> {
-							callable.testMethod3();
-						});
-						test("normal test", () -> {
-							callable.testMethod4();
-						});
+						test("simple test", callable::testMethod1);
+						test("important test", callable::testMethod2);
+						test("critical test", callable::testMethod3);
+						test("normal test", callable::testMethod4);
 					}
 				});
 		

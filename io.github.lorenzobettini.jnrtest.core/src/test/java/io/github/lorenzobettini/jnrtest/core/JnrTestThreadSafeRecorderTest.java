@@ -32,6 +32,9 @@ class JnrTestThreadSafeRecorderTest {
 
 		recorder.notify(endEvent);
 
+		// also notify spurious non JnrTestRunnableLifecycleEvent.TEST events
+		recorder.notify(new JnrTestRunnableLifecycleEvent("spurious", JnrTestRunnableKind.BEFORE_ALL, JnrTestRunnableStatus.START));
+
 		Map<String, List<JnrTestResult>> results = recorder.getResults();
 		assertThat(results)
 			.containsOnlyKeys("Test1")

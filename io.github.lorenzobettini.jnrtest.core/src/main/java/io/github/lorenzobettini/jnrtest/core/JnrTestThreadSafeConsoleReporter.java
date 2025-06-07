@@ -41,11 +41,14 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestReporterInterfac
 					.withElapsedTime(withElapsedTime)
 					.withOnlySummaries(onlySummaries));
 			currentReporter.get().notify(event);
-		} else if (event.status() == JnrTestStatus.END) {
+		} else { // i.e., JnrTestStatus.END
 			JnrTestConsoleReporter reporter = currentReporter.get();
 			reporter.notify(event);
 			ByteArrayOutputStream outputStream = currentOutputStream.get();
 			System.out.print(outputStream.toString()); // NOSONAR
+			currentReporter.remove();
+			currentOutputStream.remove();
+			currentKey.remove();
 		}
 	}
 

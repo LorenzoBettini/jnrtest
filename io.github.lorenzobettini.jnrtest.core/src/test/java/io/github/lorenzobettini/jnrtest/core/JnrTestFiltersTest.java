@@ -1,6 +1,7 @@
 package io.github.lorenzobettini.jnrtest.core;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Predicate;
@@ -44,8 +45,8 @@ class JnrTestFiltersTest {
 		JnrTestFilters filters = new JnrTestFilters();
 
 		// Then the filter should be null
-		assertTrue(filters.getClassFilter() == null);
-		assertTrue(filters.getSpecificationFilter() == null);
+		assertNull(filters.getClassFilter());
+		assertNull(filters.getSpecificationFilter());
 	}
 
 	@Test
@@ -89,6 +90,26 @@ class JnrTestFiltersTest {
 
 		// Then the combined filter should reject (return false)
 		assertFalse(filters.getClassFilter().test(calculatorTest));
+	}
+
+	@Test
+	void testMultipleSpecificationFiltersWithAnd() {
+		// Given a JnrTestFilters instance
+		JnrTestFilters filters = new JnrTestFilters();
+
+		// When we add multiple specification filters with AND logic
+		filters.specificationFilter(spec -> spec.description().contains("Addition"));
+		filters.specificationFilter(spec -> spec.description().length() > 3);
+
+		// Then the combined filter should accept only when both conditions are true
+		assertTrue(filters.getSpecificationFilter().test(additionSpec)); // Contains "Addition" AND length > 3
+
+		// Create a specification that matches only one condition
+		JnrTestRunnableSpecification shortSpec = new JnrTestRunnableSpecification("Add", EMPTY_RUNNABLE);
+		assertFalse(filters.getSpecificationFilter().test(shortSpec)); // Contains "Add" but length <= 3
+
+		// And reject when neither condition is met
+		assertFalse(filters.getSpecificationFilter().test(subtractionSpec)); // Doesn't contain "Addition"
 	}
 
 	@Test

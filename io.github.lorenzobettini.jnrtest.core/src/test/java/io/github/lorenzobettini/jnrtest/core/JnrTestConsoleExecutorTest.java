@@ -111,12 +111,10 @@ class JnrTestConsoleExecutorTest {
 		// Create executor and add passing test
 		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
 		executor.add(passingTestClass);
-		
-		// Execute without throwing
-		boolean result = executor.executeWithoutThrowing();
+
+		executor.execute();
 		
 		// Verify result
-		assertTrue(result);
 		assertThat(outContent.toString())
 			.contains("[SUCCESS] passing test")
 			.contains("Tests run: 1, Succeeded: 1, Failures: 0, Errors: 0");
@@ -138,7 +136,7 @@ class JnrTestConsoleExecutorTest {
 		// Create executor and add passing test
 		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
 		executor.getRecorder().withElapsedTime();
-		executor.getReporter().withOnlySummaries(true);
+		executor.getReporter().withOnlySummaries();
 		executor.add(passingTestClass);
 		
 		// Execute without throwing
@@ -243,5 +241,194 @@ class JnrTestConsoleExecutorTest {
 		assertThat(methodsCalled[1]).isTrue();
 		assertThat(methodsCalled[2]).isFalse();
 		assertThat(methodsCalled[3]).isTrue();
+	}
+
+	@Test
+	@DisplayName("should apply class filter correctly")
+	void shouldApplyClassFilterCorrectly() {
+		// Create test classes for filtering
+		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
+		
+		boolean[] methodsCalled = new boolean[4];
+		executor.add(new JnrTest("CalculatorTest") {
+			@Override
+			protected void specify() {
+				test("addition test", () -> {
+					methodsCalled[0] = true;
+				});
+				test("subtraction test", () -> {
+					methodsCalled[1] = true;
+				});
+			}
+		});
+		
+		executor.add(new JnrTest("StringUtilsTest") {
+			@Override
+			protected void specify() {
+				test("trim test", () -> {
+					methodsCalled[2] = true;
+				});
+				test("format test", () -> {
+					methodsCalled[3] = true;
+				});
+			}
+		});
+		
+		// Apply a class filter that only accepts Calculator tests
+		executor.classFilter(testClass -> testClass.getDescription().contains("Calculator"));
+		
+		// Execute tests
+		boolean result = executor.executeWithoutThrowing();
+		
+		// Verify only Calculator tests were executed
+		assertTrue(result);
+		assertThat(methodsCalled[0]).isTrue();  // Calculator addition
+		assertThat(methodsCalled[1]).isTrue();  // Calculator subtraction
+		assertThat(methodsCalled[2]).isFalse(); // StringUtils trim (should be filtered out)
+		assertThat(methodsCalled[3]).isFalse(); // StringUtils format (should be filtered out)
+	}
+
+	@Test
+	@DisplayName("should apply specification filter correctly")
+	void shouldApplySpecificationFilterCorrectly() {
+		// Create test classes for filtering
+		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
+		
+		boolean[] methodsCalled = new boolean[4];
+		executor.add(new JnrTest("TestClass") {
+			@Override
+			protected void specify() {
+				test("critical operation", () -> {
+					methodsCalled[0] = true;
+				});
+				test("normal operation", () -> {
+					methodsCalled[1] = true;
+				});
+				test("critical validation", () -> {
+					methodsCalled[2] = true;
+				});
+				test("simple check", () -> {
+					methodsCalled[3] = true;
+				});
+			}
+		});
+		
+		// Apply a specification filter that only accepts critical tests
+		executor.specificationFilter(spec -> spec.description().contains("critical"));
+		
+		// Execute tests
+		boolean result = executor.executeWithoutThrowing();
+		
+		// Verify only critical tests were executed
+		assertTrue(result);
+		assertThat(methodsCalled[0]).isTrue();  // critical operation
+		assertThat(methodsCalled[1]).isFalse(); // normal operation (filtered out)
+		assertThat(methodsCalled[2]).isTrue();  // critical validation
+		assertThat(methodsCalled[3]).isFalse(); // simple check (filtered out)
+	}
+
+	@Test
+	@DisplayName("should apply multiple filters with AND logic")
+	void shouldApplyMultipleFiltersWithAndLogic() {
+		// Create test classes for filtering
+		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
+		
+		boolean[] methodsCalled = new boolean[6];
+		executor.add(new JnrTest("CalculatorTest") {
+			@Override
+			protected void specify() {
+				test("critical addition", () -> {
+					methodsCalled[0] = true;
+				});
+				test("normal addition", () -> {
+					methodsCalled[1] = true;
+				});
+			}
+		});
+		
+		executor.add(new JnrTest("StringUtilsTest") {
+			@Override
+			protected void specify() {
+				test("critical trim", () -> {
+					methodsCalled[2] = true;
+				});
+				test("normal format", () -> {
+					methodsCalled[3] = true;
+				});
+			}
+		});
+		
+		executor.add(new JnrTest("MathTest") {
+			@Override
+			protected void specify() {
+				test("critical calculation", () -> {
+					methodsCalled[4] = true;
+				});
+				test("normal computation", () -> {
+					methodsCalled[5] = true;
+				});
+			}
+		});
+		
+		// Apply both class and specification filters (AND logic)
+		executor.classFilter(testClass -> testClass.getDescription().contains("Test"))
+				.specificationFilter(spec -> spec.description().contains("critical"));
+		
+		// Execute tests
+		boolean result = executor.executeWithoutThrowing();
+		
+		// Verify only tests that match both filters were executed
+		assertTrue(result);
+		assertThat(methodsCalled[0]).isTrue();  // CalculatorTest + critical addition
+		assertThat(methodsCalled[1]).isFalse(); // CalculatorTest + normal addition (spec filtered out)
+		assertThat(methodsCalled[2]).isTrue();  // StringUtilsTest + critical trim
+		assertThat(methodsCalled[3]).isFalse(); // StringUtilsTest + normal format (spec filtered out)
+		assertThat(methodsCalled[4]).isTrue();  // MathTest + critical calculation
+		assertThat(methodsCalled[5]).isFalse(); // MathTest + normal computation (spec filtered out)
+	}
+
+	@Test
+	@DisplayName("should apply class description filter correctly")
+	void shouldApplyClassDescriptionFilterCorrectly() {
+		// Create test classes for filtering
+		JnrTestConsoleExecutor executor = new JnrTestConsoleExecutor();
+		
+		boolean[] methodsCalled = new boolean[4];
+		executor.add(new JnrTest("CalculatorService") {
+			@Override
+			protected void specify() {
+				test("addition test", () -> {
+					methodsCalled[0] = true;
+				});
+				test("multiplication test", () -> {
+					methodsCalled[1] = true;
+				});
+			}
+		});
+		
+		executor.add(new JnrTest("DatabaseManager") {
+			@Override
+			protected void specify() {
+				test("connect test", () -> {
+					methodsCalled[2] = true;
+				});
+				test("query test", () -> {
+					methodsCalled[3] = true;
+				});
+			}
+		});
+		
+		// Apply a class description filter using regex pattern
+		executor.filterByClassDescription("Calculator.*");
+		
+		// Execute tests
+		boolean result = executor.executeWithoutThrowing();
+		
+		// Verify only Calculator tests were executed
+		assertTrue(result);
+		assertThat(methodsCalled[0]).isTrue();  // Calculator addition
+		assertThat(methodsCalled[1]).isTrue();  // Calculator multiplication
+		assertThat(methodsCalled[2]).isFalse(); // Database connect (filtered out)
+		assertThat(methodsCalled[3]).isFalse(); // Database query (filtered out)
 	}
 }
