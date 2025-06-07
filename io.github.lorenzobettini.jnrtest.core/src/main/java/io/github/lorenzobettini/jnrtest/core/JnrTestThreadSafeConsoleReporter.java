@@ -46,6 +46,9 @@ public class JnrTestThreadSafeConsoleReporter implements JnrTestReporterInterfac
 			reporter.notify(event);
 			ByteArrayOutputStream outputStream = currentOutputStream.get();
 			System.out.print(outputStream.toString()); // NOSONAR
+			currentReporter.remove();
+			currentOutputStream.remove();
+			currentKey.remove();
 		}
 	}
 
