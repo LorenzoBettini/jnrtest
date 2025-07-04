@@ -185,6 +185,15 @@ class JnrTestRunnerTest {
 					);
 				}
 			})
+			.add(new JnrTest("a test class with parameterized test (triple)") {
+				@Override
+				protected void specify() {
+					testWithParameters("triple sum should be correct ",
+						() -> List.of(new Triple<>(1, 2, 3), Triple.triple(5, 10, 15)),
+						t -> assertEquals(t.first() + t.second(), t.third())
+					);
+				}
+			})
 			.add(new JnrTest("a test class with parameterized test and description") {
 				@Override
 				protected void specify() {
@@ -208,6 +217,10 @@ class JnrTestRunnerTest {
 				[SUCCESS] strings should be equal (foo,foo)
 				[ FAILED] strings should be equal (foo,bar)
 				[    END] a test class with parameterized test (pair)
+				[  START] a test class with parameterized test (triple)
+				[SUCCESS] triple sum should be correct (1,2,3)
+				[SUCCESS] triple sum should be correct (5,10,15)
+				[    END] a test class with parameterized test (triple)
 				[  START] a test class with parameterized test and description
 				[SUCCESS] strings should be equal: is "foo".equals("foo")?
 				[ FAILED] strings should be equal: is "foo".equals("bar")?

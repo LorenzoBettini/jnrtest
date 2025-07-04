@@ -13,6 +13,7 @@ public class JnrExamplesTestMain {
 				.add(new FactorialJnrParameterizedWithDescriptionTest())
 				.add(new MyStringUtilsJnrTest())
 				.add(new MyStringUtilsJnrParameterizedTest())
+				.add(new MathOperationsJnrTripleParameterizedTest())
 				.add(new JnrTestTemporaryFolderExampleTest())
 				.add(new JnrTestTemporaryFolderExampleBeforeAllTest())
 				.add(new JnrTestTemporaryFolderAnotherExampleTest())
