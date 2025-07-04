@@ -26,8 +26,8 @@ public abstract class JnrTest {
 	 * @param <T2> The type of the second element
 	 */
 	public static class Pair<T1, T2> {
-		private T1 first;
-		private T2 second;
+		private final T1 first;
+		private final T2 second;
 
 		/**
 		 * Creates a new pair with the given elements.
@@ -35,7 +35,7 @@ public abstract class JnrTest {
 		 * @param first The first element
 		 * @param second The second element
 		 */
-		public Pair(T1 first, T2 second) {
+		public Pair(final T1 first, final T2 second) {
 			this.first = first;
 			this.second = second;
 		}
@@ -49,7 +49,7 @@ public abstract class JnrTest {
 		 * @param second The second element
 		 * @return A new pair containing the given elements
 		 */
-		public static <U, V> Pair<U, V> pair(U first, V second) {
+		public static <U, V> Pair<U, V> pair(final U first, final V second) {
 			return new Pair<>(first, second);
 		}
 
@@ -74,6 +74,81 @@ public abstract class JnrTest {
 		@Override
 		public String toString() {
 			return "(" + first + "," + second + ")";
+		}
+	}
+
+	/**
+	 * A triple for parameterized tests, when three parameters would be needed.
+	 * 
+	 * @author Lorenzo Bettini
+	 *
+	 * @param <T1> The type of the first element
+	 * @param <T2> The type of the second element
+	 * @param <T3> The type of the third element
+	 */
+	public static class Triple<T1, T2, T3> {
+		private final T1 first;
+		private final T2 second;
+		private final T3 third;
+
+		/**
+		 * Creates a new triple with the given elements.
+		 * 
+		 * @param first The first element
+		 * @param second The second element
+		 * @param third The third element
+		 */
+		public Triple(final T1 first, final T2 second, final T3 third) {
+			this.first = first;
+			this.second = second;
+			this.third = third;
+		}
+
+		/**
+		 * Static factory method to create a new triple.
+		 * 
+		 * @param <U> The type of the first element
+		 * @param <V> The type of the second element
+		 * @param <W> The type of the third element
+		 * @param first The first element
+		 * @param second The second element
+		 * @param third The third element
+		 * @return A new triple containing the given elements
+		 */
+		public static <U, V, W> Triple<U, V, W> triple(final U first, final V second, final W third) {
+			return new Triple<>(first, second, third);
+		}
+
+		/**
+		 * Gets the first element of the triple.
+		 * 
+		 * @return The first element
+		 */
+		public T1 first() {
+			return first;
+		}
+
+		/**
+		 * Gets the second element of the triple.
+		 * 
+		 * @return The second element
+		 */
+		public T2 second() {
+			return second;
+		}
+
+		/**
+		 * Gets the third element of the triple.
+		 * 
+		 * @return The third element
+		 */
+		public T3 third() {
+			return third;
+		}
+
+		@Override
+		public String toString() {
+			return "(" + first + "," + second + "," + third + ")";
 		}
 	}
 
