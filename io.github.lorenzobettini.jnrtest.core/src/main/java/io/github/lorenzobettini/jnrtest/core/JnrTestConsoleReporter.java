@@ -110,9 +110,7 @@ public class JnrTestConsoleReporter implements JnrTestReporterInterface {
 				testStatistics.incrementErrors();
 				result.throwable().printStackTrace();
 			}
-			default -> {
-				testStatistics.incrementSucceeded();
-			}
+			default -> testStatistics.incrementSucceeded();
 		}
 		if (!onlySummaries) {
 			show(result.toString()
