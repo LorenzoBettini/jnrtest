@@ -100,21 +100,18 @@ public class JnrTestConsoleReporter implements JnrTestReporterInterface {
 	 * @param result the test result
 	 */
 	@Override
-	public void notify(JnrTestResult result) {
+	public void notify(final JnrTestResult result) {
 		switch (result.status()) {
-			case FAILED: {
+			case FAILED -> {
 				testStatistics.incrementFailed();
 				result.throwable().printStackTrace();
-				break;
 			}
-			case ERROR: {
+			case ERROR -> {
 				testStatistics.incrementErrors();
 				result.throwable().printStackTrace();
-				break;
 			}
-			default: { // SUCCESS
+			default -> {
 				testStatistics.incrementSucceeded();
-				break;
 			}
 		}
 		if (!onlySummaries) {
