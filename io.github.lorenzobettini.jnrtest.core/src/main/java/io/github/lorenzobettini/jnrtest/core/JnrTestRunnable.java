@@ -18,5 +18,5 @@ public interface JnrTestRunnable {
 	 * 
 	 * @throws Exception any exception that may occur during the run
 	 */
-	void runTest() throws Exception; // NOSONAR
+	void run() throws Exception; // NOSONAR
 }

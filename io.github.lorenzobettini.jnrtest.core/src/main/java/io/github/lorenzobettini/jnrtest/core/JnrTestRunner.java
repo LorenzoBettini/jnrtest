@@ -189,7 +189,7 @@ public class JnrTestRunner {
 		try {
 			notifyTestRunnableLifecycleEvent(
 					new JnrTestRunnableLifecycleEvent(description, kind, JnrTestRunnableStatus.START));
-			testRunnable.runTest();
+			testRunnable.run();
 		} finally {
 			notifyTestRunnableLifecycleEvent(
 					new JnrTestRunnableLifecycleEvent(description, kind, JnrTestRunnableStatus.END));
