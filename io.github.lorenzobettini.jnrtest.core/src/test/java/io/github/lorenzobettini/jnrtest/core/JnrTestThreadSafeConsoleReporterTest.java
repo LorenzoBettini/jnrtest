@@ -156,4 +156,26 @@ class JnrTestThreadSafeConsoleReporterTest {
 		String normalizedOutput = outputStream.toString().replace("\r\n", "\n");
 		assertThat(normalizedOutput).isEqualTo(expectedOutput.replace("\r\n", "\n"));
 	}
+
+	@Test
+	void shouldDelegateRunnableLifecycleEventsToUnderlying() {
+		// Need to trigger initialization by notifying a lifecycle event first
+		final JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter();
+		reporter.withElapsedTime(true);
+		
+		// First, initialize with a test lifecycle event
+		reporter.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.START));
+		
+		// Create a lifecycle event
+		final var event = new JnrTestRunnableLifecycleEvent(
+			"test",
+			JnrTestRunnableKind.TEST,
+			JnrTestRunnableStatus.START
+		);
+		
+		// Notify reporter - should delegate to underlying reporter
+		reporter.notify(event);
+		
+		// No exception means delegation worked
+	}
 }

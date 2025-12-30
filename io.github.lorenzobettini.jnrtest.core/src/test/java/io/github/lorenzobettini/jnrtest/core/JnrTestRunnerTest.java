@@ -405,4 +405,45 @@ class JnrTestRunnerTest {
 		inOrder.verify(callable).afterAllMethod1();
 	}
 
+	@Test
+	@DisplayName("testListener should return this for chaining")
+	void testListenerShouldReturnThisForChaining() {
+		final var runner = new JnrTestRunner();
+		final var listener = mock(JnrTestListener.class);
+		final var result = runner.testListener(listener);
+		assertThat(result).isSameAs(runner);
+	}
+
+	@Test
+	@DisplayName("classFilter should return this for chaining")
+	void classFilterShouldReturnThisForChaining() {
+		final var runner = new JnrTestRunner();
+		final var result = runner.classFilter(test -> true);
+		assertThat(result).isSameAs(runner);
+	}
+
+	@Test
+	@DisplayName("specificationFilter should return this for chaining")
+	void specificationFilterShouldReturnThisForChaining() {
+		final var runner = new JnrTestRunner();
+		final var result = runner.specificationFilter(spec -> true);
+		assertThat(result).isSameAs(runner);
+	}
+
+	@Test
+	@DisplayName("filterByClassDescription should return this for chaining")
+	void filterByClassDescriptionShouldReturnThisForChaining() {
+		final var runner = new JnrTestRunner();
+		final var result = runner.filterByClassDescription(".*");
+		assertThat(result).isSameAs(runner);
+	}
+
+	@Test
+	@DisplayName("filterBySpecificationDescription should return this for chaining")
+	void filterBySpecificationDescriptionShouldReturnThisForChaining() {
+		final var runner = new JnrTestRunner();
+		final var result = runner.filterBySpecificationDescription(".*");
+		assertThat(result).isSameAs(runner);
+	}
+
 }

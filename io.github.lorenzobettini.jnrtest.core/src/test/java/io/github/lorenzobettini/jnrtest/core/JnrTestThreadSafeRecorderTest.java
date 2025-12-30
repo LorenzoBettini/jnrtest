@@ -155,4 +155,37 @@ class JnrTestThreadSafeRecorderTest {
 		}
 		assertThat(recorder.isSuccess()).isFalse();
 	}
+
+	@Test
+	void shouldHandleRunnableLifecycleEventsForNonTestKind() {
+		final JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
+		recorder.withElapsedTime(true);
+		
+		// Create a lifecycle event for BEFORE_ALL (not TEST)
+		final var event = new JnrTestRunnableLifecycleEvent(
+			"before all",
+			JnrTestRunnableKind.BEFORE_ALL,
+			JnrTestRunnableStatus.START
+		);
+		
+		// Notify recorder - should be ignored
+		recorder.notify(event);
+		
+		// Total time should still be zero since event kind is not TEST
+		assertThat(recorder.getTotalTime()).isZero();
+	}
+
+	@Test
+	void shouldHandleLifecycleEventsForNonStartStatus() {
+		final JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
+		
+		// Create a lifecycle event with END status (not START)
+		final var event = new JnrTestLifecycleEvent("test class", JnrTestStatus.END);
+		
+		// Notify recorder - should not create any entry
+		recorder.notify(event);
+		
+		// Should not create any entry in results
+		assertThat(recorder.getResults()).isEmpty();
+	}
 }

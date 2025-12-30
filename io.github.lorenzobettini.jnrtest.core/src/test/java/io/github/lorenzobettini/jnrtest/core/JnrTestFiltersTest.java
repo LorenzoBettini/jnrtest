@@ -1,5 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -212,4 +213,33 @@ class JnrTestFiltersTest {
 		assertFalse(negated.test(additionSpec));
 		assertTrue(negated.test(subtractionSpec));
 	}
+
+	@Test
+	void byClassDescriptionShouldReturnThisForChaining() {
+		final var filters = new JnrTestFilters();
+		final var result = filters.byClassDescription(".*");
+		assertThat(result).isSameAs(filters);
+	}
+
+	@Test
+	void bySpecificationDescriptionShouldReturnThisForChaining() {
+		final var filters = new JnrTestFilters();
+		final var result = filters.bySpecificationDescription(".*");
+		assertThat(result).isSameAs(filters);
+	}
+
+	@Test
+	void classFilterShouldReturnThisForChaining() {
+		final var filters = new JnrTestFilters();
+		final var result = filters.classFilter(test -> true);
+		assertThat(result).isSameAs(filters);
+	}
+
+	@Test
+	void specificationFilterShouldReturnThisForChaining() {
+		final var filters = new JnrTestFilters();
+		final var result = filters.specificationFilter(spec -> true);
+		assertThat(result).isSameAs(filters);
+	}
 }
+

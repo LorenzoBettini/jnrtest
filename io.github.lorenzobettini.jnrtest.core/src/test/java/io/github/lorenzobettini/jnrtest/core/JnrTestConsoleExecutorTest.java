@@ -431,4 +431,28 @@ class JnrTestConsoleExecutorTest {
 		assertThat(methodsCalled[2]).isFalse(); // Database connect (filtered out)
 		assertThat(methodsCalled[3]).isFalse(); // Database query (filtered out)
 	}
+
+	@Test
+	@DisplayName("filterByClassDescription should return this for chaining")
+	void filterByClassDescriptionShouldReturnThisForChaining() {
+		final var executor = new JnrTestConsoleExecutor();
+		final var result = executor.filterByClassDescription(".*");
+		assertThat(result).isSameAs(executor);
+	}
+
+	@Test
+	@DisplayName("filterBySpecificationDescription should return this for chaining")
+	void filterBySpecificationDescriptionShouldReturnThisForChaining() {
+		final var executor = new JnrTestConsoleExecutor();
+		final var result = executor.filterBySpecificationDescription(".*");
+		assertThat(result).isSameAs(executor);
+	}
+
+	@Test
+	@DisplayName("specificationFilter should return this for chaining")
+	void specificationFilterShouldReturnThisForChaining() {
+		final var executor = new JnrTestConsoleExecutor();
+		final var result = executor.specificationFilter(spec -> true);
+		assertThat(result).isSameAs(executor);
+	}
 }

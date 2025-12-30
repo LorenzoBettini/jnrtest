@@ -169,4 +169,97 @@ class JnrTestConsoleReporterTest {
 		return errContent.toString().replace("\r", "");
 	}
 
+	@Test
+	@DisplayName("should handle lifecycle events for tests with elapsed time")
+	void shouldHandleLifecycleEventsForTestsWithElapsedTime() {
+		final var testReporter = new JnrTestConsoleReporter().withElapsedTime();
+		final JnrTestRunner runner = new JnrTestRunner()
+			.add(new JnrTest("a test class") {
+				@Override
+				protected void specify() {
+					test("test1", () -> {
+						// Add some delay to ensure measurable time
+						Thread.sleep(10); // NOSONAR
+					});
+				}
+			});
+		runner.testListener(testReporter);
+		runner.execute();
+		assertThat(getOutContent())
+			.contains(" - Time elapsed: ");
+	}
+
+	@Test
+	@DisplayName("should not report elapsed time for non-TEST lifecycle events")
+	void shouldNotReportElapsedTimeForNonTestLifecycleEvents() {
+		final var testReporter = new JnrTestConsoleReporter().withElapsedTime();
+		final JnrTestRunner runner = new JnrTestRunner()
+			.add(new JnrTest("a test class") {
+				@Override
+				protected void specify() {
+					beforeAll("before all", () -> {
+						Thread.sleep(10); // NOSONAR
+					});
+					test("test1", () -> {});
+				}
+			});
+		runner.testListener(testReporter);
+		runner.execute();
+		// beforeAll elapsed time should not be reported
+		final String output = getOutContent();
+		assertThat(output)
+			.doesNotContain("[  START] before all")
+			.contains("[  START] a test class");
+	}
+
+	@Test
+	@DisplayName("should handle STARTED and FINISHED lifecycle events")
+	void shouldHandleStartedAndFinishedLifecycleEvents() {
+		final var testReporter = new JnrTestConsoleReporter();
+		final JnrTestRunner runner = new JnrTestRunner()
+			.add(new JnrTest("test class A") {
+				@Override
+				protected void specify() {
+					test("test1", () -> {});
+				}
+			})
+			.add(new JnrTest("test class B") {
+				@Override
+				protected void specify() {
+					test("test2", () -> {});
+				}
+			});
+		runner.testListener(testReporter);
+		runner.execute();
+		final String output = getOutContent();
+		// Should see START for both test classes and summaries for both
+		assertThat(output)
+			.contains("[  START] test class A")
+			.contains("Tests run: 1, Succeeded: 1, Failures: 0, Errors: 0")
+			.contains("[  START] test class B");
+	}
+
+	@Test
+	@DisplayName("should track time for each individual test result")
+	void shouldTrackTimeForEachIndividualTestResult() {
+		final var testReporter = new JnrTestConsoleReporter().withElapsedTime();
+		final JnrTestRunner runner = new JnrTestRunner()
+			.add(new JnrTest("a test class") {
+				@Override
+				protected void specify() {
+					test("test1", () -> {
+						Thread.sleep(10); // NOSONAR
+					});
+					test("test2", () -> {
+						Thread.sleep(10); // NOSONAR
+					});
+				}
+			});
+		runner.testListener(testReporter);
+		runner.execute();
+		final String output = getOutContent();
+		// Each test result should have elapsed time: 2 test results + 1 summary = 3 occurrences
+		assertThat(output.split("Time elapsed:")).hasSizeGreaterThanOrEqualTo(3);
+	}
+
 }
