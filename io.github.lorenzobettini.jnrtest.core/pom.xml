@@ -11,6 +11,7 @@
 
 	<properties>
 		<argLine></argLine>
+		<pit-timeout-const>4000</pit-timeout-const>
 	</properties>
 
 	<dependencies>
@@ -37,6 +38,41 @@
 	</dependencies>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- Configure PIT Mutation Testing plugin here since it is invoked explicitly in CI -->
+				<plugin>
+					<groupId>org.pitest</groupId>
+					<artifactId>pitest-maven</artifactId>
+					<version>1.22.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.pitest</groupId>
+							<artifactId>pitest-junit5-plugin</artifactId>
+							<version>1.2.3</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<timeoutConstant>${pit-timeout-const}</timeoutConstant>
+						<mutationThreshold>100</mutationThreshold>
+						<targetClasses>
+							<param>io.github.lorenzobettini.jnrtest.core.*</param>
+						</targetClasses>
+						<targetTests>
+							<param>io.github.lorenzobettini.jnrtest.core.*</param>
+						</targetTests>
+						<outputFormats>
+							<param>HTML</param>
+							<param>XML</param>
+						</outputFormats>
+						<avoidCallsTo>
+							<avoidCallsTo>java.io.PrintStream</avoidCallsTo>
+							<avoidCallsTo>java.lang.ThreadLocal</avoidCallsTo>
+						</avoidCallsTo>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
