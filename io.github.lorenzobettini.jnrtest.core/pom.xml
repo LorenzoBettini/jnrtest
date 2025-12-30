@@ -69,6 +69,10 @@
 							<avoidCallsTo>java.io.PrintStream</avoidCallsTo>
 							<avoidCallsTo>java.lang.ThreadLocal</avoidCallsTo>
 						</avoidCallsTo>
+						<mutators>
+							<mutator>DEFAULTS</mutator>
+							<mutator>-MATH</mutator>
+						</mutators>
 					</configuration>
 				</plugin>
 			</plugins>
