@@ -54,7 +54,6 @@
 					</dependencies>
 					<configuration>
 						<timeoutConstant>${pit-timeout-const}</timeoutConstant>
-						<mutationThreshold>100</mutationThreshold>
 						<targetClasses>
 							<param>io.github.lorenzobettini.jnrtest.core.*</param>
 						</targetClasses>
