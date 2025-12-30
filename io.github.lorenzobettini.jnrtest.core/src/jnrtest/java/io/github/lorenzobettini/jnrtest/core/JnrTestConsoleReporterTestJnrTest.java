@@ -20,5 +20,13 @@ public class JnrTestConsoleReporterTestJnrTest extends JnrTest { // NOSONAR
 			() -> originalTest.shouldReportOnlySummary());
 		test("should report results with elapsed time",
 			() -> originalTest.shouldReportResultsWithElapsedTime());
+		test("should handle lifecycle events for tests with elapsed time",
+			() -> originalTest.shouldHandleLifecycleEventsForTestsWithElapsedTime());
+		test("should not report elapsed time for non-TEST lifecycle events",
+			() -> originalTest.shouldNotReportElapsedTimeForNonTestLifecycleEvents());
+		test("should handle STARTED and FINISHED lifecycle events",
+			() -> originalTest.shouldHandleStartedAndFinishedLifecycleEvents());
+		test("should track time for each individual test result",
+			() -> originalTest.shouldTrackTimeForEachIndividualTestResult());
 	}
 }

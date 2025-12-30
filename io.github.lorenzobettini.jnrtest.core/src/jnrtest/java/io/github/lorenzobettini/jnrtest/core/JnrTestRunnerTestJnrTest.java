@@ -24,5 +24,15 @@ public class JnrTestRunnerTestJnrTest extends JnrTest { // NOSONAR
 			() -> originalTest.shouldExecuteLifecycle());
 		test("should run extensions",
 			() -> originalTest.shouldRunExtensions());
+		test("testListener should return this for chaining",
+			() -> originalTest.testListenerShouldReturnThisForChaining());
+		test("classFilter should return this for chaining",
+			() -> originalTest.classFilterShouldReturnThisForChaining());
+		test("specificationFilter should return this for chaining",
+			() -> originalTest.specificationFilterShouldReturnThisForChaining());
+		test("filterByClassDescription should return this for chaining",
+			() -> originalTest.filterByClassDescriptionShouldReturnThisForChaining());
+		test("filterBySpecificationDescription should return this for chaining",
+			() -> originalTest.filterBySpecificationDescriptionShouldReturnThisForChaining());
 	}
 }

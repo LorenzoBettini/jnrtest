@@ -20,5 +20,7 @@ public class JnrTestThreadSafeConsoleReporterTestJnrTest extends JnrTest { // NO
 			() -> originalTest.testThreadSafetyWithResultsAndVerificationWithOnlySummaries());
 		test("testSingleThreadCompleteOutputVerification",
 			() -> originalTest.testSingleThreadCompleteOutputVerification());
+		test("shouldDelegateRunnableLifecycleEventsToUnderlying",
+			() -> originalTest.shouldDelegateRunnableLifecycleEventsToUnderlying());
 	}
 }

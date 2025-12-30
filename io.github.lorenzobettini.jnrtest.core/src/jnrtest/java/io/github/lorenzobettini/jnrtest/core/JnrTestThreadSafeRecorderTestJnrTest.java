@@ -16,5 +16,9 @@ public class JnrTestThreadSafeRecorderTestJnrTest extends JnrTest { // NOSONAR
 			() -> originalTest.testMultiThreadedRecording());
 		test("testMultiThreadedFailures",
 			() -> originalTest.testMultiThreadedFailures());
+		test("shouldHandleRunnableLifecycleEventsForNonTestKind",
+			() -> originalTest.shouldHandleRunnableLifecycleEventsForNonTestKind());
+		test("shouldHandleLifecycleEventsForNonStartStatus",
+			() -> originalTest.shouldHandleLifecycleEventsForNonStartStatus());
 	}
 }
