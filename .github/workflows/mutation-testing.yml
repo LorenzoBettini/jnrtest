@@ -1,0 +1,45 @@
+name: Mutation Testing
+
+on:
+  push:
+    paths-ignore:
+     - '**.md'
+  pull_request:
+    paths-ignore:
+     - '**.md'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Check out repository'
+        uses: actions/checkout@v6
+
+      - name: 'Set up Java'
+        uses: actions/setup-java@v5
+        with:
+          java-version: 21
+          distribution: 'temurin'
+
+      - name: 'Cache Maven packages'
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.m2
+          key: ${{ runner.os }}-m2-pitest-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: 'Mutation Testing with PIT'
+        run: >
+          mvn -pl io.github.lorenzobettini.jnrtest.core
+          test-compile
+          org.pitest:pitest-maven:mutationCoverage
+          -Dpit-timeout-const=1000
+
+      - name: Archive Mutation Testing Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-testing-report
+          path: io.github.lorenzobettini.jnrtest.core/target/pit-reports
+        if: always()
