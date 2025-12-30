@@ -157,21 +157,35 @@ class JnrTestThreadSafeRecorderTest {
 	}
 
 	@Test
-	void shouldHandleRunnableLifecycleEventsForNonTestKind() {
+	void shouldHandleRunnableLifecycleEventsForNonTestKind() throws InterruptedException {
 		final JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
 		recorder.withElapsedTime(true);
 		
-		// Create a lifecycle event for BEFORE_ALL (not TEST)
-		final var event = new JnrTestRunnableLifecycleEvent(
+		// Create a START event for BEFORE_ALL (not TEST)
+		final var startEvent = new JnrTestRunnableLifecycleEvent(
 			"before all",
 			JnrTestRunnableKind.BEFORE_ALL,
 			JnrTestRunnableStatus.START
 		);
 		
 		// Notify recorder - should be ignored
-		recorder.notify(event);
+		recorder.notify(startEvent);
 		
-		// Total time should still be zero since event kind is not TEST
+		// Add some delay
+		Thread.sleep(10); // NOSONAR
+		
+		// Create an END event for BEFORE_ALL
+		final var endEvent = new JnrTestRunnableLifecycleEvent(
+			"before all",
+			JnrTestRunnableKind.BEFORE_ALL,
+			JnrTestRunnableStatus.END
+		);
+		
+		// Notify recorder - should also be ignored
+		recorder.notify(endEvent);
+		
+		// Total time MUST be zero since event kind is not TEST
+		// If mutant removes condition, timer would execute and time > 0
 		assertThat(recorder.getTotalTime()).isZero();
 	}
 
@@ -187,5 +201,75 @@ class JnrTestThreadSafeRecorderTest {
 		
 		// Should not create any entry in results
 		assertThat(recorder.getResults()).isEmpty();
+	}
+
+	@Test
+	void shouldHandleRunnableLifecycleEventsWhenElapsedTimeDisabled() throws InterruptedException {
+		final JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
+		recorder.withElapsedTime(false);
+		
+		// Create TEST events when elapsed time is disabled
+		final var startEvent = new JnrTestRunnableLifecycleEvent(
+			"test",
+			JnrTestRunnableKind.TEST,
+			JnrTestRunnableStatus.START
+		);
+		
+		// Should return early
+		recorder.notify(startEvent);
+		
+		// Add some delay
+		Thread.sleep(10); // NOSONAR
+		
+		final var endEvent = new JnrTestRunnableLifecycleEvent(
+			"test",
+			JnrTestRunnableKind.TEST,
+			JnrTestRunnableStatus.END
+		);
+		
+		// Should also return early
+		recorder.notify(endEvent);
+		
+		// Total time MUST be zero because elapsed time is disabled
+		assertThat(recorder.getTotalTime()).isZero();
+	}
+
+	@Test
+	void shouldStartTimerWhenStatusIsStartInThreadSafeRecorder() throws InterruptedException {
+		// Test line if (event.status() == JnrTestRunnableStatus.START)
+		final JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
+		recorder.withElapsedTime(true);
+		recorder.notify(new JnrTestLifecycleEvent("test", JnrTestStatus.START));
+		
+		// START status - should start timer
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.START));
+		Thread.sleep(10); // NOSONAR
+		// Non-START status - should stop timer
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.END));
+		
+		// Verify time was tracked
+		assertThat(recorder.getTotalTime()).isPositive();
+	}
+
+	@Test
+	void shouldAccumulateTimeOnNonStartStatusInThreadSafeRecorder() throws InterruptedException {
+		// Test the else branch
+		final JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
+		recorder.withElapsedTime(true);
+		recorder.notify(new JnrTestLifecycleEvent("test", JnrTestStatus.START));
+		
+		// First cycle
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.START));
+		Thread.sleep(10); // NOSONAR
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.END));
+		
+		long firstTime = recorder.getTotalTime();
+		
+		// Second cycle - should accumulate
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test2", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.START));
+		Thread.sleep(10); // NOSONAR
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test2", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.END));
+		
+		assertThat(recorder.getTotalTime()).isGreaterThan(firstTime);
 	}
 }

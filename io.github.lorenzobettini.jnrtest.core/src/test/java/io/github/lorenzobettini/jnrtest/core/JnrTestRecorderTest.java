@@ -36,39 +36,66 @@ class JnrTestRecorderTest {
 
 	@Test
 	@DisplayName("should handle runnable lifecycle events for non-TEST kind")
-	void shouldHandleRunnableLifecycleEventsForNonTestKind() {
+	void shouldHandleRunnableLifecycleEventsForNonTestKind() throws InterruptedException {
 		recorder.withElapsedTime(true);
 		
-		// Create a lifecycle event for BEFORE_ALL (not TEST)
-		final var event = new JnrTestRunnableLifecycleEvent(
+		// Create a START event for BEFORE_ALL (not TEST)
+		final var startEvent = new JnrTestRunnableLifecycleEvent(
 			"before all",
 			JnrTestRunnableKind.BEFORE_ALL,
 			JnrTestRunnableStatus.START
 		);
 		
 		// Notify recorder - should be ignored
-		recorder.notify(event);
+		recorder.notify(startEvent);
 		
-		// Total time should still be zero
+		// Add some delay
+		Thread.sleep(10); // NOSONAR
+		
+		// Create an END event for BEFORE_ALL
+		final var endEvent = new JnrTestRunnableLifecycleEvent(
+			"before all",
+			JnrTestRunnableKind.BEFORE_ALL,
+			JnrTestRunnableStatus.END
+		);
+		
+		// Notify recorder - should also be ignored
+		recorder.notify(endEvent);
+		
+		// Total time MUST be zero because early return
 		assertEquals(0L, recorder.getTotalTime());
 	}
 
 	@Test
 	@DisplayName("should handle runnable lifecycle events when elapsed time is disabled")
-	void shouldHandleRunnableLifecycleEventsWhenElapsedTimeIsDisabled() {
+	void shouldHandleRunnableLifecycleEventsWhenElapsedTimeIsDisabled() throws InterruptedException {
 		recorder.withElapsedTime(false);
 		
-		// Create a lifecycle event for TEST kind
-		final var event = new JnrTestRunnableLifecycleEvent(
+		// Create a lifecycle event for TEST kind with START status
+		final var startEvent = new JnrTestRunnableLifecycleEvent(
 			"test",
 			JnrTestRunnableKind.TEST,
 			JnrTestRunnableStatus.START
 		);
 		
 		// Notify recorder - should be ignored
-		recorder.notify(event);
+		recorder.notify(startEvent);
 		
-		// Total time should still be zero
+		// Add some delay
+		Thread.sleep(10); // NOSONAR
+		
+		// Create an END event
+		final var endEvent = new JnrTestRunnableLifecycleEvent(
+			"test",
+			JnrTestRunnableKind.TEST,
+			JnrTestRunnableStatus.END
+		);
+		
+		// Notify recorder - should also be ignored
+		recorder.notify(endEvent);
+		
+		// Total time MUST be zero because early return
+		// If mutant removes condition, timer code would execute and time would be > 0
 		assertEquals(0L, recorder.getTotalTime());
 	}
 
@@ -125,5 +152,57 @@ class JnrTestRecorderTest {
 		assertFalse(recorder.isSuccess());
 		assertThat(recorder.getResults()).containsKey("test class");
 		assertThat(recorder.getResults().get("test class")).hasSize(2);
+	}
+
+	@Test
+	@DisplayName("should start timer when status is START and kind is TEST")
+	void shouldStartTimerWhenStatusIsStartAndKindIsTest() throws InterruptedException {
+		// Test line if (event.status() == JnrTestRunnableStatus.START)
+		recorder.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.START));
+		recorder.withElapsedTime(true);
+		
+		// First START - should set startTime
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.START));
+		Thread.sleep(10); // NOSONAR
+		
+		// Second START (without END) - should RESET startTime, not accumulate
+		// startTime is reset, totalTime stays 0
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test2", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.START));
+		
+		// At this point, with correct code, no END has been called, so totalTime should be 0
+		assertThat(recorder.getTotalTime()).isZero();
+		
+		// Add sleep before END to ensure measurable elapsed time
+		Thread.sleep(10); // NOSONAR
+		
+		// Now call END to properly finish
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test2", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.END));
+		
+		// Now totalTime should be positive (from test2 only)
+		assertThat(recorder.getTotalTime()).isPositive();
+	}
+
+	@Test
+	@DisplayName("should accumulate time on non-START status")
+	void shouldAccumulateTimeOnNonStartStatus() throws InterruptedException {
+		// Test else branch: totalTime += ...
+		recorder.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.START));
+		recorder.withElapsedTime(true);
+		
+		// First test
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.START));
+		Thread.sleep(10); // NOSONAR
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.END));
+		
+		long firstTime = recorder.getTotalTime();
+		assertThat(firstTime).isPositive();
+		
+		// Second test - time should accumulate
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test2", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.START));
+		Thread.sleep(10); // NOSONAR
+		recorder.notify(new JnrTestRunnableLifecycleEvent("test2", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.END));
+		
+		// Total should be greater than first time
+		assertThat(recorder.getTotalTime()).isGreaterThan(firstTime);
 	}
 }

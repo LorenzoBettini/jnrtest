@@ -182,4 +182,33 @@ class JnrTestThreadSafeConsoleReporterTest {
 		// Verify that output was captured (delegation occurred)
 		assertThat(outputStream.toString()).isNotEmpty();
 	}
+
+	@Test
+	void shouldCallUnderlyingReporterNotifyForRunnableEvents() throws InterruptedException {
+		// Test line reporter.notify(event) - VoidMethodCallMutator
+		// The mutant would REMOVE this call, breaking elapsed time tracking
+		final JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter();
+		reporter.withElapsedTime(true);
+		
+		reporter.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.START));
+		
+		// These RunnableLifecycleEvent notifications go through line reporter.notify(event)
+		// If the method call is removed (mutant), timer won't start/stop
+		reporter.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.START));
+		Thread.sleep(20); // NOSONAR - Increase sleep time for more reliable timing
+		reporter.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.END));
+		
+		reporter.notify(new JnrTestResult("test1", JnrTestResultStatus.SUCCESS, null));
+		reporter.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.END));
+		
+		// CRITICAL: If reporter.notify(event) was NOT called (mutant), 
+		// elapsed time would be 0.000000 instead of >0
+		final String output = outputStream.toString();
+		assertThat(output).contains("Time elapsed:");
+		
+		// More importantly, verify time is NOT zero
+		// Extract the time value and verify it's positive
+		assertThat(output).doesNotContain("Time elapsed: 0.000000 s");
+		assertThat(output).containsPattern("Time elapsed: 0\\.0[1-9][0-9]*");
+	}
 }
