@@ -1,5 +1,6 @@
 package io.github.lorenzobettini.jnrtest.core;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -212,4 +213,82 @@ class JnrTestFiltersTest {
 		assertFalse(negated.test(additionSpec));
 		assertTrue(negated.test(subtractionSpec));
 	}
+
+	@Test
+	void byClassDescriptionShouldReturnThisForChaining() {
+		final var filters = new JnrTestFilters();
+		final var result = filters.byClassDescription(".*");
+		assertThat(result).isSameAs(filters);
+	}
+
+	@Test
+	void bySpecificationDescriptionShouldReturnThisForChaining() {
+		final var filters = new JnrTestFilters();
+		final var result = filters.bySpecificationDescription(".*");
+		assertThat(result).isSameAs(filters);
+	}
+
+	@Test
+	void classFilterShouldReturnThisForChaining() {
+		final var filters = new JnrTestFilters();
+		final var result = filters.classFilter(test -> true);
+		assertThat(result).isSameAs(filters);
+	}
+
+	@Test
+	void specificationFilterShouldReturnThisForChaining() {
+		final var filters = new JnrTestFilters();
+		final var result = filters.specificationFilter(spec -> true);
+		assertThat(result).isSameAs(filters);
+	}
+
+	@Test
+	void shouldSetClassFilterWhenNullAndCombineWithAndWhenNotNull() {
+		// Kill mutant: this.classFilter != null
+		// Mutant makes it always false, so always executes else (overwrites instead of ANDing)
+		
+		JnrTestFilters f = new JnrTestFilters();
+		Predicate<JnrTest> p1 = t -> false; // Rejects everything
+		Predicate<JnrTest> p2 = t -> true; // Accepts everything
+		
+		f.classFilter(p1); // Sets filter to p1 (rejects all)
+		f.classFilter(p2); // Should AND with p1, result: rejects all (false AND true = false)
+		
+		// Test with any input:
+		// Original: false AND true = FALSE
+		// Mutant (overwrite): true = TRUE
+		JnrTest anyTest = new FakeTest("anything");
+		boolean result = f.getClassFilter().test(anyTest);
+		
+		// MUST be false (original behavior)
+		// If mutant (overwrite), would be true
+		assertFalse(result);
+	}
+
+	@Test
+	void shouldSetSpecificationFilterWhenNullAndCombineWithAndWhenNotNull() {
+		// Same test for specification filter
+		final var filters = new JnrTestFilters();
+		
+		// First call - filter is null, sets it directly
+		// Reject anything containing "x"
+		filters.specificationFilter(spec -> !spec.description().contains("x"));
+		assertThat(filters.getSpecificationFilter()).isNotNull();
+		
+		// Second call - filter is NOT null, should AND
+		// Accept anything longer than 3 characters
+		filters.specificationFilter(spec -> spec.description().length() > 3);
+		
+		// Test "xyz" - has x (rejected by first) but length > 3 (accepted by second)
+		// Original (AND): false AND true = FALSE
+		// Mutant (overwrite): true (only checks length)
+		assertFalse(filters.getSpecificationFilter().test(
+			new JnrTestRunnableSpecification("xyz", EMPTY_RUNNABLE)));
+		
+		// Test "abcd" - no x (accepted by first) and length > 3 (accepted by second)
+		// Both: true AND true = TRUE
+		assertTrue(filters.getSpecificationFilter().test(
+			new JnrTestRunnableSpecification("abcd", EMPTY_RUNNABLE)));
+	}
+
 }

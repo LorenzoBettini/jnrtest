@@ -156,4 +156,58 @@ class JnrTestThreadSafeConsoleReporterTest {
 		String normalizedOutput = outputStream.toString().replace("\r\n", "\n");
 		assertThat(normalizedOutput).isEqualTo(expectedOutput.replace("\r\n", "\n"));
 	}
+
+	@Test
+	void shouldDelegateRunnableLifecycleEventsToUnderlying() {
+		// Need to trigger initialization by notifying a lifecycle event first
+		final JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter();
+		reporter.withElapsedTime(true);
+		
+		// First, initialize with a test lifecycle event
+		reporter.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.START));
+		
+		// Create a lifecycle event
+		final var event = new JnrTestRunnableLifecycleEvent(
+			"test",
+			JnrTestRunnableKind.TEST,
+			JnrTestRunnableStatus.START
+		);
+		
+		// Notify reporter - should delegate to underlying reporter
+		reporter.notify(event);
+		
+		// End the lifecycle to flush output
+		reporter.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.END));
+		
+		// Verify that output was captured (delegation occurred)
+		assertThat(outputStream.toString()).isNotEmpty();
+	}
+
+	@Test
+	void shouldCallUnderlyingReporterNotifyForRunnableEvents() throws InterruptedException {
+		// Test line reporter.notify(event) - VoidMethodCallMutator
+		// The mutant would REMOVE this call, breaking elapsed time tracking
+		final JnrTestThreadSafeConsoleReporter reporter = new JnrTestThreadSafeConsoleReporter();
+		reporter.withElapsedTime(true);
+		
+		reporter.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.START));
+		
+		// These RunnableLifecycleEvent notifications go through line reporter.notify(event)
+		// If the method call is removed (mutant), timer won't start/stop
+		reporter.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.START));
+		Thread.sleep(20); // NOSONAR - Increase sleep time for more reliable timing
+		reporter.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.END));
+		
+		reporter.notify(new JnrTestResult("test1", JnrTestResultStatus.SUCCESS, null));
+		reporter.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.END));
+		
+		// CRITICAL: If reporter.notify(event) was NOT called (mutant), 
+		// elapsed time would be 0.000000 instead of >0
+		// More importantly, verify time is NOT zero
+		// Extract the time value and verify it's positive
+		final String output = outputStream.toString();
+		assertThat(output).contains("Time elapsed:")
+			.doesNotContain("Time elapsed: 0.000000 s")
+			.containsPattern("Time elapsed: 0\\.[0-9][0-9]*");
+	}
 }

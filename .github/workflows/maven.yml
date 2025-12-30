@@ -35,3 +35,10 @@ jobs:
 
       - name: 'Build and test'
         run: mvn verify -Pbenchmarks
+      
+      - name: Archive Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ runner.os }}
+          path: '**/target/surefire-reports'
+        if: always()

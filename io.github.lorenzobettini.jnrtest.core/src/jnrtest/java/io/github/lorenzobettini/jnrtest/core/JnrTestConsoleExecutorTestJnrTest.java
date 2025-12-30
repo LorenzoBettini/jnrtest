@@ -38,5 +38,11 @@ public class JnrTestConsoleExecutorTestJnrTest extends JnrTest { // NOSONAR
 			() -> originalTest.shouldApplyMultipleFiltersWithAndLogic());
 		test("should apply class description filter correctly",
 			() -> originalTest.shouldApplyClassDescriptionFilterCorrectly());
+		test("filterByClassDescription should return this for chaining",
+			() -> originalTest.filterByClassDescriptionShouldReturnThisForChaining());
+		test("filterBySpecificationDescription should return this for chaining",
+			() -> originalTest.filterBySpecificationDescriptionShouldReturnThisForChaining());
+		test("specificationFilter should return this for chaining",
+			() -> originalTest.specificationFilterShouldReturnThisForChaining());
 	}
 }

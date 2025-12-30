@@ -32,5 +32,17 @@ public class JnrTestFiltersTestJnrTest extends JnrTest { // NOSONAR
 			() -> originalTest.testDirectPredicateOrWithConvenienceMethods());
 		test("testConvenienceMethodsNegation",
 			() -> originalTest.testConvenienceMethodsNegation());
+		test("byClassDescriptionShouldReturnThisForChaining",
+			() -> originalTest.byClassDescriptionShouldReturnThisForChaining());
+		test("bySpecificationDescriptionShouldReturnThisForChaining",
+			() -> originalTest.bySpecificationDescriptionShouldReturnThisForChaining());
+		test("classFilterShouldReturnThisForChaining",
+			() -> originalTest.classFilterShouldReturnThisForChaining());
+		test("specificationFilterShouldReturnThisForChaining",
+			() -> originalTest.specificationFilterShouldReturnThisForChaining());
+		test("shouldSetClassFilterWhenNullAndCombineWithAndWhenNotNull",
+			() -> originalTest.shouldSetClassFilterWhenNullAndCombineWithAndWhenNotNull());
+		test("shouldSetSpecificationFilterWhenNullAndCombineWithAndWhenNotNull",
+			() -> originalTest.shouldSetSpecificationFilterWhenNullAndCombineWithAndWhenNotNull());
 	}
 }
