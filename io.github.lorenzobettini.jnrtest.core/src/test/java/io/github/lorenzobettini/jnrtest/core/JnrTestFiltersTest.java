@@ -244,7 +244,7 @@ class JnrTestFiltersTest {
 
 	@Test
 	void shouldSetClassFilterWhenNullAndCombineWithAndWhenNotNull() {
-		// Kill line 54 mutant: if (this.classFilter != null)
+		// Kill line 54 mutant: this.classFilter != null
 		// Mutant makes it always false, so always executes else (overwrites instead of ANDing)
 		
 		JnrTestFilters f = new JnrTestFilters();

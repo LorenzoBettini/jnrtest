@@ -236,7 +236,7 @@ class JnrTestThreadSafeRecorderTest {
 
 	@Test
 	void shouldStartTimerWhenStatusIsStartInThreadSafeRecorder() throws InterruptedException {
-		// Test line if (event.status() == JnrTestRunnableStatus.START)
+		// Test line event.status() == JnrTestRunnableStatus.START
 		final JnrTestThreadSafeRecorder recorder = new JnrTestThreadSafeRecorder();
 		recorder.withElapsedTime(true);
 		recorder.notify(new JnrTestLifecycleEvent("test", JnrTestStatus.START));

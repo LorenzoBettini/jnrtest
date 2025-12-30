@@ -349,7 +349,7 @@ class JnrTestConsoleReporterTest {
 	@Test
 	@DisplayName("should call startTimer when status is START")
 	void shouldCallStartTimerWhenStatusIsStart() throws InterruptedException {
-		// Test if (event.status() == JnrTestRunnableStatus.START) startTimer
+		// Test "event.status() == JnrTestRunnableStatus.START startTimer"
 		final var reporter = new JnrTestConsoleReporter().withElapsedTime(true);
 		reporter.notify(new JnrTestLifecycleEvent("test", JnrTestStatus.START));
 		

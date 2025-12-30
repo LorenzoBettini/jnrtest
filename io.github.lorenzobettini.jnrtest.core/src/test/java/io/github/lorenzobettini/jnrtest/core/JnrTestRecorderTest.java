@@ -157,7 +157,7 @@ class JnrTestRecorderTest {
 	@Test
 	@DisplayName("should start timer when status is START and kind is TEST")
 	void shouldStartTimerWhenStatusIsStartAndKindIsTest() throws InterruptedException {
-		// Test line if (event.status() == JnrTestRunnableStatus.START)
+		// Test line event.status() == JnrTestRunnableStatus.START
 		recorder.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.START));
 		recorder.withElapsedTime(true);
 		

@@ -203,12 +203,11 @@ class JnrTestThreadSafeConsoleReporterTest {
 		
 		// CRITICAL: If reporter.notify(event) was NOT called (mutant), 
 		// elapsed time would be 0.000000 instead of >0
-		final String output = outputStream.toString();
-		assertThat(output).contains("Time elapsed:");
-		
 		// More importantly, verify time is NOT zero
 		// Extract the time value and verify it's positive
-		assertThat(output).doesNotContain("Time elapsed: 0.000000 s");
-		assertThat(output).containsPattern("Time elapsed: 0\\.0[1-9][0-9]*");
+		final String output = outputStream.toString();
+		assertThat(output).contains("Time elapsed:")
+			.doesNotContain("Time elapsed: 0.000000 s")
+			.containsPattern("Time elapsed: 0\\.0[1-9][0-9]*");
 	}
 }
