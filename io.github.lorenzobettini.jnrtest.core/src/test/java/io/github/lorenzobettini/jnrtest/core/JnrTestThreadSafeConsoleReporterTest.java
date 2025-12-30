@@ -176,6 +176,10 @@ class JnrTestThreadSafeConsoleReporterTest {
 		// Notify reporter - should delegate to underlying reporter
 		reporter.notify(event);
 		
-		// No exception means delegation worked
+		// End the lifecycle to flush output
+		reporter.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.END));
+		
+		// Verify that output was captured (delegation occurred)
+		assertThat(outputStream.toString()).isNotEmpty();
 	}
 }
