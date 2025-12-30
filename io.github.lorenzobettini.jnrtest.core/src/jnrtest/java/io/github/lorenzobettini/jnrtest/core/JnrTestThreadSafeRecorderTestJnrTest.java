@@ -20,5 +20,11 @@ public class JnrTestThreadSafeRecorderTestJnrTest extends JnrTest { // NOSONAR
 			() -> originalTest.shouldHandleRunnableLifecycleEventsForNonTestKind());
 		test("shouldHandleLifecycleEventsForNonStartStatus",
 			() -> originalTest.shouldHandleLifecycleEventsForNonStartStatus());
+		test("shouldHandleRunnableLifecycleEventsWhenElapsedTimeDisabled",
+			() -> originalTest.shouldHandleRunnableLifecycleEventsWhenElapsedTimeDisabled());
+		test("shouldStartTimerWhenStatusIsStartInThreadSafeRecorder",
+			() -> originalTest.shouldStartTimerWhenStatusIsStartInThreadSafeRecorder());
+		test("shouldAccumulateTimeOnNonStartStatusInThreadSafeRecorder",
+			() -> originalTest.shouldAccumulateTimeOnNonStartStatusInThreadSafeRecorder());
 	}
 }

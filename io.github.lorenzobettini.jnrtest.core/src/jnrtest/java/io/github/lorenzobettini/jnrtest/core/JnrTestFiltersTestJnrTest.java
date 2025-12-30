@@ -40,5 +40,9 @@ public class JnrTestFiltersTestJnrTest extends JnrTest { // NOSONAR
 			() -> originalTest.classFilterShouldReturnThisForChaining());
 		test("specificationFilterShouldReturnThisForChaining",
 			() -> originalTest.specificationFilterShouldReturnThisForChaining());
+		test("shouldSetClassFilterWhenNullAndCombineWithAndWhenNotNull",
+			() -> originalTest.shouldSetClassFilterWhenNullAndCombineWithAndWhenNotNull());
+		test("shouldSetSpecificationFilterWhenNullAndCombineWithAndWhenNotNull",
+			() -> originalTest.shouldSetSpecificationFilterWhenNullAndCombineWithAndWhenNotNull());
 	}
 }

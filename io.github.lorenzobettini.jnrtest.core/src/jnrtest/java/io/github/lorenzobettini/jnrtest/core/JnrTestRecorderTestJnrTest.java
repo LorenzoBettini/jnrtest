@@ -24,5 +24,7 @@ public class JnrTestRecorderTestJnrTest extends JnrTest { // NOSONAR
 			() -> originalTest.withElapsedTimeShouldReturnThisForChaining());
 		test("should record results correctly",
 			() -> originalTest.shouldRecordResultsCorrectly());
+		test("should start timer when status is START and kind is TEST",
+			() -> originalTest.shouldStartTimerWhenStatusIsStartAndKindIsTest());
 	}
 }
