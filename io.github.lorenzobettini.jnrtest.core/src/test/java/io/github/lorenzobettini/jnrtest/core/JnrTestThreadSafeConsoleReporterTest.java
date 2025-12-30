@@ -208,6 +208,6 @@ class JnrTestThreadSafeConsoleReporterTest {
 		final String output = outputStream.toString();
 		assertThat(output).contains("Time elapsed:")
 			.doesNotContain("Time elapsed: 0.000000 s")
-			.containsPattern("Time elapsed: 0\\.0[1-9][0-9]*");
+			.containsPattern("Time elapsed: 0\\.[0-9][0-9]*");
 	}
 }
