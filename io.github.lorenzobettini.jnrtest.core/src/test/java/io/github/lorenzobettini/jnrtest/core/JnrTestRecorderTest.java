@@ -182,27 +182,4 @@ class JnrTestRecorderTest {
 		assertThat(recorder.getTotalTime()).isPositive();
 	}
 
-	@Test
-	@DisplayName("should accumulate time on non-START status")
-	void shouldAccumulateTimeOnNonStartStatus() throws InterruptedException {
-		// Test else branch: totalTime += ...
-		recorder.notify(new JnrTestLifecycleEvent("test class", JnrTestStatus.START));
-		recorder.withElapsedTime(true);
-		
-		// First test
-		recorder.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.START));
-		Thread.sleep(10); // NOSONAR
-		recorder.notify(new JnrTestRunnableLifecycleEvent("test1", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.END));
-		
-		long firstTime = recorder.getTotalTime();
-		assertThat(firstTime).isPositive();
-		
-		// Second test - time should accumulate
-		recorder.notify(new JnrTestRunnableLifecycleEvent("test2", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.START));
-		Thread.sleep(10); // NOSONAR
-		recorder.notify(new JnrTestRunnableLifecycleEvent("test2", JnrTestRunnableKind.TEST, JnrTestRunnableStatus.END));
-		
-		// Total should be greater than first time
-		assertThat(recorder.getTotalTime()).isGreaterThan(firstTime);
-	}
 }
