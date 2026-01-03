@@ -46,7 +46,7 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>src/inputs/java</source>
+								<source>src/test/inputs</source>
 							</sources>
 						</configuration>
 					</execution>
