@@ -452,6 +452,7 @@ public class JnrTestJUnitProcessor {
 
 				public static void main(String[] args) {
 					var executor = new JnrTestConsoleExecutor();
+					executor.getReporter().withOnlySummaries();
 
 			""".formatted(packageName);
 

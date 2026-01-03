@@ -8,6 +8,7 @@ public class JnrTestMain {
 
 	public static void main(String[] args) {
 		var executor = new JnrTestConsoleExecutor();
+		executor.getReporter().withOnlySummaries();
 
 		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleExecutorTestJnrTest());
 		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleParallelExecutorTestJnrTest());
