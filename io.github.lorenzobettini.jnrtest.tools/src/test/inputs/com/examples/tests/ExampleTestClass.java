@@ -13,11 +13,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class ExampleTest2 {
+class ExampleTestClass {
 
 	String aString = "ExampleTest in JnrTest";
 	int anInt = 42;
 	List<String> aList;
+
+	/**
+	 * An inner helper class, not a test
+	 */
+	private static class InnerHelper {
+		// This is a helper class, not a test
+		public void doSomething() {
+			System.out.println("InnerHelper doing something");
+		}
+	}
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {

@@ -8,10 +8,10 @@ import java.util.List;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class ExampleTestJnrTest extends JnrTest {
+public class ExampleTest2ClassJnrTest extends JnrTest {
 
-	public ExampleTestJnrTest() {
-		super("ExampleTest in JnrTest");
+	public ExampleTest2ClassJnrTest() {
+		super("ExampleTest2Class in JnrTest");
 	}
 
 	protected @Override void specify() {
@@ -43,16 +43,6 @@ public class ExampleTestJnrTest extends JnrTest {
 	String aString = "ExampleTest in JnrTest";
 	int anInt = 42;
 	List<String> aList;
-
-	/**
-	 * An inner helper class, not a test
-	 */
-	private static class InnerHelper {
-		// This is a helper class, not a test
-		public void doSomething() {
-			System.out.println("InnerHelper doing something");
-		}
-	}
 
 	private void helperMethod() {
 		// This is a helper method, not a test

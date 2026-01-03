@@ -2,8 +2,12 @@ package io.github.lorenzobettini.jnrtest.tools;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,13 +17,16 @@ class JnrTestMainGeneratorTest {
 	private static final String OUTPUT = "target/output-main-generator";
 
 	@BeforeEach
-	void setUp() {
+	void setUp() throws IOException {
 		// prepare output directory: clean if exists, create otherwise
-		var outputDir = Path.of(OUTPUT);
-		if (outputDir.toFile().exists()) {
-			outputDir.toFile().delete();
+		Path outputPath = Paths.get(OUTPUT);
+		if (Files.exists(outputPath)) {
+			Files.walk(outputPath)
+				.sorted(Comparator.reverseOrder())
+				.map(Path::toFile)
+				.forEach(File::delete);
 		}
-		outputDir.toFile().mkdirs();
+		Files.createDirectories(outputPath);
 	}
 
 	/**
