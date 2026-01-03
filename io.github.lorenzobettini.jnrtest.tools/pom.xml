@@ -21,6 +21,10 @@
 			<artifactId>org.eclipse.jdt.core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.platform</groupId>
+			<artifactId>org.eclipse.text</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.palantir.javapoet</groupId>
 			<artifactId>javapoet</artifactId>
 		</dependency>
