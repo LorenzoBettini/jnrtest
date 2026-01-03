@@ -146,7 +146,6 @@ public final class JnrTestDiscovery {
 		return false;
 	}
 
-
 	private static boolean isNewableNoArgPublicCtor(ITypeBinding tb) {
 		int mods = tb.getModifiers();
 		if (!java.lang.reflect.Modifier.isPublic(mods) || java.lang.reflect.Modifier.isAbstract(mods)) {
@@ -168,9 +167,9 @@ public final class JnrTestDiscovery {
 		return false;
 	}
 
-	private record TypeHit(String qualifiedName, boolean newable) {}
+	private static record TypeHit(String qualifiedName, boolean newable) {}
 
-	private record ParserConfig(String[] classpathEntries, String[] sourcepathEntries, // NOSONAR we don't need equals/hashCode
+	private static record ParserConfig(String[] classpathEntries, String[] sourcepathEntries, // NOSONAR we don't need equals/hashCode
 			Map<String, String> compilerOptions) {
 
 		static ParserConfig from(Path projectRoot, Path srcRoot) {
