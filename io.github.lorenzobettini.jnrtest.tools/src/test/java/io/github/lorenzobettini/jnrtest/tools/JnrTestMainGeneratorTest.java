@@ -3,7 +3,6 @@ package io.github.lorenzobettini.jnrtest.tools;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -39,14 +38,12 @@ class JnrTestMainGeneratorTest {
 		
 		// Read the generated file
 		var generatedFile = Path.of(OUTPUT, "com/examples/main/JnrTestMainGenerated.java");
-		var generatedContent = Files.readString(generatedFile);
 		
 		// Read the expected file
 		var expectedFile = Path.of("src/test/outputs/com/examples/main/JnrTestMainGenerated.java");
-		var expectedContent = Files.readString(expectedFile);
 		
 		// Compare
-		assertThat(generatedContent).isEqualTo(expectedContent);
+		assertThat(generatedFile).hasSameTextualContentAs(expectedFile);
 	}
 
 }
