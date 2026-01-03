@@ -16,18 +16,14 @@ import io.github.lorenzobettini.jnrtest.core.JnrTestRunner;
 
 public class JnrTestMainGenerator {
 
-	private JnrTestMainGenerator() {
-		// utility class
-	}
-
 	/**
 	 * @param srcDir the source directory where to find the JnrTest subclasses
 	 * @param outputDir the output directory where to generate the main class
 	 * @param outputClass the fully qualified name of the output main class to generate
 	 * @throws IOException 
 	 */
-	public static void generateMain(String srcDir, String outputDir, String outputClass) throws IOException {
-		var jnrTestInstnatiableClasses = JnrTestDiscovery.discover(srcDir);
+	public void generateMain(String srcDir, String outputDir, String outputClass) throws IOException {
+		var jnrTestInstnatiableClasses = new JnrTestDiscovery().discover(srcDir);
 		
 		// Extract package and class name from outputClass
 		var lastDot = outputClass.lastIndexOf('.');

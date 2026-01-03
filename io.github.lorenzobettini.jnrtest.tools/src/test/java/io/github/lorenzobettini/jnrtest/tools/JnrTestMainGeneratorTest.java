@@ -41,7 +41,7 @@ class JnrTestMainGeneratorTest {
 		var outputClass = "com.examples.discovery.main.JnrTestMainGenerated";
 		
 		// Generate the main class
-		JnrTestMainGenerator.generateMain(inputDir, OUTPUT, outputClass);
+		new JnrTestMainGenerator().generateMain(inputDir, OUTPUT, outputClass);
 		
 		// Read the generated file
 		var generatedFile = Path.of(OUTPUT, "com/examples/discovery/main/JnrTestMainGenerated.java");

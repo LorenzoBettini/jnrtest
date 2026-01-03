@@ -10,7 +10,7 @@ class JnrTestDiscoveryTest {
 
 	@Test
 	void testDiscovery() throws IOException {
-		var discoveredTests = JnrTestDiscovery.discover("src/test/inputs/com/examples");
+		var discoveredTests = new JnrTestDiscovery().discover("src/test/inputs/com/examples");
 		assertThat(discoveredTests)
 			.containsExactlyInAnyOrder(
 				"com.examples.discovery.MyJnrTest",

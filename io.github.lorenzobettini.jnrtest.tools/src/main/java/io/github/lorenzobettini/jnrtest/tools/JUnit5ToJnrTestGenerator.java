@@ -62,11 +62,7 @@ public final class JUnit5ToJnrTestGenerator {
 	private static final String JNRTEST_FQN = JnrTest.class.getCanonicalName();
 	private static final String[] JNRTEST_FQN_PARTS = JNRTEST_FQN.split("\\.");
 
-	private JUnit5ToJnrTestGenerator() {
-		// utility class
-	}
-
-	public static void generate(String srcDir, String outputDir) throws IOException {
+	public void generate(String srcDir, String outputDir) throws IOException {
 		Path inputSrcDirPath = Path.of(srcDir).toAbsolutePath().normalize();
 		Path outputDirPath = Path.of(outputDir).toAbsolutePath().normalize();
 

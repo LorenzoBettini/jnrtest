@@ -40,7 +40,7 @@ class JUnit5ToJnrTestGeneratorTest {
 		var inputDir = "src/test/inputs";
 
 		// Generate the JnrTest subclasses
-		JUnit5ToJnrTestGenerator.generate(inputDir, OUTPUT);
+		new JUnit5ToJnrTestGenerator().generate(inputDir, OUTPUT);
 
 		// Read the expected output directory
 		var expectedOutputDir = Path.of("src/test/outputs/com/examples/tests");

@@ -26,7 +26,7 @@ import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
 public final class JnrTestDiscovery {
 
-	public static List<String> discover(String srcDir) throws IOException {
+	public List<String> discover(String srcDir) throws IOException {
 		String superTypeFqn = JnrTest.class.getCanonicalName();
 		Path projectRoot = Path.of("").toAbsolutePath();
 
