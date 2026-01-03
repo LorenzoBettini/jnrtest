@@ -152,13 +152,7 @@ public final class JnrTestDiscovery {
 
 	private static boolean isNewableNoArgPublicCtor(ITypeBinding tb) {
 		int mods = tb.getModifiers();
-		if (!java.lang.reflect.Modifier.isPublic(mods)) {
-			return false;
-		}
-		if (java.lang.reflect.Modifier.isAbstract(mods) || tb.isInterface()) {
-			return false;
-		}
-		if (tb.isEnum() || tb.isAnnotation() || tb.isRecord()) {
+		if (!java.lang.reflect.Modifier.isPublic(mods) || java.lang.reflect.Modifier.isAbstract(mods)) {
 			return false;
 		}
 		if (tb.isMember() && !java.lang.reflect.Modifier.isStatic(mods)) {
@@ -166,9 +160,6 @@ public final class JnrTestDiscovery {
 		}
 
 		var declaredMethods = tb.getDeclaredMethods();
-		if (declaredMethods.length == 0) {
-			return true;
-		}
 		for (IMethodBinding mb : declaredMethods) {
 			if (!mb.isConstructor() || mb.getParameterTypes().length != 0 ||
 					!java.lang.reflect.Modifier.isPublic(mb.getModifiers())) {
