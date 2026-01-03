@@ -35,9 +35,6 @@ public final class JnrTestDiscovery {
 			throw new IllegalArgumentException("Not found: " + srcRoot.toAbsolutePath());
 		}
 
-		Path outDir = projectRoot.resolve("target/generated-sources/jdt");
-		Files.createDirectories(outDir);
-
 		ParserConfig cfg = ParserConfig.from(projectRoot, srcRoot);
 
 		List<TypeHit> hits = new ArrayList<>();
