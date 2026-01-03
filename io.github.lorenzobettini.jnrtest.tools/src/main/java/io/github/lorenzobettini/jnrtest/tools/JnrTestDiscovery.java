@@ -170,19 +170,10 @@ public final class JnrTestDiscovery {
 			return true;
 		}
 		for (IMethodBinding mb : declaredMethods) {
-			if (!mb.isConstructor()) {
+			if (!mb.isConstructor() || mb.getParameterTypes().length != 0 ||
+					!java.lang.reflect.Modifier.isPublic(mb.getModifiers())) {
 				continue;
 			}
-			if (mb.getParameterTypes().length != 0) {
-				continue;
-			}
-			if (!java.lang.reflect.Modifier.isPublic(mb.getModifiers())) {
-				continue;
-			}
-			return true;
-		}
-		var superType = tb.getSuperclass();
-		if (superType.getQualifiedName().equals("java.lang.Object")) {
 			return true;
 		}
 
@@ -191,7 +182,8 @@ public final class JnrTestDiscovery {
 
 	private record TypeHit(String qualifiedName, boolean newable) {}
 
-	private record ParserConfig(String[] classpathEntries, String[] sourcepathEntries, Map<String, String> compilerOptions) {
+	private record ParserConfig(String[] classpathEntries, String[] sourcepathEntries, // NOSONAR we don't need equals/hashCode
+			Map<String, String> compilerOptions) {
 
 		static ParserConfig from(Path projectRoot, Path srcRoot) {
 			List<String> cp = new ArrayList<>();
