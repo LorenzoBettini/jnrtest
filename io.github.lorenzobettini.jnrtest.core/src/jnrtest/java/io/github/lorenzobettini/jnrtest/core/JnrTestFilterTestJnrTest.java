@@ -6,8 +6,6 @@ import static org.mockito.Mockito.verify;
 
 import java.util.function.Predicate;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTest;
-
 public class JnrTestFilterTestJnrTest extends JnrTest {
 
 	public JnrTestFilterTestJnrTest() {

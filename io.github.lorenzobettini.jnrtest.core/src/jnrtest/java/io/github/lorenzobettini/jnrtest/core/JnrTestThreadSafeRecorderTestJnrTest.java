@@ -9,7 +9,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
-import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
 public class JnrTestThreadSafeRecorderTestJnrTest extends JnrTest {
 

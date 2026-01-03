@@ -2,8 +2,6 @@ package io.github.lorenzobettini.jnrtest.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTest;
-
 /**
  * Tests for {@link JnrTestReporterInterface} default methods.
  */

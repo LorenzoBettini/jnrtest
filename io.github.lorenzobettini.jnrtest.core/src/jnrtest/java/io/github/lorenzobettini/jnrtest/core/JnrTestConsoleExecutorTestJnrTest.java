@@ -10,8 +10,6 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTest;
-
 /**
  * Tests for {@link JnrTestConsoleExecutor}.
  * 

@@ -46,7 +46,7 @@ import org.eclipse.text.edits.TextEdit;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public final class JUnit5ToJnrTestGenerator {
+public class JUnit5ToJnrTestGenerator {
 
 	private static final String CALL = "call ";
 
@@ -59,8 +59,8 @@ public final class JUnit5ToJnrTestGenerator {
 			"org.junit.jupiter.api.DisplayName"
 	);
 
-	private static final String JNRTEST_FQN = JnrTest.class.getCanonicalName();
-	private static final String[] JNRTEST_FQN_PARTS = JNRTEST_FQN.split("\\.");
+	protected static final String JNRTEST_FQN = JnrTest.class.getCanonicalName();
+	protected static final String[] JNRTEST_FQN_PARTS = JNRTEST_FQN.split("\\.");
 
 	public void generate(String srcDir, String outputDir) throws IOException {
 		Path inputSrcDirPath = Path.of(srcDir).toAbsolutePath().normalize();
@@ -129,7 +129,7 @@ public final class JUnit5ToJnrTestGenerator {
 		return Optional.empty();
 	}
 
-	private static String transformOne(
+	private String transformOne(
 			String source,
 			CompilationUnit cu,
 			TypeDeclaration typeDecl,
@@ -187,7 +187,7 @@ public final class JUnit5ToJnrTestGenerator {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void rewriteImports(AST ast, ASTRewrite rw, CompilationUnit cu) {
+	protected void rewriteImports(AST ast, ASTRewrite rw, CompilationUnit cu) {
 		ListRewrite importsRw = rw.getListRewrite(cu, CompilationUnit.IMPORTS_PROPERTY);
 
 		boolean hasJnrTest = false;
@@ -195,7 +195,7 @@ public final class JUnit5ToJnrTestGenerator {
 		for (ImportDeclaration id : (List<ImportDeclaration>) cu.imports()) {
 			String name = id.getName().getFullyQualifiedName();
 
-			if (!id.isStatic() && !id.isOnDemand() && JNRTEST_FQN.equals(name)) {
+			if (hasJnrTestImport(id, name)) {
 				hasJnrTest = true;
 			}
 
@@ -210,6 +210,10 @@ public final class JUnit5ToJnrTestGenerator {
 			jnr.setName(ast.newName(JNRTEST_FQN_PARTS));
 			importsRw.insertLast(jnr, null);
 		}
+	}
+
+	protected boolean hasJnrTestImport(ImportDeclaration id, String name) {
+		return !id.isStatic() && !id.isOnDemand() && JNRTEST_FQN.equals(name);
 	}
 
 	private static void makePublic(AST ast, ASTRewrite rw, TypeDeclaration typeDecl) {

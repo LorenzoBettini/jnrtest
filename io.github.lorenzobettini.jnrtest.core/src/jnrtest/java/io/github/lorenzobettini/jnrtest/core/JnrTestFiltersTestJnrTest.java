@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Predicate;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTest;
-
 /**
  * Tests for the {@link JnrTestFilters} class focusing on corner cases and
  * ensuring the expected behavior.

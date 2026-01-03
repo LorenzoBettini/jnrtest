@@ -11,8 +11,6 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTest;
-
 public class JnrTestRunnerTestJnrTest extends JnrTest {
 
 	public JnrTestRunnerTestJnrTest() {

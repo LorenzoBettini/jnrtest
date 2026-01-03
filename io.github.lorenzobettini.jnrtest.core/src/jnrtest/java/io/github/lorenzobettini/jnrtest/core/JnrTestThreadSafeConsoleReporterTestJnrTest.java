@@ -7,7 +7,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
 public class JnrTestThreadSafeConsoleReporterTestJnrTest extends JnrTest {
 

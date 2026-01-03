@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import io.github.lorenzobettini.jnrtest.core.JnrTest;
-
 public class JnrTestConsoleReporterTestJnrTest extends JnrTest {
 
 	public JnrTestConsoleReporterTestJnrTest() {
