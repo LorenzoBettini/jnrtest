@@ -24,12 +24,14 @@
 		<sonar.exclusions>
 			**/examples/**/*.*,
 			**/othertests/*.*,
+			**/tools/*.*,
 			**/JnrTestJUnitProcessor.java,
 		</sonar.exclusions>
 
 		<sonar.test.exclusions>
 			**/examples/**/*.*,
 			**/othertests/*.*,
+			**/tools/*.*,
 			**/JnrTestJUnitProcessor.java,
 		</sonar.test.exclusions>
 	</properties>
