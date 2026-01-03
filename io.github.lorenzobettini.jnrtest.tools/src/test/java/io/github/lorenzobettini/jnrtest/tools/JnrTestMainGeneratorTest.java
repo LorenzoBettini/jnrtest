@@ -31,16 +31,16 @@ class JnrTestMainGeneratorTest {
 	@Test
 	void testGeneratedMain() throws IOException {
 		var inputDir = "src/test/inputs";
-		var outputClass = "com.examples.main.JnrTestMainGenerated";
+		var outputClass = "com.examples.discovery.main.JnrTestMainGenerated";
 		
 		// Generate the main class
 		JnrTestMainGenerator.generateMain(inputDir, OUTPUT, outputClass);
 		
 		// Read the generated file
-		var generatedFile = Path.of(OUTPUT, "com/examples/main/JnrTestMainGenerated.java");
+		var generatedFile = Path.of(OUTPUT, "com/examples/discovery/main/JnrTestMainGenerated.java");
 		
 		// Read the expected file
-		var expectedFile = Path.of("src/test/outputs/com/examples/main/JnrTestMainGenerated.java");
+		var expectedFile = Path.of("src/test/outputs/com/examples/discovery/main/JnrTestMainGenerated.java");
 		
 		// Compare
 		assertThat(generatedFile).hasSameTextualContentAs(expectedFile);

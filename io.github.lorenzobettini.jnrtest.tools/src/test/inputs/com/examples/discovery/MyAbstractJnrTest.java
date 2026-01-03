@@ -1,4 +1,4 @@
-package com.examples;
+package com.examples.discovery;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 

@@ -10,12 +10,12 @@ class JnrTestDiscoveryTest {
 
 	@Test
 	void testDiscovery() throws IOException {
-		var discoveredTests = JnrTestDiscovery.discover("src/test/inputs");
+		var discoveredTests = JnrTestDiscovery.discover("src/test/inputs/com/examples");
 		assertThat(discoveredTests)
 			.containsExactlyInAnyOrder(
-				"com.examples.MyJnrTest",
-				"com.examples.MyJnrTest2",
-				"com.examples.subpackage.MyConcreteJnrTest"
+				"com.examples.discovery.MyJnrTest",
+				"com.examples.discovery.MyJnrTest2",
+				"com.examples.discovery.subpackage.MyConcreteJnrTest"
 			);
 	}
 

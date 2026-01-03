@@ -1,11 +1,11 @@
-package com.examples;
+package com.examples.discovery;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class MyJnrTest2 extends JnrTest {
+public class MyJnrTest extends JnrTest {
 
-	public MyJnrTest2() {
-		super("MyJnrTest2");
+	public MyJnrTest() {
+		super("MyJnrTest");
 	}
 
 	@Override

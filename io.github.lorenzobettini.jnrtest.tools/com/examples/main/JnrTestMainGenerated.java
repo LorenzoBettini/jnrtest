@@ -1,8 +1,8 @@
-package com.examples.main;
+package com.examples.discovery.main;
 
-import com.examples.MyJnrTest;
-import com.examples.MyJnrTest2;
-import com.examples.subpackage.MyConcreteJnrTest;
+import com.examples.discovery.MyJnrTest;
+import com.examples.discovery.MyJnrTest2;
+import com.examples.discovery.subpackage.MyConcreteJnrTest;
 import io.github.lorenzobettini.jnrtest.core.JnrTestConsoleExecutor;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunner;
 import java.lang.String;
