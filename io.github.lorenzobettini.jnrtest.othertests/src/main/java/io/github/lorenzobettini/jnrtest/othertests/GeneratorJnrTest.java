@@ -6,8 +6,6 @@ public class GeneratorJnrTest {
 		var testCase = """
 		package com.example.demos.jnrtest;
 		
-		import static org.junit.jupiter.api.Assertions.assertTrue;
-		
 		import io.github.lorenzobettini.jnrtest.core.JnrTest;
 		
 		public class MyJnr%d extends JnrTest {
@@ -23,7 +21,10 @@ public class GeneratorJnrTest {
 		}
 		""";
 		var test = """
-			test("testSomething%d", () -> { assertTrue(true); });
+			test("testSomething%d", () -> {
+				com.example.testutils.CommonTestUtils.assertStringIsPresent("laborum");
+				com.example.testutils.CommonTestUtils.assertStringIsAbsent("foobar");
+			});
 		""";
 		StringBuilder testBuilder = new StringBuilder();
 		for (int i = 0; i < numberOfTests; i++) {
