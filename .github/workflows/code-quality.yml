@@ -43,4 +43,4 @@ jobs:
         if: ${{ env.SONAR_TOKEN }}
 
       - name: 'Build, test, code quality and coverage'
-        run: mvn verify -Pjacoco $SONARGOAL -Dsonar.projectKey=LorenzoBettini_jnrtest
+        run: ./mvnw verify -Pjacoco $SONARGOAL -Dsonar.projectKey=LorenzoBettini_jnrtest

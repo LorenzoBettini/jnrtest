@@ -32,7 +32,7 @@ jobs:
 
       - name: 'Mutation Testing with PIT'
         run: >
-          mvn -pl io.github.lorenzobettini.jnrtest.core
+          ./mvnw -pl io.github.lorenzobettini.jnrtest.core
           test-compile
           org.pitest:pitest-maven:mutationCoverage
           -Dpit-timeout-const=1000
