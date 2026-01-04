@@ -8,7 +8,7 @@ import java.util.List;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
-public class ExampleTest2ClassJnrTest extends JnrTest {
+public class ExampleTest2ClassJnrTest extends JnrTest { // NOSONAR
 
 	public ExampleTest2ClassJnrTest() {
 		super("ExampleTest2Class in JnrTest");

@@ -183,7 +183,9 @@ public class JUnit5ToJnrTestGenerator {
 			throw new RuntimeException("Error during transformation of " + plan.originalClassName, e); // NOSONAR
 		}
 
-		return doc.get();
+		String result = doc.get();
+		result = result.replace("extends JnrTest {", "extends JnrTest { // NOSONAR");
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")
