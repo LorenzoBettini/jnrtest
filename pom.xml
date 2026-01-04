@@ -26,6 +26,7 @@
 
 		<sonar.exclusions>
 			**/examples/**/*.*,
+			**/examplesdelegated/**/*.*,
 			**/othertests/*.*,
 			**/tools/*.*,
 			**/JnrTestJUnitProcessor.java,
@@ -33,6 +34,7 @@
 
 		<sonar.test.exclusions>
 			**/examples/**/*.*,
+			**/examplesdelegated/**/*.*,
 			**/othertests/*.*,
 			**/tools/*.*,
 			**/JnrTestJUnitProcessor.java,
