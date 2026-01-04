@@ -6,7 +6,7 @@ import java.util.List;
 
 public class GenerateJnrTests {
 
-	private static final List<Integer> TEST_SIZES = List.of(1, 10, 100, 1000, 2000, 3000, 4000, 5000);
+	private static final List<Integer> TEST_SIZES = List.of(1, 10, 100, 1000, 3000, 5000);
 
 	public static void main(String[] args) throws FileNotFoundException {
 		var generator = new GeneratorJnrTest();
