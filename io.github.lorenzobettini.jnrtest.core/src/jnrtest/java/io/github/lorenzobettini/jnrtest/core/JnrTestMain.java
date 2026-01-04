@@ -7,21 +7,15 @@ package io.github.lorenzobettini.jnrtest.core;
 public class JnrTestMain {
 
 	public static void main(String[] args) {
-		var executor = new JnrTestConsoleExecutor();
+		var executor = new JnrTestConsoleExecutor() {
+			@Override
+			protected JnrTestRunner createTestRunner() {
+				var runner = new JnrTestRunner();
+				JnrTestMainGenerated.fillTestRunner(runner);
+				return runner;
+			}
+		};
 		executor.getReporter().withOnlySummaries();
-
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleExecutorTestJnrTest());
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleParallelExecutorTestJnrTest());
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleReporterTestJnrTest());
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestFilterTestJnrTest());
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestFiltersTestJnrTest());
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestParallelRunnerTestJnrTest());
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestRecorderTestJnrTest());
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestReporterInterfaceTestJnrTest());
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestRunnerTestJnrTest());
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestStatisticsTestJnrTest());
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeConsoleReporterTestJnrTest());
-		executor.add(new io.github.lorenzobettini.jnrtest.core.JnrTestThreadSafeRecorderTestJnrTest());
 
 		executor.execute();
 	}
