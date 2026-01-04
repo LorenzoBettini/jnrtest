@@ -33,7 +33,7 @@ jobs:
           path: |
             ~/.m2
             ~/.sonar/cache
-          key: ${{ runner.os }}-m2-jacoco-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-m2-codequality-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
       # execute sonar:sonar only for internal PRs
