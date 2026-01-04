@@ -2,19 +2,20 @@ package io.github.lorenzobettini.jnrtest.othertests;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.List;
 
 public class GenerateJUnitTests {
 
+	private static final List<Integer> TEST_SIZES = List.of(1, 10, 100, 1000, 2000, 3000, 4000, 5000);
+
 	public static void main(String[] args) throws FileNotFoundException {
 		var generator = new GeneratorJUnit();
-		generate(generator, 1);
-		generate(generator, 10);
-		generate(generator, 100);
-		generate(generator, 1000);
-//		generate(generator, 5000);
+		for (var size : TEST_SIZES) {
+			generate(generator, size);
+		}
 
 		// generate the main file
-		var fileName = "src/test/java/com/example/demos/junit/AllTest.java";
+		var fileName = "src/test/java/com/example/demos/junit/MyAllTest.java";
 		var outputFile = new java.io.File(fileName);
 		try (var writer = new PrintWriter(outputFile)) {
 			writer.println("""
@@ -24,13 +25,13 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 @Suite
-@SelectClasses({
-	MyJUnit1Spec.class,
-	MyJUnit10Spec.class,
-	MyJUnit100Spec.class,
-	MyJUnit1000Spec.class,
+@SelectClasses({""");
+			for (var size : TEST_SIZES) {
+				writer.println("		MyJUnit" + size + "Spec.class,");
+			}
+			writer.println("""
 })
-public class AllTest {
+public class MyAllTest {
 
 }
 
