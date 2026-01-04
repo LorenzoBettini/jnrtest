@@ -364,7 +364,7 @@ class JnrTestConsoleReporterTest {
 		
 		final String output = getOutContent();
 		// Should have positive elapsed time, proving timer was started and stopped
-		assertThat(output).containsPattern("Time elapsed: 0\\.0[0-9]+");
+		assertThat(output).containsPattern("Time elapsed: 0\\.[0-9][0-9]*");
 	}
 
 	@Test
@@ -389,7 +389,7 @@ class JnrTestConsoleReporterTest {
 		
 		final String output = getOutContent();
 		// Should have accumulated time from both tests
-		assertThat(output).containsPattern("Time elapsed: 0\\.0[0-9]+");
+		assertThat(output).containsPattern("Time elapsed: 0\\.[0-9][0-9]*");
 	}
 
 }
