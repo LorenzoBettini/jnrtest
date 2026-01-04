@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests for {@link JnrTestRecorder}.
  */
-public class JnrTestRecorderTestJnrTest extends JnrTest {
+public class JnrTestRecorderTestJnrTest extends JnrTest { // NOSONAR
 
 	public JnrTestRecorderTestJnrTest() {
 		super("JnrTestRecorderTest in JnrTest");

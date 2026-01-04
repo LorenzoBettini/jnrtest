@@ -11,7 +11,7 @@ import java.util.function.Predicate;
  * Tests for the {@link JnrTestFilters} class focusing on corner cases and
  * ensuring the expected behavior.
  */
-public class JnrTestFiltersTestJnrTest extends JnrTest {
+public class JnrTestFiltersTestJnrTest extends JnrTest { // NOSONAR
 
 	public JnrTestFiltersTestJnrTest() {
 		super("JnrTestFiltersTest in JnrTest");
@@ -237,7 +237,7 @@ public class JnrTestFiltersTestJnrTest extends JnrTest {
 	}
 
 	// Simple fake test class implementation
-	private static class FakeTest extends JnrTest {
+	private static class FakeTest extends JnrTest { // NOSONAR
 
 		public FakeTest(String description) {
 			super(description);

@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.function.Predicate;
 
-public class JnrTestFilterTestJnrTest extends JnrTest {
+public class JnrTestFilterTestJnrTest extends JnrTest { // NOSONAR
 
 	public JnrTestFilterTestJnrTest() {
 		super("JnrTestFilterTest in JnrTest");

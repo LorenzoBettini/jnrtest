@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JnrTestThreadSafeConsoleReporterTestJnrTest extends JnrTest {
+public class JnrTestThreadSafeConsoleReporterTestJnrTest extends JnrTest { // NOSONAR
 
 	public JnrTestThreadSafeConsoleReporterTestJnrTest() {
 		super("JnrTestThreadSafeConsoleReporterTest in JnrTest");

@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
 
-public class JnrTestThreadSafeRecorderTestJnrTest extends JnrTest {
+public class JnrTestThreadSafeRecorderTestJnrTest extends JnrTest { // NOSONAR
 
 	public JnrTestThreadSafeRecorderTestJnrTest() {
 		super("JnrTestThreadSafeRecorderTest in JnrTest");

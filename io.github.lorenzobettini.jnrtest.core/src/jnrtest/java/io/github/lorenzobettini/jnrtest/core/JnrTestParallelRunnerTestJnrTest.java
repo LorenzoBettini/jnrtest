@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public class JnrTestParallelRunnerTestJnrTest extends JnrTest {
+public class JnrTestParallelRunnerTestJnrTest extends JnrTest { // NOSONAR
 
 	public JnrTestParallelRunnerTestJnrTest() {
 		super("JnrTestParallelRunnerTest in JnrTest");

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Tests for {@link JnrTestReporterInterface} default methods.
  */
-public class JnrTestReporterInterfaceTestJnrTest extends JnrTest {
+public class JnrTestReporterInterfaceTestJnrTest extends JnrTest { // NOSONAR
 
 	public JnrTestReporterInterfaceTestJnrTest() {
 		super("JnrTestReporterInterfaceTest in JnrTest");

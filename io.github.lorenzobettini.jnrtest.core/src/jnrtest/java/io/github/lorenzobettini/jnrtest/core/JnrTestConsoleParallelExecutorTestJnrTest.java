@@ -15,7 +15,7 @@ import java.io.PrintStream;
  * 
  * author Lorenzo Bettini
  */
-public class JnrTestConsoleParallelExecutorTestJnrTest extends JnrTest {
+public class JnrTestConsoleParallelExecutorTestJnrTest extends JnrTest { // NOSONAR
 
 	public JnrTestConsoleParallelExecutorTestJnrTest() {
 		super("JnrTestConsoleParallelExecutorTest in JnrTest");

@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
-public class JnrTestRunnerTestJnrTest extends JnrTest {
+public class JnrTestRunnerTestJnrTest extends JnrTest { // NOSONAR
 
 	public JnrTestRunnerTestJnrTest() {
 		super("JnrTestRunnerTest in JnrTest");

@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public class JnrTestConsoleReporterTestJnrTest extends JnrTest {
+public class JnrTestConsoleReporterTestJnrTest extends JnrTest { // NOSONAR
 
 	public JnrTestConsoleReporterTestJnrTest() {
 		super("JnrTestConsoleReporterTest in JnrTest");
