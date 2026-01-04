@@ -8,7 +8,7 @@ public class GeneratorJUnit {
 		
 		import org.junit.jupiter.api.Test;
 		
-		class MyJUnit%dTests {
+		class MyJUnit%dSpec {
 		%s
 		}
 		""";

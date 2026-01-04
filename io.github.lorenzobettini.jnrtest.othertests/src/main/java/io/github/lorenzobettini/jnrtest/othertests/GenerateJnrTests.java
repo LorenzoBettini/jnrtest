@@ -7,10 +7,11 @@ public class GenerateJnrTests {
 
 	public static void main(String[] args) throws FileNotFoundException {
 		var generator = new GeneratorJnrTest();
+		generate(generator, 1);
 		generate(generator, 10);
 		generate(generator, 100);
 		generate(generator, 1000);
-		generate(generator, 5000);
+//		generate(generator, 5000);
 
 		// generate the main file
 		var fileName = "src/test/java/com/example/demos/jnrtest/MyJnrTestMain.java";
@@ -26,10 +27,11 @@ public class MyJnrTestMain {
 	public static void main(String[] args) {
 		var executor = new JnrTestConsoleExecutor();
 		executor.getReporter().withOnlySummaries(true);
+		executor.add(new MyJnr1("MyJnr1"));
 		executor.add(new MyJnr10("MyJnr10"));
 		executor.add(new MyJnr100("MyJnr100"));
 		executor.add(new MyJnr1000("MyJnr1000"));
-		executor.add(new MyJnr5000("MyJnr5000"));
+//		executor.add(new MyJnr5000("MyJnr5000"));
 		executor.execute();
 	}
 }
