@@ -24,7 +24,8 @@ public class CommonTestUtils {
 			"Cras mollis scelerisque nunc. Nullam arcu.",
 			"Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et, pretium ac, nisi.",
 			"Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci.",
-			"In hac habitasse platea dictumst."
+			"In hac habitasse platea dictumst.",
+			"findme!"
 	);
 
 	public static void assertStringIsPresent(String str) {

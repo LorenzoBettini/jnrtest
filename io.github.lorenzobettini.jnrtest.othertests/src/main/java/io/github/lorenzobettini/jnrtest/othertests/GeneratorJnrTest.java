@@ -22,7 +22,7 @@ public class GeneratorJnrTest {
 		""";
 		var test = """
 			test("testSomething%d", () -> {
-				com.example.testutils.CommonTestUtils.assertStringIsPresent("laborum");
+				com.example.testutils.CommonTestUtils.assertStringIsPresent("findme");
 				com.example.testutils.CommonTestUtils.assertStringIsAbsent("foobar");
 			});
 		""";

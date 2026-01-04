@@ -15,7 +15,7 @@ public class GeneratorJUnit {
 		var test = """
 			@Test
 			void testSomething%d() throws Exception {
-				com.example.testutils.CommonTestUtils.assertStringIsPresent("laborum");
+				com.example.testutils.CommonTestUtils.assertStringIsPresent("findme");
 				com.example.testutils.CommonTestUtils.assertStringIsAbsent("foobar");
 			}
 		""";
