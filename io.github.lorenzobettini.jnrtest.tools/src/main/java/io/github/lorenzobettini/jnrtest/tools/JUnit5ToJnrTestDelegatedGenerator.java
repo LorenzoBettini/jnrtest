@@ -1,4 +1,4 @@
-package io.github.lorenzobettini.jnrtest.utils;
+package io.github.lorenzobettini.jnrtest.tools;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -46,9 +46,13 @@ import java.util.Arrays;
  * It uses the Java Compiler API ({@link JavaCompiler}) to parse the Java files and extract the
  * relevant information about the test methods and their annotations.
  * 
+ * Differently from {@link JUnit5ToJnrTestGenerator}, this version uses a delegated approach:
+ * each generated JnrTest class contains an instance of the original test class
+ * and delegates the test method calls to that instance.
+ * 
  * @author Lorenzo Bettini
  */
-public class JnrTestJUnitProcessor {
+public class JUnit5ToJnrTestDelegatedGenerator {
 	
 	private static final String TEST_ANNOTATION = "org.junit.jupiter.api.Test";
 	private static final String BEFORE_ALL_ANNOTATION = "org.junit.jupiter.api.BeforeAll";
@@ -67,7 +71,7 @@ public class JnrTestJUnitProcessor {
 	 * @param sourceDirectory The directory to scan for JUnit test files
 	 * @param outputDirectory The directory where to generate the JnrTest files
 	 */
-	public JnrTestJUnitProcessor(Path sourceDirectory, Path outputDirectory) {
+	public JUnit5ToJnrTestDelegatedGenerator(Path sourceDirectory, Path outputDirectory) {
 		this.sourceDirectory = sourceDirectory;
 		this.outputDirectory = outputDirectory;
 		this.generatedClasses = new ArrayList<>();
@@ -122,7 +126,7 @@ public class JnrTestJUnitProcessor {
 		try {
 			// Skip files that already have JnrTest suffix
 			String filename = file.getFileName().toString();
-			if (filename.endsWith("JnrTest.java") || !filename.contains("Test.java")) {
+			if (filename.endsWith("JnrTest.java")) {
 				return false;
 			}
 
@@ -370,7 +374,7 @@ public class JnrTestJUnitProcessor {
 		String classHeader = """
 			package %s;
 
-			public class %s extends JnrTest { // NOSONAR
+			public class %s extends io.github.lorenzobettini.jnrtest.core.JnrTest { // NOSONAR
 
 				private %s originalTest = new %s();
 
@@ -451,7 +455,7 @@ public class JnrTestJUnitProcessor {
 			public class JnrTestMain {
 
 				public static void main(String[] args) {
-					var executor = new JnrTestConsoleExecutor();
+					var executor = new io.github.lorenzobettini.jnrtest.core.JnrTestConsoleExecutor();
 					executor.getReporter().withOnlySummaries();
 
 			""".formatted(packageName);
@@ -512,7 +516,7 @@ public class JnrTestJUnitProcessor {
 		Path sourceDir = Paths.get(args[0]);
 		Path outputDir = Paths.get(args[1]);
 
-		JnrTestJUnitProcessor processor = new JnrTestJUnitProcessor(sourceDir, outputDir);
+		JUnit5ToJnrTestDelegatedGenerator processor = new JUnit5ToJnrTestDelegatedGenerator(sourceDir, outputDir);
 		try {
 			List<String> generatedClasses = processor.process();
 			System.out.println("Generated " + generatedClasses.size() + " JnrTest classes");
