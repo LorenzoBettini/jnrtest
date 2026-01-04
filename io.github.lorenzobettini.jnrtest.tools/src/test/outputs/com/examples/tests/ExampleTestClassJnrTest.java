@@ -47,6 +47,7 @@ public class ExampleTestClassJnrTest extends JnrTest { // NOSONAR
 	/**
 	 * An inner helper class, not a test
 	 */
+	@SuppressWarnings("unused")
 	private static class InnerHelper {
 		// This is a helper class, not a test
 		public void doSomething() {
