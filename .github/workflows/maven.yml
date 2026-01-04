@@ -34,7 +34,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: 'Build and test'
-        run: mvn verify -Pbenchmarks
+        run: ./mvnw verify -Pbenchmarks
       
       - name: Archive Test Results
         uses: actions/upload-artifact@v4
