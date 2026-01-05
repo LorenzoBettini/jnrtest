@@ -38,7 +38,7 @@ jobs:
           -Dpit-timeout-const=1000
 
       - name: Archive Mutation Testing Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: mutation-testing-report
           path: io.github.lorenzobettini.jnrtest.core/target/pit-reports
