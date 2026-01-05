@@ -6,18 +6,17 @@ public class GeneratorJUnit {
 		var testCase = """
 		package com.example.demos.junit;
 		
-		import static org.junit.jupiter.api.Assertions.assertTrue;
-		
 		import org.junit.jupiter.api.Test;
 		
-		class MyJUnit%dTests {
+		class MyJUnit%dSpec {
 		%s
 		}
 		""";
 		var test = """
 			@Test
 			void testSomething%d() throws Exception {
-				assertTrue(true);
+				com.example.testutils.CommonTestUtils.assertStringIsPresent("findme");
+				com.example.testutils.CommonTestUtils.assertStringIsAbsent("foobar");
 			}
 		""";
 		StringBuilder testBuilder = new StringBuilder();
