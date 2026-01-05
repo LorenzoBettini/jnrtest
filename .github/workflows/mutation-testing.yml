@@ -27,8 +27,8 @@ jobs:
         with:
           path: |
             ~/.m2
-          key: ${{ runner.os }}-m2-pitest-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          key: ${{ runner.os }}-pitest-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-pitest
 
       - name: 'Mutation Testing with PIT'
         run: >

@@ -33,8 +33,8 @@ jobs:
           path: |
             ~/.m2
             ~/.sonar/cache
-          key: ${{ runner.os }}-m2-codequality-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          key: ${{ runner.os }}-codequality-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-codequality
 
       # execute sonar:sonar only for internal PRs
       - name: Set Maven Additional Goals
