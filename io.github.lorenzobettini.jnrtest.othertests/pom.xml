@@ -44,6 +44,31 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>default-test</id>
+								<goals>
+									<goal>test</goal>
+								</goals>
+								<configuration>
+									<includes>
+										<include>**/MyAllTest.java</include>
+									</includes>
+								</configuration>
+							</execution>
+							<execution>
+								<id>default-test-one-instance-per-class</id>
+								<goals>
+									<goal>test</goal>
+								</goals>
+								<configuration>
+									<includes>
+										<include>
+											**/MyAllOneInstancePerClassTest.java</include>
+									</includes>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 					<!-- clean the generated files -->
 					<plugin>
