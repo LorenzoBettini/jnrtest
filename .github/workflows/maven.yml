@@ -37,7 +37,7 @@ jobs:
         run: ./mvnw verify -Pbenchmarks
       
       - name: Archive Test Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-${{ runner.os }}
           path: '**/target/surefire-reports'
