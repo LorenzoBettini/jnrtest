@@ -47,21 +47,21 @@ import org.eclipse.text.edits.TextEdit;
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
 /**
- * Generates JnrTest subclasses from JUnit Jupiter test classes by directly transforming
- * the source code.
+ * Generates new JnrTest subclass source files from JUnit Jupiter test classes.
  * <p>
  * This generator parses JUnit Jupiter test classes using the Eclipse JDT compiler and
- * transforms them into JnrTest subclasses. Unlike {@link JUnit5ToJnrTestDelegatedGenerator},
- * this approach directly transforms the test methods rather than delegating to an instance
- * of the original test class.
+ * creates new source files with JnrTest subclasses. The original JUnit test files are
+ * not modified. Unlike {@link JUnit5ToJnrTestDelegatedGenerator}, this approach directly
+ * converts the test methods into {@code specify()} calls rather than delegating to an
+ * instance of the original test class.
  * <p>
- * The transformation process:
+ * The generation process:
  * <ul>
- * <li>Renames the class by adding "JnrTest" suffix</li>
- * <li>Changes the superclass to {@link JnrTest}</li>
- * <li>Removes JUnit annotations</li>
+ * <li>Creates a new class with "JnrTest" suffix added to the original name</li>
+ * <li>Sets the superclass to {@link JnrTest}</li>
+ * <li>Removes JUnit annotations from imports</li>
  * <li>Converts annotated methods into {@code specify()} method calls</li>
- * <li>Preserves method bodies and comments</li>
+ * <li>Preserves method bodies and comments from the original source</li>
  * </ul>
  * <p>
  * Example usage:
@@ -140,13 +140,13 @@ public class JUnit5ToJnrTestGenerator {
 	protected static final String[] JNRTEST_FQN_PARTS = JNRTEST_FQN.split("\\.");
 
 	/**
-	 * Generates JnrTest subclasses by transforming all JUnit Jupiter test classes
+	 * Generates new JnrTest subclass source files from all JUnit Jupiter test classes
 	 * found in the source directory.
 	 * <p>
 	 * This method walks the source directory, identifies Java files containing JUnit
-	 * test methods, and transforms them into JnrTest subclasses. The transformation
-	 * preserves the original code structure and comments while adapting the test
-	 * framework syntax.
+	 * test methods, and generates new JnrTest subclass source files in the output directory.
+	 * The original JUnit test files are not modified. The generated code preserves the
+	 * original test logic, structure and comments while adapting the test framework syntax.
 	 * <p>
 	 * Supported JUnit annotations:
 	 * <ul>
