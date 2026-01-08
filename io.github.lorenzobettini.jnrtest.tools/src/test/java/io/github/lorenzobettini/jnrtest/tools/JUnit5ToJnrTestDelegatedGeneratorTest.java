@@ -39,11 +39,8 @@ class JUnit5ToJnrTestDelegatedGeneratorTest {
 	void testGeneratedJnrTests() throws IOException {
 		var inputDir = "src/test/inputs/com/examplesdelegated/tests";
 
-		Path inputSrcDirPath = Path.of(inputDir).toAbsolutePath().normalize();
-		Path outputDirPath = Path.of(OUTPUT).toAbsolutePath().normalize();
-		
 		// Generate the JnrTest subclasses
-		new JUnit5ToJnrTestDelegatedGenerator(inputSrcDirPath, outputDirPath).process();
+		new JUnit5ToJnrTestDelegatedGenerator().generate(inputDir, OUTPUT);
 
 		// Read the expected output directory
 		var expectedOutputDir = Path.of("src/test/outputs/com/examplesdelegated/tests");

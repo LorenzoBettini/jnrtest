@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,27 +65,23 @@ public class JUnit5ToJnrTestDelegatedGenerator {
 	private List<String> generatedClasses;
 
 	/**
-	 * Creates a new processor.
+	 * Generate JnrTest subclasses from JUnit Jupiter test classes.
 	 * 
-	 * @param sourceDirectory The directory to scan for JUnit test files
-	 * @param outputDirectory The directory where to generate the JnrTest files
-	 */
-	public JUnit5ToJnrTestDelegatedGenerator(Path sourceDirectory, Path outputDirectory) {
-		this.sourceDirectory = sourceDirectory;
-		this.outputDirectory = outputDirectory;
-		this.generatedClasses = new ArrayList<>();
-	}
-
-	/**
-	 * Process all Java files in the source directory and generates corresponding
-	 * JnrTest files.
-	 * 
+	 * @param srcDir The directory to scan for JUnit test files
+	 * @param outputDir The directory where to generate the JnrTest files
 	 * @return List of fully qualified names of the generated JnrTest classes
 	 * @throws IOException If there's an error reading the files or writing the
 	 *                     output
 	 */
-	public List<String> process() throws IOException {
-		generatedClasses.clear();
+	public List<String> generate(String srcDir, String outputDir) throws IOException {
+		sourceDirectory = Path.of(srcDir).toAbsolutePath().normalize();
+		outputDirectory = Path.of(outputDir).toAbsolutePath().normalize();
+		generatedClasses = new ArrayList<>();
+		
+		if (!Files.isDirectory(sourceDirectory)) {
+			throw new IllegalArgumentException("Not a directory: " + sourceDirectory);
+		}
+		Files.createDirectories(outputDirectory);
 		
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		if (compiler == null) {
@@ -513,12 +508,9 @@ public class JUnit5ToJnrTestDelegatedGenerator {
 			System.exit(1);
 		}
 
-		Path sourceDir = Paths.get(args[0]);
-		Path outputDir = Paths.get(args[1]);
-
-		JUnit5ToJnrTestDelegatedGenerator processor = new JUnit5ToJnrTestDelegatedGenerator(sourceDir, outputDir);
+		JUnit5ToJnrTestDelegatedGenerator processor = new JUnit5ToJnrTestDelegatedGenerator();
 		try {
-			List<String> generatedClasses = processor.process();
+			List<String> generatedClasses = processor.generate(args[0], args[1]);
 			System.out.println("Generated " + generatedClasses.size() + " JnrTest classes");
 		} catch (IOException e) {
 			System.err.println("Error processing files:");
