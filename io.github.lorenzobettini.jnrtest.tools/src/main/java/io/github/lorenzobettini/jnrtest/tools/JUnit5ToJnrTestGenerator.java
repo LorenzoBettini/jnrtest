@@ -46,6 +46,83 @@ import org.eclipse.text.edits.TextEdit;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
+/**
+ * Generates JnrTest subclasses from JUnit Jupiter test classes by directly transforming
+ * the source code.
+ * <p>
+ * This generator parses JUnit Jupiter test classes using the Eclipse JDT compiler and
+ * transforms them into JnrTest subclasses. Unlike {@link JUnit5ToJnrTestDelegatedGenerator},
+ * this approach directly transforms the test methods rather than delegating to an instance
+ * of the original test class.
+ * <p>
+ * The transformation process:
+ * <ul>
+ * <li>Renames the class by adding "JnrTest" suffix</li>
+ * <li>Changes the superclass to {@link JnrTest}</li>
+ * <li>Removes JUnit annotations</li>
+ * <li>Converts annotated methods into {@code specify()} method calls</li>
+ * <li>Preserves method bodies and comments</li>
+ * </ul>
+ * <p>
+ * Example usage:
+ * {@snippet :
+ * JUnit5ToJnrTestGenerator generator = new JUnit5ToJnrTestGenerator();
+ * generator.generate(
+ *     "src/test/java",
+ *     "target/generated-test-sources"
+ * );
+ * }
+ * <p>
+ * Given this JUnit test:
+ * {@snippet :
+ * package com.example;
+ * 
+ * import org.junit.jupiter.api.Test;
+ * import org.junit.jupiter.api.BeforeEach;
+ * import org.junit.jupiter.api.DisplayName;
+ * 
+ * class CalculatorTest {
+ *     private Calculator calc;
+ *     
+ *     @BeforeEach
+ *     void setUp() {
+ *         calc = new Calculator();
+ *     }
+ *     
+ *     @Test
+ *     @DisplayName("Addition should work correctly")
+ *     void testAddition() {
+ *         assertEquals(4, calc.add(2, 2));
+ *     }
+ * }
+ * }
+ * <p>
+ * The generator produces:
+ * {@snippet :
+ * package com.example;
+ * 
+ * public class CalculatorTestJnrTest extends JnrTest { // NOSONAR
+ *     
+ *     public CalculatorTestJnrTest() {
+ *         super("CalculatorTest in JnrTest");
+ *     }
+ *     
+ *     @Override
+ *     protected void specify() {
+ *         beforeEach("call setUp",
+ *             () -> {
+ *                 calc = new Calculator();
+ *             });
+ *         test("Addition should work correctly",
+ *             () -> {
+ *                 assertEquals(4, calc.add(2, 2));
+ *             });
+ *     }
+ * }
+ * }
+ *
+ * @author Lorenzo Bettini
+ */
 public class JUnit5ToJnrTestGenerator {
 
 	private static final String CALL = "call ";
@@ -62,6 +139,32 @@ public class JUnit5ToJnrTestGenerator {
 	protected static final String JNRTEST_FQN = JnrTest.class.getCanonicalName();
 	protected static final String[] JNRTEST_FQN_PARTS = JNRTEST_FQN.split("\\.");
 
+	/**
+	 * Generates JnrTest subclasses by transforming all JUnit Jupiter test classes
+	 * found in the source directory.
+	 * <p>
+	 * This method walks the source directory, identifies Java files containing JUnit
+	 * test methods, and transforms them into JnrTest subclasses. The transformation
+	 * preserves the original code structure and comments while adapting the test
+	 * framework syntax.
+	 * <p>
+	 * Supported JUnit annotations:
+	 * <ul>
+	 * <li>{@code @Test} - converted to {@code test(...)} calls</li>
+	 * <li>{@code @BeforeAll} - converted to {@code beforeAll(...)} calls</li>
+	 * <li>{@code @BeforeEach} - converted to {@code beforeEach(...)} calls</li>
+	 * <li>{@code @AfterAll} - converted to {@code afterAll(...)} calls</li>
+	 * <li>{@code @AfterEach} - converted to {@code afterEach(...)} calls</li>
+	 * <li>{@code @DisplayName} - used as test description</li>
+	 * </ul>
+	 * <p>
+	 * The generated files are formatted using Eclipse JDT formatter with tab indentation.
+	 *
+	 * @param srcDir the source directory to scan for JUnit test files (relative or absolute)
+	 * @param outputDir the output directory where to generate the JnrTest files (will be created if needed)
+	 * @throws IOException if there is an error reading source files or writing output files
+	 * @throws IllegalArgumentException if srcDir is not a valid directory
+	 */
 	public void generate(String srcDir, String outputDir) throws IOException {
 		Path inputSrcDirPath = Path.of(srcDir).toAbsolutePath().normalize();
 		Path outputDirPath = Path.of(outputDir).toAbsolutePath().normalize();

@@ -36,19 +36,76 @@ import javax.tools.JavaCompiler.CompilationTask;
 import java.util.Arrays;
 
 /**
- * A processor that generates JnrTest subclasses from JUnit
- * Jupiter test classes. For each Java file containing Jupiter @Test
- * annotations, it generates a corresponding JnrTest subclass with the same
- * name plus the suffix "JnrTest". It also generates a main class for running
- * all the generated JnrTest classes.
+ * Generates JnrTest subclasses from JUnit Jupiter test classes using a delegation pattern.
+ * <p>
+ * For each Java file containing JUnit Jupiter {@code @Test} annotations, this generator
+ * creates a corresponding JnrTest subclass with the same name plus the suffix "JnrTest".
+ * It also generates a main class for running all the generated JnrTest classes.
+ * <p>
+ * This generator uses the Java Compiler API ({@link JavaCompiler}) to parse Java files
+ * and extract information about test methods and their annotations.
+ * <p>
+ * <strong>Delegation Pattern:</strong><br>
+ * Unlike {@link JUnit5ToJnrTestGenerator}, this version uses a delegated approach where
+ * each generated JnrTest class contains an instance of the original test class and delegates
+ * test method calls to that instance. This preserves any instance state in the original test class.
+ * <p>
+ * Example usage:
+ * {@snippet :
+ * JUnit5ToJnrTestDelegatedGenerator generator = new JUnit5ToJnrTestDelegatedGenerator();
+ * List<String> generatedClasses = generator.generate(
+ *     "src/test/java",
+ *     "target/generated-test-sources"
+ * );
  * 
- * It uses the Java Compiler API ({@link JavaCompiler}) to parse the Java files and extract the
- * relevant information about the test methods and their annotations.
+ * System.out.println("Generated " + generatedClasses.size() + " test classes");
+ * }
+ * <p>
+ * Given this JUnit test:
+ * {@snippet :
+ * package com.example;
  * 
- * Differently from {@link JUnit5ToJnrTestGenerator}, this version uses a delegated approach:
- * each generated JnrTest class contains an instance of the original test class
- * and delegates the test method calls to that instance.
+ * import org.junit.jupiter.api.Test;
+ * import org.junit.jupiter.api.BeforeEach;
  * 
+ * class MyTest {
+ *     private int counter;
+ *     
+ *     @BeforeEach
+ *     void setUp() {
+ *         counter = 0;
+ *     }
+ *     
+ *     @Test
+ *     void testIncrement() {
+ *         counter++;
+ *         assertEquals(1, counter);
+ *     }
+ * }
+ * }
+ * <p>
+ * The generator produces:
+ * {@snippet :
+ * package com.example;
+ * 
+ * public class MyTestJnrTest extends io.github.lorenzobettini.jnrtest.core.JnrTest {
+ *     
+ *     private MyTest originalTest = new MyTest();
+ *     
+ *     public MyTestJnrTest() {
+ *         super("MyTest in JnrTest");
+ *     }
+ *     
+ *     @Override
+ *     protected void specify() {
+ *         beforeEach("call setUp",
+ *             () -> originalTest.setUp());
+ *         test("testIncrement",
+ *             () -> originalTest.testIncrement());
+ *     }
+ * }
+ * }
+ *
  * @author Lorenzo Bettini
  */
 public class JUnit5ToJnrTestDelegatedGenerator {
@@ -65,13 +122,34 @@ public class JUnit5ToJnrTestDelegatedGenerator {
 	private List<String> generatedClasses;
 
 	/**
-	 * Generate JnrTest subclasses from JUnit Jupiter test classes.
+	 * Generates JnrTest subclasses from all JUnit Jupiter test classes found in the source directory.
+	 * <p>
+	 * This method:
+	 * <ul>
+	 * <li>Scans the source directory recursively for Java files</li>
+	 * <li>Identifies JUnit test classes (those with {@code @Test} annotations)</li>
+	 * <li>Generates a corresponding JnrTest subclass for each test class</li>
+	 * <li>Generates a {@code JnrTestMain} class to run all generated tests</li>
+	 * </ul>
+	 * <p>
+	 * The generated classes use a delegation pattern where test methods are delegated
+	 * to an instance of the original test class.
+	 * <p>
+	 * Supported JUnit annotations:
+	 * <ul>
+	 * <li>{@code @Test} - converted to {@code test(...)} calls</li>
+	 * <li>{@code @BeforeAll} - converted to {@code beforeAll(...)} calls</li>
+	 * <li>{@code @BeforeEach} - converted to {@code beforeEach(...)} calls</li>
+	 * <li>{@code @AfterAll} - converted to {@code afterAll(...)} calls</li>
+	 * <li>{@code @AfterEach} - converted to {@code afterEach(...)} calls</li>
+	 * <li>{@code @DisplayName} - used as test description</li>
+	 * </ul>
 	 * 
-	 * @param srcDir The directory to scan for JUnit test files
-	 * @param outputDir The directory where to generate the JnrTest files
-	 * @return List of fully qualified names of the generated JnrTest classes
-	 * @throws IOException If there's an error reading the files or writing the
-	 *                     output
+	 * @param srcDir the directory to scan for JUnit test files (relative or absolute)
+	 * @param outputDir the directory where to generate the JnrTest files (will be created if needed)
+	 * @return list of fully qualified names of the generated JnrTest classes
+	 * @throws IOException if there's an error reading the files or writing the output
+	 * @throws IllegalArgumentException if srcDir is not a valid directory
 	 */
 	public List<String> generate(String srcDir, String outputDir) throws IOException {
 		sourceDirectory = Path.of(srcDir).toAbsolutePath().normalize();

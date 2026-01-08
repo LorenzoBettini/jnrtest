@@ -24,8 +24,48 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import io.github.lorenzobettini.jnrtest.core.JnrTest;
 
+/**
+ * Discovers JnrTest subclasses in a Java source directory by parsing source files
+ * and analyzing type hierarchies.
+ * <p>
+ * This class uses the Eclipse JDT compiler to parse Java source files and identify
+ * all classes that extend {@link JnrTest}, are concrete and instantiable with a public no-argument constructor.
+ * <p>
+ * Example usage:
+ * {@snippet :
+ * JnrTestDiscovery discovery = new JnrTestDiscovery();
+ * List<String> testClasses = discovery.discover("src/test/java");
+ * 
+ * // testClasses contains fully qualified names of instantiable JnrTest subclasses
+ * for (String className : testClasses) {
+ *     System.out.println("Found test class: " + className);
+ * }
+ * }
+ *
+ * @author Lorenzo Bettini
+ */
 public final class JnrTestDiscovery {
 
+	/**
+	 * Discovers all instantiable JnrTest subclasses in the specified source directory.
+	 * <p>
+	 * This method walks the source directory tree, parses all Java files, and identifies
+	 * classes that:
+	 * <ul>
+	 * <li>Extend {@link JnrTest} (directly or indirectly)</li>
+	 * <li>Are public and not abstract</li>
+	 * <li>Have a public no-argument constructor</li>
+	 * <li>Are not inner classes (or are static inner classes)</li>
+	 * </ul>
+	 * <p>
+	 * The method prints discovery information to System.out, including the total number
+	 * of subtypes found and which ones are instantiable.
+	 *
+	 * @param srcDir the source directory to scan (relative to current working directory)
+	 * @return a sorted list of fully qualified class names that can be instantiated
+	 * @throws IOException if there is an error reading the source directory or files
+	 * @throws IllegalArgumentException if srcDir is not a valid directory
+	 */
 	public List<String> discover(String srcDir) throws IOException {
 		String superTypeFqn = JnrTest.class.getCanonicalName();
 		Path projectRoot = Path.of("").toAbsolutePath();

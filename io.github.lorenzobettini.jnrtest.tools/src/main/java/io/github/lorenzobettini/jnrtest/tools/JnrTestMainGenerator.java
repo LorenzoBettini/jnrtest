@@ -14,13 +14,73 @@ import com.palantir.javapoet.TypeSpec;
 import io.github.lorenzobettini.jnrtest.core.JnrTestConsoleExecutor;
 import io.github.lorenzobettini.jnrtest.core.JnrTestRunner;
 
+/**
+ * Generates a main class that discovers and executes all JnrTest subclasses
+ * found in a source directory.
+ * <p>
+ * This generator creates a Java class with a main method that:
+ * <ul>
+ * <li>Creates instances of all discovered JnrTest subclasses</li>
+ * <li>Adds them to a {@link JnrTestRunner}</li>
+ * <li>Executes them via a {@link JnrTestConsoleExecutor}</li>
+ * </ul>
+ * <p>
+ * Example usage:
+ * {@snippet :
+ * JnrTestMainGenerator generator = new JnrTestMainGenerator();
+ * generator.generateMain(
+ *     "src/test/java",
+ *     "target/generated-sources",
+ *     "com.example.GeneratedTestRunner"
+ * );
+ * }
+ * <p>
+ * The generated class will look like:
+ * {@snippet :
+ * package com.example;
+ * 
+ * public class GeneratedTestRunner {
+ *     public static void fillTestRunner(JnrTestRunner runner) {
+ *         runner.add(new com.example.MyTest1());
+ *         runner.add(new com.example.MyTest2());
+ *     }
+ *     
+ *     public static void main(String[] args) {
+ *         var executor = new JnrTestConsoleExecutor() {
+ *             @Override
+ *             protected JnrTestRunner createTestRunner() {
+ *                 var runner = new JnrTestRunner();
+ *                 GeneratedTestRunner.fillTestRunner(runner);
+ *                 return runner;
+ *             }
+ *         };
+ *         executor.execute();
+ *     }
+ * }
+ * }
+ *
+ * @author Lorenzo Bettini
+ */
 public class JnrTestMainGenerator {
 
 	/**
+	 * Generates a main class that runs all discovered JnrTest subclasses.
+	 * <p>
+	 * This method first discovers all instantiable JnrTest subclasses in the source
+	 * directory, then generates a complete Java class with:
+	 * <ul>
+	 * <li>A {@code fillTestRunner} method that adds all test instances</li>
+	 * <li>A {@code main} method that creates and executes a test runner</li>
+	 * </ul>
+	 *
 	 * @param srcDir the source directory where to find the JnrTest subclasses
+	 *               (relative to current working directory)
 	 * @param outputDir the output directory where to generate the main class
+	 *                  (will be created if it doesn't exist)
 	 * @param outputClass the fully qualified name of the output main class to generate
-	 * @throws IOException 
+	 *                    (e.g., "com.example.TestRunner")
+	 * @throws IOException if there is an error reading source files or writing the output
+	 * @throws IllegalArgumentException if srcDir is not a valid directory
 	 */
 	public void generateMain(String srcDir, String outputDir, String outputClass) throws IOException {
 		var jnrTestInstnatiableClasses = new JnrTestDiscovery().discover(srcDir);
