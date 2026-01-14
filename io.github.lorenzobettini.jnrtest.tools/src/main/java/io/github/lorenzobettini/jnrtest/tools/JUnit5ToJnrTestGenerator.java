@@ -49,11 +49,11 @@ import io.github.lorenzobettini.jnrtest.core.JnrTest;
 /**
  * Generates new JnrTest subclass source files from JUnit Jupiter test classes.
  * <p>
- * This generator parses JUnit Jupiter test classes using the Eclipse JDT compiler and
- * creates new source files with JnrTest subclasses. The original JUnit test files are
- * not modified. Unlike {@link JUnit5ToJnrTestDelegatedGenerator}, this approach directly
- * converts the test methods into {@code specify()} calls rather than delegating to an
- * instance of the original test class.
+ * This generator parses JUnit Jupiter test classes using the Eclipse JDT
+ * compiler and creates new source files with JnrTest subclasses. The original
+ * JUnit test files are not modified. This approach directly converts the test
+ * methods into {@code specify()} calls rather than delegating to an instance of
+ * the original test class.
  * <p>
  * The generation process:
  * <ul>
@@ -67,10 +67,7 @@ import io.github.lorenzobettini.jnrtest.core.JnrTest;
  * Example usage:
  * {@snippet :
  * JUnit5ToJnrTestGenerator generator = new JUnit5ToJnrTestGenerator();
- * generator.generate(
- *     "src/test/java",
- *     "target/generated-test-sources"
- * );
+ * generator.generate("src/test/java", "target/generated-test-sources");
  * }
  * <p>
  * Given this JUnit test:
@@ -82,18 +79,18 @@ import io.github.lorenzobettini.jnrtest.core.JnrTest;
  * import org.junit.jupiter.api.DisplayName;
  * 
  * class CalculatorTest {
- *     private Calculator calc;
- *     
- *     @BeforeEach
- *     void setUp() {
- *         calc = new Calculator();
- *     }
- *     
- *     @Test
- *     @DisplayName("Addition should work correctly")
- *     void testAddition() {
- *         assertEquals(4, calc.add(2, 2));
- *     }
+ * 	private Calculator calc;
+ * 
+ * 	&#64;BeforeEach
+ * 	void setUp() {
+ * 		calc = new Calculator();
+ * 	}
+ * 
+ * 	&#64;Test
+ * 	&#64;DisplayName("Addition should work correctly")
+ * 	void testAddition() {
+ * 		assertEquals(4, calc.add(2, 2));
+ * 	}
  * }
  * }
  * <p>
@@ -102,22 +99,20 @@ import io.github.lorenzobettini.jnrtest.core.JnrTest;
  * package com.example;
  * 
  * public class CalculatorTestJnrTest extends JnrTest { // NOSONAR
- *     
- *     public CalculatorTestJnrTest() {
- *         super("CalculatorTest in JnrTest");
- *     }
- *     
- *     @Override
- *     protected void specify() {
- *         beforeEach("call setUp",
- *             () -> {
- *                 calc = new Calculator();
- *             });
- *         test("Addition should work correctly",
- *             () -> {
- *                 assertEquals(4, calc.add(2, 2));
- *             });
- *     }
+ * 
+ * 	public CalculatorTestJnrTest() {
+ * 		super("CalculatorTest in JnrTest");
+ * 	}
+ * 
+ * 	&#64;Override
+ * 	protected void specify() {
+ * 		beforeEach("call setUp", () -> {
+ * 			calc = new Calculator();
+ * 		});
+ * 		test("Addition should work correctly", () -> {
+ * 			assertEquals(4, calc.add(2, 2));
+ * 		});
+ * 	}
  * }
  * }
  *
