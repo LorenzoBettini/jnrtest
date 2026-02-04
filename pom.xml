@@ -19,7 +19,7 @@
 		<guice-version>7.0.0</guice-version>
 		<org.eclipse.text-version>3.14.500</org.eclipse.text-version>
 		<org.eclipse.jdt.core-version>3.44.0</org.eclipse.jdt.core-version>
-		<javapoet-version>0.9.0</javapoet-version>
+		<javapoet-version>0.11.0</javapoet-version>
 
 		<!--
 		Disable m2e-apt automatic configuration to avoid generated .classpath entries in Visual Studio Code Maven extension
