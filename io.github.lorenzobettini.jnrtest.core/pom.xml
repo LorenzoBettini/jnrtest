@@ -8,6 +8,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>io.github.lorenzobettini.jnrtest.core</artifactId>
+	<name>io.github.lorenzobettini.jnrtest.core</name>
+	<description>Core module of jnrtest</description>
 
 	<properties>
 		<argLine></argLine>

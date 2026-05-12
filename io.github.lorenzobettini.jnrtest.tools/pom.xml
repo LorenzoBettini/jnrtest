@@ -9,6 +9,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>io.github.lorenzobettini.jnrtest.tools</artifactId>
+	<name>io.github.lorenzobettini.jnrtest.tools</name>
+	<description>Tools for jnrtest</description>
 
 	<dependencies>
 		<dependency>

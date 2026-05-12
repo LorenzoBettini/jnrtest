@@ -8,6 +8,38 @@
 	<packaging>pom</packaging>
 	<name>io.github.lorenzobettini.jnrtest.parent</name>
 	<url>https://github.com/LorenzoBettini/jnrtest</url>
+	<description>Parent pom for jnrtest</description>
+
+	<licenses>
+		<license>
+			<name>Eclipse Public License - v 2.0</name>
+			<url>https://www.eclipse.org/legal/epl-2.0/</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Lorenzo Bettini</name>
+			<email>lorenzo.bettini@gmail.com</email>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<organization>DISIA Dipartimento di Statistica, Informatica, Applicazioni</organization>
+			<organizationUrl>https://www.disia.unifi.it/</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<url>git@github.com:LorenzoBettini/jnrtest.git</url>
+		<developerConnection>scm:git:https://github.com/LorenzoBettini/jnrtest.git</developerConnection>
+		<connection>scm:git:git@github.com/LorenzoBettini/jnrtest.git</connection>
+	</scm>
+
+	<issueManagement>
+		<system>Github</system>
+		<url>https://github.com/LorenzoBettini/jnrtest/issues</url>
+	</issueManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,6 +52,12 @@
 		<org.eclipse.text-version>3.14.600</org.eclipse.text-version>
 		<org.eclipse.jdt.core-version>3.45.0</org.eclipse.jdt.core-version>
 		<javapoet-version>0.15.0</javapoet-version>
+
+		<!-- For deployment on Maven Central -->
+		<maven.deploy.skip>false</maven.deploy.skip>
+		<maven-javadoc-plugin-version>3.12.0</maven-javadoc-plugin-version>
+		<maven-source-plugin-version>3.4.0</maven-source-plugin-version>
+		<maven-gpg-plugin-version>3.2.8</maven-gpg-plugin-version>
 
 		<!--
 		Disable m2e-apt automatic configuration to avoid generated .classpath entries in Visual Studio Code Maven extension
@@ -119,7 +157,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.12.0</version>
+					<version>${maven-javadoc-plugin-version}</version>
 					<configuration>
 						<detectOfflineLinks>false</detectOfflineLinks>
 						<source>21</source>
@@ -191,4 +229,83 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<profiles>
+ 		<!-- For deployment:
+		mvn clean deploy -DskipTests -Psonatype-oss-release
+		find ~/.m2/repository -name "*jnrtest*" -exec rm -rf {} \+
+		-->
+		<profile>
+			<id>sonatype-oss-release</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<version>0.10.0</version>
+						<extensions>true</extensions>
+						<configuration>
+							<publishingServerId>central</publishingServerId>
+							<skipPublishing>${maven.deploy.skip}</skipPublishing>
+							<autoPublish>false</autoPublish>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${maven-source-plugin-version}</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${maven-javadoc-plugin-version}</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<!-- Use the following configuration with Java 8 -->
+								<configuration>
+									<doclint>none</doclint>
+									<failOnError>false</failOnError>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${maven-gpg-plugin-version}</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<configuration>
+									<!-- Prevent gpg from using pinentry programs -->
+									<gpgArguments>
+										<arg>--pinentry-mode</arg>
+										<arg>loopback</arg>
+									</gpgArguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
