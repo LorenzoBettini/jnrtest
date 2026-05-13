@@ -11,10 +11,29 @@ An experimental framework for automated tests in Java without reflection
 - No reflection (in our code)
 - No static methods
 
+JnrTest is designed around explicit composition instead of runtime magic.
+Test classes are instantiated directly in user code, registered directly on a runner, and executed through ordinary Java objects.
+There is no hidden runtime discovery phase, no reflective invocation model in the framework, and no annotation-driven engine deciding what should run behind the scenes.
+
+That keeps the execution model straightforward to reason about:
+
+- test registration is explicit and visible in code
+- execution order is controlled by the runner and by the order in which tests and hooks are declared
+- extension points are plain Java abstractions such as listeners, recorders, reporters, and extensions
+- code-generation tools can assist migration and bootstrapping without changing the runtime programming model
+
+The second design goal, avoiding static methods in the framework API, follows the same philosophy.
+Runners, executors, reporters, and extensions are regular objects that can be instantiated, configured, composed, subclassed, or replaced.
+
+JnrTest is also intentionally assertion-agnostic.
+It does not provide its own assertion library.
+Test bodies are just Java lambdas, so you are expected to use the assertion library you already use in your project, for example JUnit Jupiter assertions, AssertJ, or Hamcrest. The examples in this repository use mostly JUnit Jupiter assertions, and some examples also use AssertJ.
+
 ---
 
 ## Table of Contents
 
+- [Goals](#goals)
 - [Overview](#overview)
 - [Getting Started](#getting-started)
 - [Writing Tests](#writing-tests)
@@ -51,6 +70,8 @@ An experimental framework for automated tests in Java without reflection
 
 Tests are defined by subclassing `JnrTest` and overriding `specify()`. The framework ships with sequential and parallel executors, a flexible listener/reporter API, support for parameterized tests, lifecycle hooks, and a tools module for code generation.
 
+JnrTest does not include an assertion library. In practice, test code normally imports assertions from existing libraries such as JUnit Jupiter or AssertJ.
+
 JnrTest requires **Java 21**.
 
 ---
@@ -64,6 +85,33 @@ Add the core dependency to your Maven project:
     <groupId>io.github.lorenzobettini.jnrtest</groupId>
     <artifactId>io.github.lorenzobettini.jnrtest.core</artifactId>
     <version><!-- see Maven Central badge above --></version>
+</dependency>
+```
+
+JnrTest only provides the test definition and execution model.
+It does **not** provide assertion methods such as `assertEquals`, `assertTrue`, or fluent assertion APIs.
+Add the assertion library you want to use explicitly.
+
+If you want to follow the examples in this repository, add **JUnit Jupiter**:
+
+```xml
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <version>6.0.3</version>
+    <scope>test</scope>
+</dependency>
+```
+
+If you also want fluent assertions like some examples in the `examples` module,
+add **AssertJ** too:
+
+```xml
+<dependency>
+    <groupId>org.assertj</groupId>
+    <artifactId>assertj-core</artifactId>
+    <version>3.27.7</version>
+    <scope>test</scope>
 </dependency>
 ```
 
@@ -111,6 +159,8 @@ public class FactorialJnrTest extends JnrTest {
 The constructor takes a human-readable **description** for the test class. This description is used in reporting and filtering.
 
 The `test()` method takes a description and a `JnrTestRunnable` (a functional interface that may throw `Exception`).
+
+In the example above, `assertEquals` comes from JUnit Jupiter, not from JnrTest.
 
 ### Lifecycle Hooks
 
