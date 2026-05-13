@@ -41,6 +41,12 @@ The design and rationale behind JnrTest are explained in more detail in these ar
 - [Goals](#goals)
 - [Overview](#overview)
 - [Getting Started](#getting-started)
+- [Build and Quality Tasks](#build-and-quality-tasks)
+    - [Full Build](#full-build)
+    - [Build a Single Module](#build-a-single-module)
+    - [Code Coverage](#code-coverage)
+    - [Mutation Testing](#mutation-testing)
+    - [Performance Tests](#performance-tests)
 - [Writing Tests](#writing-tests)
   - [Basic Tests](#basic-tests)
   - [Lifecycle Hooks](#lifecycle-hooks)
@@ -129,6 +135,121 @@ To use the code-generation tools, also add:
     <version><!-- same version --></version>
 </dependency>
 ```
+
+---
+
+## Build and Quality Tasks
+
+This repository is a Maven multi-module build with these modules:
+
+- `io.github.lorenzobettini.jnrtest.core`
+- `io.github.lorenzobettini.jnrtest.tools`
+- `io.github.lorenzobettini.jnrtest.examples`
+- `io.github.lorenzobettini.jnrtest.othertests`
+
+Use the Maven wrapper from the repository root:
+
+```sh
+./mvnw ...
+```
+
+### Full Build
+
+To build the full reactor and run the default verification lifecycle:
+
+```sh
+./mvnw clean verify
+```
+
+At a high level, this does the following:
+
+- `core` runs its JUnit-based tests, adds `src/jnrtest/java` as test sources, executes the generated `JnrTestMain`, and prints the aggregated Surefire execution time.
+- `tools` builds and runs its unit tests normally.
+- `examples` skips Surefire tests and instead runs the example sequential and parallel launchers through `exec-maven-plugin` during the `test` phase.
+- `othertests` participates in the reactor, but the heavier benchmark-oriented executions are enabled only when the `benchmarks` profile is activated.
+
+### Build a Single Module
+
+To work on one module while still building required upstream dependencies, use `-pl` with `-am`:
+
+```sh
+./mvnw -pl io.github.lorenzobettini.jnrtest.core -am clean test
+./mvnw -pl io.github.lorenzobettini.jnrtest.tools -am clean test
+./mvnw -pl io.github.lorenzobettini.jnrtest.examples -am clean test
+```
+
+For the performance-oriented module, activate its dedicated profile:
+
+```sh
+./mvnw -pl io.github.lorenzobettini.jnrtest.othertests -am clean test -Pbenchmarks
+```
+
+### Code Coverage
+
+Local code coverage is configured in the `core` module through the `jacoco` profile.
+Run:
+
+```sh
+./mvnw -pl io.github.lorenzobettini.jnrtest.core -am clean verify -Pjacoco
+```
+
+This activates the JaCoCo Maven plugin, attaches the coverage agent, and generates the HTML report during `verify`.
+
+The generated coverage report is available at:
+
+```text
+io.github.lorenzobettini.jnrtest.core/target/site/jacoco/index.html
+```
+
+The `core` Surefire configuration is set up so that JaCoCo's `argLine` can coexist with Mockito's Java agent.
+
+### Mutation Testing
+
+Mutation testing is configured in the `core` module with PIT and the JUnit 5 PIT plugin.
+The plugin is configured in Maven but invoked explicitly rather than being bound to the default lifecycle.
+
+Run:
+
+```sh
+./mvnw -pl io.github.lorenzobettini.jnrtest.core -am clean test-compile org.pitest:pitest-maven:mutationCoverage
+```
+
+If you want to override the PIT timeout constant, pass the property explicitly, for example:
+
+```sh
+./mvnw -pl io.github.lorenzobettini.jnrtest.core -am clean test-compile org.pitest:pitest-maven:mutationCoverage -Dpit-timeout-const=1000
+```
+
+The current PIT configuration in the POM:
+
+- targets `io.github.lorenzobettini.jnrtest.core.*` classes and tests
+- produces both HTML and XML reports
+- enforces a `100` mutation threshold
+- uses the default mutator set except for `MATH`
+
+The reports are generated under:
+
+```text
+io.github.lorenzobettini.jnrtest.core/target/pit-reports/
+```
+
+### Performance Tests
+
+Performance-oriented runs live in `io.github.lorenzobettini.jnrtest.othertests` and are activated by the `benchmarks` profile:
+
+```sh
+./mvnw -pl io.github.lorenzobettini.jnrtest.othertests -am clean test -Pbenchmarks
+```
+
+When that profile is active, Maven performs these additional steps:
+
+- generates JUnit benchmark sources by running `io.github.lorenzobettini.jnrtest.othertests.GenerateJUnitTests`
+- generates JnrTest benchmark sources by running `io.github.lorenzobettini.jnrtest.othertests.GenerateJnrTests`
+- runs the generated JUnit benchmark suites `MyAllTest` and `MyAllOneInstancePerClassTest` with Surefire
+- runs the generated JnrTest benchmark main `com.example.demos.jnrtest.MyJnrTestMain` through `exec-maven-plugin`
+- prints the aggregated Surefire execution time via `scripts/report-total-time.sh`
+
+The benchmark profile also customizes `clean` so that generated `My*.java` files in `src/test/java` are removed before a fresh run.
 
 ---
 
