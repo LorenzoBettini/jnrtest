@@ -29,6 +29,11 @@ JnrTest is also intentionally assertion-agnostic.
 It does not provide its own assertion library.
 Test bodies are just Java lambdas, so you are expected to use the assertion library you already use in your project, for example JUnit Jupiter assertions, AssertJ, or Hamcrest. The examples in this repository use mostly JUnit Jupiter assertions, and some examples also use AssertJ.
 
+The design and rationale behind JnrTest are explained in more detail in these articles:
+
+- Lorenzo Bettini, “Implementing a Java testing framework from scratch without reflection”, Journal of Object Technology, Volume 25, no. 2 ( 2026), pp. 2:37-65, doi:10.5381/jot.2026.25.2.a2. <https://www.jot.fm/contents/issue_2026_02/a2.html>
+- Lorenzo Bettini, "A Java Testing Framework Without Reflection", In Proceedings of the 18th International Conference on Software Technologies - ICSOFT; ISBN 978-989-758-665-1; ISSN 2184-2833, SciTePress, pages 369-376. DOI: 10.5220/0012082800003538. <https://www.scitepress.org/Link.aspx?doi=10.5220/0012082800003538>
+
 ---
 
 ## Table of Contents
