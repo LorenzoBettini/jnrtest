@@ -50,7 +50,7 @@
 		<assertj.version>3.27.7</assertj.version>
 		<guice-version>7.0.0</guice-version>
 		<org.eclipse.text-version>3.14.700</org.eclipse.text-version>
-		<org.eclipse.jdt.core-version>3.45.0</org.eclipse.jdt.core-version>
+		<org.eclipse.jdt.core-version>3.46.0</org.eclipse.jdt.core-version>
 		<javapoet-version>0.16.0</javapoet-version>
 
 		<!-- For deployment on Maven Central -->
