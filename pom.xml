@@ -51,7 +51,7 @@
 		<guice-version>7.0.0</guice-version>
 		<org.eclipse.text-version>3.14.700</org.eclipse.text-version>
 		<org.eclipse.jdt.core-version>3.46.0</org.eclipse.jdt.core-version>
-		<javapoet-version>0.16.0</javapoet-version>
+		<javapoet-version>0.17.0</javapoet-version>
 
 		<!-- For deployment on Maven Central -->
 		<maven.deploy.skip>false</maven.deploy.skip>
